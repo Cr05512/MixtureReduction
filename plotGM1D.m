@@ -1,4 +1,4 @@
-function [] = plotGM(gm,x)
+function [] = plotGM1D(gm,x)
 
 global plotTotalGM plotComponents
 

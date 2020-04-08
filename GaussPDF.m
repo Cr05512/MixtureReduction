@@ -31,8 +31,12 @@ classdef GaussPDF < dynamicprops
             obj.Sigma = covariance;
         end
         
-        function compPDF = getPDF(obj,points)
-            compPDF = obj.w*pdf('Normal',points,obj.mu,obj.Sigma);
+        function compPDF = getPDF(obj,X)
+            if min(size(X)) == 1
+                compPDF = obj.w*pdf('Normal',X,obj.mu,obj.Sigma);
+            else
+                compPDF = obj.w*mvnpdf(X,obj.mu,obj.Sigma);
+            end
         end
     
     end
