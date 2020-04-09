@@ -7,7 +7,7 @@ plotTotalGM = 1;
 plotComponents = 0;
 
 %Parameters to play with
-Nh = 10;  %Full mixture component number
+Nh = 20;  %Full mixture component number
 Nr = 5;   %Reduced mixture component number
 n = 2;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
@@ -47,7 +47,7 @@ gm = GMGen(w_bar,mu,Sigma);
 
 gm_r = RunnalsMRA(gm,Nr);
 
-ISE(gm,gm_r)
+ISE(gm,gm_r);
 
 
 figure(1)

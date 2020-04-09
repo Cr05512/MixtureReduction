@@ -43,7 +43,7 @@ classdef wGaussPDF < dynamicprops
             if size(obj.Sigma,1)>1
                 compPDFValues = mvnpdf(X,obj.mu',obj.Sigma);
             else
-                compPDFValues = pdf('Normal',X,obj.mu,obj.Sigma);
+                compPDFValues = normpdf(X,obj.mu,obj.Sigma);
             end
         end
     
