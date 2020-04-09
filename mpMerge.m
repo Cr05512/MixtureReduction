@@ -1,6 +1,6 @@
 function pdfMerge = mpMerge(pdf1, pdf2)
 
-pdfMerge = GaussPDF();
+pdfMerge = wGaussPDF();
 
 w1 = pdf1.getWeight();
 w2 = pdf2.getWeight();
