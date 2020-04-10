@@ -9,6 +9,7 @@ if plotTotalGM
     end
     gmTot = reshape(gmTot,length(x1),length(x2));
     mesh(x1,x2,gmTot,'LineWidth',1.5);
+    axis([min(x1) max(x1) min(x2) max(x2)])
 end
 
 end

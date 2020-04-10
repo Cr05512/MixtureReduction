@@ -5,14 +5,16 @@ close all
 global plotTotalGM plotComponents
 plotTotalGM = 1;
 plotComponents = 0;
+getSamples = 0;
 
 %Parameters to play with
 Nh = 20;  %Full mixture component number
 Nr = 5;   %Reduced mixture component number
-n = 2;    %Dimension
+n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
 alpha = 2;  %Auxiliary factors
-beta = 1;
+beta = 2;
+nSamples = 1000;
 
 %Generate weights
 w = rand(Nh,1);
@@ -45,22 +47,39 @@ end
 
 gm = GMGen(w_bar,mu,Sigma);
 
-gm_r = RunnalsMRA(gm,Nr);
+gm_KI = KIDivergenceMRA(gm,Nr);
 
-ISE(gm,gm_r);
+disp('KI MRA nISE: ')
+nISE(gm,gm_KI)
+
+gm_Run = RunnalsMRA(gm,Nr);
+
+disp('Runnals MRA nISE: ')
+nISE(gm,gm_Run)
+
+if getSamples==1
+    samples = GMSamples(gm, nSamples);
+end
 
 
 figure(1)
 if n==1
     plotGM1D(gm,X); hold on
-    plotGM1D(gm_r,X); hold on
+    plotGM1D(gm_KI,X); hold on
+    plotGM1D(gm_Run,X); hold on
     grid minor
-    legend('Original Mixture','Reduced Mixture')
+    
+    legend('Original Mixture','KI MR','Runnals MR');
 else
-    subplot(2,1,1)
+   
+    subplot(2,2,1)
     plotGM2D(gm,x1,x2,X); hold on
     title('Original Mixture')
-    subplot(2,1,2)
-    plotGM2D(gm_r,x1,x2,X);
-    title('Reduced Mixture')
+    subplot(2,2,2)
+    plotGM2D(gm_KI,x1,x2,X);
+    title('KI MR')
+    subplot(2,2,3)
+    title('Runnals MR')
+    plotGM2D(gm_Run,x1,x2,X);
+    
 end

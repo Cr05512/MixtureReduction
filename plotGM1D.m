@@ -1,22 +1,23 @@
-function [] = plotGM1D(gm,x)
+function [] = plotGM1D(gm,X)
 
 global plotTotalGM plotComponents
 
-gmTot = zeros(1,length(x));
+gmTot = zeros(1,length(X));
 
 if plotComponents
     for i=1:length(gm)
-        plot(x,gm(i).getWeight()*gm(i).getPDFValues(x),'k'); hold on
+        plot(X,gm(i).getWeight()*gm(i).getPDFValues(X),'k'); hold on
 
     end
 end
 
 if plotTotalGM
     for i=1:length(gm)
-        gmTot = gmTot + gm(i).getWeight()*gm(i).getPDFValues(x);
+        gmTot = gmTot + gm(i).getWeight()*gm(i).getPDFValues(X);
     end
-    plot(x,gmTot,'LineWidth',1.5); hold on
+    plot(X,gmTot,'LineWidth',1.5); hold on
 end
+axis([min(X) max(X) 0 max(gmTot)*1.3]);
 
 
 end
