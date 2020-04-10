@@ -12,8 +12,8 @@ Nh = 20;  %Full mixture component number
 Nr = 5;   %Reduced mixture component number
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
-alpha = 2;  %Auxiliary factors
-beta = 2;
+alpha = 2.5;  %Auxiliary factors
+beta = 0.5;
 nSamples = 1000;
 
 %Generate weights
@@ -36,7 +36,7 @@ end
 
 
 if n==1
-    X = linspace(-2*alpha^3, 2*alpha^3,nPoints);
+    X = linspace(-4*alpha^3, 4*alpha^3,nPoints);
 else
     x1 = linspace(-2*alpha^3, 2*alpha^3,nPoints);
     x2 = linspace(-2*alpha^3, 2*alpha^3,nPoints);
@@ -57,6 +57,11 @@ gm_Run = RunnalsMRA(gm,Nr);
 disp('Runnals MRA nISE: ')
 nISE(gm,gm_Run)
 
+gm_Salm = SalmondMRA(gm,Nr);
+
+disp('Salmond MRA nISE: ')
+nISE(gm,gm_Salm)
+
 if getSamples==1
     samples = GMSamples(gm, nSamples);
 end
@@ -67,9 +72,10 @@ if n==1
     plotGM1D(gm,X); hold on
     plotGM1D(gm_KI,X); hold on
     plotGM1D(gm_Run,X); hold on
+    plotGM1D(gm_Salm,X); hold on
     grid minor
     
-    legend('Original Mixture','KI MR','Runnals MR');
+    legend('Original Mixture','KI MRA','Runnals MRA','Salmond MRA');
 else
    
     subplot(2,2,1)
@@ -77,9 +83,12 @@ else
     title('Original Mixture')
     subplot(2,2,2)
     plotGM2D(gm_KI,x1,x2,X);
-    title('KI MR')
+    title('KI MRA')
     subplot(2,2,3)
-    title('Runnals MR')
     plotGM2D(gm_Run,x1,x2,X);
+    title('Runnals MRA')
+    subplot(2,2,4)
+    plotGM2D(gm_Salm,x1,x2,X);
+    title('Salmond MRA')
     
 end

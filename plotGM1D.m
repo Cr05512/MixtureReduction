@@ -17,7 +17,7 @@ if plotTotalGM
     end
     plot(X,gmTot,'LineWidth',1.5); hold on
 end
-axis([min(X) max(X) 0 max(gmTot)*1.3]);
+%axis([min(X) max(X) 0 max(gmTot)*1.3]);
 
 
 end
