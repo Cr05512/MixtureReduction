@@ -1,14 +1,13 @@
-function gm_r = KIDivergenceMRA(gm, Nr)
+function gm = KIDivergenceMRA(gm, Nr)
 
-    gm_r = gm;
-    DKIMatrix = zeros(length(gm_r),length(gm_r));
+    DKIMatrix = zeros(length(gm),length(gm));
     
-    while(length(gm_r)-Nr>0)
+    while(length(gm)-Nr>0)
         %We first compute the KI Divergence for every merging action
-        for i=1:length(gm_r)
-            for j=1:length(gm_r)
+        for i=1:length(gm)
+            for j=1:length(gm)
                 if(i<j)
-                    DKIMatrix(i,j) = KIDivergence(gm_r(i),gm_r(j));
+                    DKIMatrix(i,j) = KIDivergence(gm(i),gm(j));
                 end
             end
         end
@@ -21,11 +20,10 @@ function gm_r = KIDivergenceMRA(gm, Nr)
         %We then find the action with the lowest KI Divergence and we merge the
         %corresponding mixture components
         [i,j] = find(DKIMatrix == min(DKIMatrix(DKIMatrix>0)));
-        pdf_merged = mpMerge(gm_r(i),gm_r(j));
-        gm_r([i,j]) = [];
-        %We then shrink both the component vector and bound matrix
-        gm_r = [gm_r(1:length(gm_r) < i), pdf_merged, gm_r(1:length(gm_r) >= i)];
-        DKIMatrix = zeros(length(gm_r),length(gm_r));
+        pdf_merged = mpMerge(gm(i),gm(j));
+        gm(i) = pdf_merged;
+        gm(j) = [];
+        DKIMatrix = DKIMatrix(1:end-1,1:end-1);
         
     end
     

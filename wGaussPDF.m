@@ -1,6 +1,6 @@
 classdef wGaussPDF < dynamicprops
 %Weighted gaussian PDFs
-    properties (Access=private)
+    properties
         w
         mu
         Sigma

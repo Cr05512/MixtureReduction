@@ -5,6 +5,5 @@ for i=1:size(mu,2)
     gm(i).setMean(mu(:,i));
     gm(i).setCovariance(Sigma(:,:,i));
 end
-
 end
 
