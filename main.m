@@ -8,12 +8,12 @@ plotComponents = 0;
 getSamples = 0;
 
 %Parameters to play with
-Nh = 15;  %Full mixture component number
+Nh = 20;  %Full mixture component number
 Nr = 5;   %Reduced mixture component number
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
-alpha = 2.8;  %Auxiliary factors
-beta = 1;
+alpha = 2.5;  %Auxiliary factors
+beta = 2;
 nSamples = 1000;
 
 %Generate weights
@@ -49,55 +49,63 @@ gm = GMGen(w_bar,mu,Sigma);
 
 gm_KI = KIDivergenceMRA(gm,Nr);
 
-disp('KI MRA nISE: ')
-nISE(gm,gm_KI)
+% disp('KI MRA nISE: ')
+% nISE(gm,gm_KI)
 
-gm_Run = RunnalsMRA(gm,Nr);
+%gm_Run = RunnalsMRA(gm,Nr);
 
-disp('Runnals MRA nISE: ')
-nISE(gm,gm_Run)
+%disp('Runnals MRA nISE: ')
+%nISE(gm,gm_Run)
 
-gm_Salm = SalmondMRA(gm,Nr);
-
-disp('Salmond MRA nISE: ')
-nISE(gm,gm_Salm)
-
-gm_Williams = WilliamsMRA(gm,Nr);
-
-disp('Williams MRA nISE: ')
-nISE(gm,gm_Williams)
+ gm_Salm = SalmondMRA(gm,Nr);
+ 
+ disp('Salmond MRA nISE: ')
+ nISE(gm,gm_Salm)
+% 
+% gm_Williams = WilliamsMRA(gm,Nr);
+% 
+% disp('Williams MRA nISE: ')
+% nISE(gm,gm_Williams)
 
 if getSamples==1
     samples = GMSamples(gm, nSamples);
 end
 
+gm_Salm_Opt = ISEOpt(gm,gm_Salm,0.005,30);
 
-figure(1)
-if n==1
-    plotGM1D(gm,X); hold on
-    plotGM1D(gm_KI,X); hold on
-    plotGM1D(gm_Run,X); hold on
-    plotGM1D(gm_Salm,X); hold on
-    plotGM1D(gm_Williams,X); hold on
-    grid minor
-    
-    legend('Original Mixture','KI MRA','Runnals MRA','Salmond MRA','Williams MRA');
-else
-   
-    subplot(2,3,1)
-    plotGM2D(gm,x1,x2,X); hold on
-    title('Original Mixture')
-    subplot(2,3,2)
-    plotGM2D(gm_KI,x1,x2,X);
-    title('KI MRA')
-    subplot(2,3,3)
-    plotGM2D(gm_Run,x1,x2,X);
-    title('Runnals MRA')
-    subplot(2,3,4)
-    plotGM2D(gm_Salm,x1,x2,X);
-    title('Salmond MRA')
-    subplot(2,3,5)
-    plotGM2D(gm_Williams,x1,x2,X);
-    title('Williams MRA');
-    
-end
+disp('Runnals Optimized MRA nISE: ')
+nISE(gm,gm_Salm_Opt)
+
+
+
+% figure(1)
+% if n==1
+%     plotGM1D(gm,X); hold on
+%     %plotGM1D(gm_KI,X); hold on
+%     %plotGM1D(gm_Run,X); hold on
+%     plotGM1D(gm_Salm,X); hold on
+%     %plotGM1D(gm_Williams,X); hold on
+%     plotGM1D(gm_Salm_Opt,X); hold on
+%     grid minor
+%     
+%     legend('Original Mixture','Runnals MRA','Optimized Salmond');
+%     legend('Original Mixture','KI MRA','Runnals MRA','Salmond MRA','Williams MRA');
+% else
+%    
+%     subplot(2,3,1)
+%     plotGM2D(gm,x1,x2,X); hold on
+%     title('Original Mixture')
+%     subplot(2,3,2)
+%     plotGM2D(gm_KI,x1,x2,X);
+%     title('KI MRA')
+%     subplot(2,3,3)
+%     plotGM2D(gm_Run,x1,x2,X);
+%     title('Runnals MRA')
+%     subplot(2,3,4)
+%     plotGM2D(gm_Salm,x1,x2,X);
+%     title('Salmond MRA')
+%     subplot(2,3,5)
+%     plotGM2D(gm_Williams,x1,x2,X);
+%     title('Williams MRA');
+%     
+% end
