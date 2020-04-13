@@ -46,6 +46,12 @@ classdef wGaussPDF < dynamicprops
                 compPDFValues = normpdf(X,obj.mu,obj.Sigma);
             end
         end
+        
+        function copyComponent(obj,comp)
+           obj.setWeight(comp.getWeight());
+           obj.setMean(comp.getMean());
+           obj.setCovariance(comp.getCovariance());
+        end
     
     end
 end

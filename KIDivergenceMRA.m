@@ -1,13 +1,17 @@
-function gm = KIDivergenceMRA(gm, Nr)
-
-    DKIMatrix = zeros(length(gm),length(gm));
+function gmr = KIDivergenceMRA(gm, Nr)
     
-    while(length(gm)-Nr>0)
+    gmr(1,length(gm)) = wGaussPDF();
+    for i=1:length(gm)
+        gmr(i).copyComponent(gm(i));
+    end
+    DKIMatrix = zeros(length(gmr),length(gmr));
+    
+    while(length(gmr)-Nr>0)
         %We first compute the KI Divergence for every merging action
-        for i=1:length(gm)
-            for j=1:length(gm)
+        for i=1:length(gmr)
+            for j=1:length(gmr)
                 if(i<j)
-                    DKIMatrix(i,j) = KIDivergence(gm(i),gm(j));
+                    DKIMatrix(i,j) = KIDivergence(gmr(i),gmr(j));
                 end
             end
         end
@@ -20,9 +24,9 @@ function gm = KIDivergenceMRA(gm, Nr)
         %We then find the action with the lowest KI Divergence and we merge the
         %corresponding mixture components
         [i,j] = find(DKIMatrix == min(DKIMatrix(DKIMatrix>0)));
-        pdf_merged = mpMerge(gm(i),gm(j));
-        gm(i) = pdf_merged;
-        gm(j) = [];
+        pdf_merged = mpMerge(gmr(i),gmr(j));
+        gmr(i) = pdf_merged;
+        gmr(j) = [];
         DKIMatrix = DKIMatrix(1:end-1,1:end-1);
         
     end
