@@ -1,4 +1,4 @@
-function [gmr_Opt, ISETraj] = ISEOpt(gmh,gmr,sk,Nsteps,optWeights)
+function [gmr_Opt, nISETraj] = ISEOpt(gmh,gmr,sk,Nsteps,optWeights)
 %This function operates an iterative optimization over the reduced mixture
 %parameters in order to approximate better the original one
 
@@ -22,7 +22,7 @@ for i=1:length(gmr_Opt)
     L(:,:,i) = chol(gmr_Opt(i).getCovariance());
 end
 
-ISETraj = zeros(1,Nsteps);
+nISETraj = zeros(1,Nsteps);
 
 %The gradient formula is xk+1 = xk - sk*gf(xk)/||gf(xk)||, with sk the step
 %and gf is the gradient of the cost function
@@ -121,7 +121,7 @@ for k=1:Nsteps
         gmr_Opt(i).setCovariance(L(:,:,i)'*L(:,:,i));
     end
     
-    ISETraj(k) = ISE(gmh,gmr_Opt);
+    nISETraj(k) = nISE(gmh,gmr_Opt);
     
 end
 

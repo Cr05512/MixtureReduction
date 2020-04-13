@@ -26,7 +26,7 @@ function gmr = WilliamsMRA(gm, Nr)
             
             for j=1:length(gmr)
                 if(i<j)
-                    gm_temp(i) = mpMerge(gm_temp(i),gm_temp(j));
+                    gm_temp(i) = mpMerge([gm_temp(i),gm_temp(j)]);
                     gm_temp(j) = [];
                     Jhr = crossLikeness(gmr,gm_temp);
                     Jrr = selfLikeness(gm_temp);
@@ -38,7 +38,7 @@ function gmr = WilliamsMRA(gm, Nr)
         [i,j] = find(ISEMatrix == min(ISEMatrix(ISEMatrix>0)));
 
         if i~=j
-            gmr(i) = mpMerge(gmr(i),gmr(j));
+            gmr(i) = mpMerge([gmr(i),gmr(j)]);
             gmr(j) = [];
         else
             gmr(i) = [];

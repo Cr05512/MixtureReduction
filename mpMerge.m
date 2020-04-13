@@ -1,21 +1,29 @@
-function pdfMerge = mpMerge(pdf1, pdf2)
-
+function pdfMerge = mpMerge(pdfs)
+%This function takes as input an array of gaussian components and returns
+%the gaussian component resulting from their merge
 pdfMerge = wGaussPDF();
 
-w1 = pdf1.getWeight();
-w2 = pdf2.getWeight();
-mu1 = pdf1.getMean();
-mu2 = pdf2.getMean();
-P1 = pdf1.getCovariance();
-P2 = pdf2.getCovariance();
+w_merged = 0;
+for i=1:length(pdfs)
+    w_merged = w_merged + pdfs(i).getWeight();
+end
 
-w_merge = w1 + w2;
-mu_merge = 1/w_merge * (w1*mu1 + w2*mu2);
-Sigma_merge = 1/w_merge * (w1*P1 + w2*P2) + w1/w_merge * w2/w_merge * (mu1 - mu2) * (mu1 - mu2)';
+mu_merged = zeros(size(pdfs(1).getMean()));
+for i=1:length(pdfs)
+    mu_merged = mu_merged + pdfs(i).getWeight()*pdfs(i).getMean();
+end
+mu_merged = (1/w_merged)*mu_merged;
+
+Sigma_merged = zeros(size(pdfs(1).getCovariance()));
+
+for i=1:length(pdfs)
+    Sigma_merged = Sigma_merged + (pdfs(i).getWeight()/w_merged)*(pdfs(i).getCovariance()...
+        + (pdfs(i).getMean() - mu_merged)*(pdfs(i).getMean() - mu_merged)');
+end
           
-pdfMerge.setWeight(w_merge);
-pdfMerge.setMean(mu_merge);
-pdfMerge.setCovariance(Sigma_merge);
+pdfMerge.setWeight(w_merged);
+pdfMerge.setMean(mu_merged);
+pdfMerge.setCovariance(Sigma_merged);
 
 end
 

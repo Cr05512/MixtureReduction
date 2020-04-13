@@ -1,0 +1,9 @@
+function gmr = GMRC(gmh,Nr,NKMeansSteps,sk,NOptSteps,optWeights)
+%This function implements the Gaussian Mixture Reduction via Clustering
+%Algorithm
+gmr = RunnalsMRA(gmh,Nr);
+gm_KM = KMeans(gmh,gmr,NKMeansSteps);
+gmr = ISEOpt(gmh,gm_KM,sk,NOptSteps,optWeights);
+
+end
+

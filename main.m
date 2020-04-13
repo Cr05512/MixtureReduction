@@ -9,14 +9,15 @@ getSamples = 0;
 
 %Parameters to play with
 Nh = 20;  %Full mixture component number
-Nr = 5;   %Reduced mixture component number
+Nr = 4;   %Reduced mixture component number
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
 alpha = 2.5;  %Auxiliary factors
 beta = 1;
 nSamples = 1000;
-sk = 0.005; %Gradient step
-Nsteps = 10; %Gradient iterations
+NKMeansSteps = 10;
+sk = 0.001; %Gradient step
+NOptSteps = 10; %Gradient iterations
 optWeights = 1; %flag to optimize weights or not
 
 %Generate weights
@@ -59,36 +60,40 @@ gm = GMGen(w_bar,mu,Sigma);
 %disp('KI MRA nISE: ')
 %nISE(gm,gm_KI)
 
- gm_Run = RunnalsMRA(gm,Nr);
- disp('Runnals MRA nISE: ')
- nISE(gm,gm_Run)
+gm_Run = RunnalsMRA(gm,Nr);
+disp('Runnals MRA nISE: ')
+nISE(gm,gm_Run)
+
+[gm_Run_Opt, nISETraj] = ISEOpt(gm,gm_Run,sk,NOptSteps,optWeights);
+disp('Runnals Optimized MRA nISE: ')
+nISE(gm,gm_Run_Opt)
 
 %gm_Salm = SalmondMRA(gm,Nr);
 %disp('Salmond MRA nISE: ')
 %nISE(gm,gm_Salm)
+
+gm_GMRC = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+disp('GMRC MRA nISE: ')
+nISE(gm,gm_GMRC)
  
 if getSamples==1
     samples = GMSamples(gm, nSamples);
 end
 
-[gm_Run_Opt, ISETraj] = ISEOpt(gm,gm_Run,sk,Nsteps,optWeights);
-disp('Runnals Optimized MRA nISE: ')
-nISE(gm,gm_Run_Opt)
-
-
 
  if n==1
       figure(1)
       plotGM1D(gm,X); hold on
-%      %plotGM1D(gm_KI,X); hold on
+      %plotGM1D(gm_KI,X); hold on
       plotGM1D(gm_Run,X); hold on
-%      plotGM1D(gm_Salm,X); hold on
-%      plotGM1D(gm_Williams,X); hold on
-     plotGM1D(gm_Run_Opt,X); hold on
+      %plotGM1D(gm_Salm,X); hold on
+      %plotGM1D(gm_Williams,X); hold on
+      plotGM1D(gm_Run_Opt,X); hold on
+      plotGM1D(gm_GMRC,X); hold on
       grid minor
 % %     
-     legend('Original Mixture','Runnals MRA','Optimized Runnals');
-%     legend('Original Mixture','KI MRA','Runnals MRA','Salmond MRA','Williams MRA');
+     legend('Original Mixture','Runnals MRA','Optimized Runnals','GMRC MRA');
+%     legend('Original Mixture','KI MRA','Runnals MRA','Salmond MRA','Williams MRA','Optimized Runnals');
 %else
 %    
 %     subplot(2,3,1)
@@ -107,9 +112,6 @@ nISE(gm,gm_Run_Opt)
 %     plotGM2D(gm_Williams,x1,x2,X);
 %     title('Williams MRA');
 %     
-end
+ end
 
-figure(2)
-plot(0:Nsteps-1,ISETraj); hold on
-grid minor
-title('ISE Values over optimization steps')
+  

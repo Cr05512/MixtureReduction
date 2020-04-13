@@ -18,7 +18,7 @@ function gmr = RunnalsMRA(gm, Nr)
         %We then find the action with the lowest KLD bound and we merge the
         %corresponding mixture components
         [i,j] = find(BMatrix == min(BMatrix(BMatrix>0)));
-        pdf_merged = mpMerge(gmr(i),gmr(j));
+        pdf_merged = mpMerge([gmr(i),gmr(j)]);
         gmr(i) = pdf_merged;
         gmr(j) = [];
         %We then shrink both the component vector and bound matrix
