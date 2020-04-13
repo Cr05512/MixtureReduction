@@ -1,6 +1,11 @@
 function pdfMerge = mpMerge(pdfs)
 %This function takes as input an array of gaussian components and returns
 %the gaussian component resulting from their merge
+
+if isempty(pdfs)
+    disp('The array is empty');
+end
+
 pdfMerge = wGaussPDF();
 
 w_merged = 0;

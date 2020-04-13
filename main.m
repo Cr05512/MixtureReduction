@@ -8,7 +8,7 @@ plotComponents = 0;
 getSamples = 0;
 
 %Parameters to play with
-Nh = 20;  %Full mixture component number
+Nh = 10;  %Full mixture component number
 Nr = 4;   %Reduced mixture component number
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
@@ -17,7 +17,7 @@ beta = 1;
 nSamples = 1000;
 NKMeansSteps = 10;
 sk = 0.001; %Gradient step
-NOptSteps = 10; %Gradient iterations
+NOptSteps = 20; %Gradient iterations
 optWeights = 1; %flag to optimize weights or not
 
 %Generate weights
@@ -94,24 +94,32 @@ end
 % %     
      legend('Original Mixture','Runnals MRA','Optimized Runnals','GMRC MRA');
 %     legend('Original Mixture','KI MRA','Runnals MRA','Salmond MRA','Williams MRA','Optimized Runnals');
-%else
+else
 %    
-%     subplot(2,3,1)
-%     plotGM2D(gm,x1,x2,X); hold on
-%     title('Original Mixture')
+     subplot(2,2,1)
+     plotGM2D(gm,x1,x2,X); hold on
+     title('Original Mixture')
 %     subplot(2,3,2)
 %     plotGM2D(gm_KI,x1,x2,X);
 %     title('KI MRA')
-%     subplot(2,3,3)
-%     plotGM2D(gm_Run,x1,x2,X);
-%     title('Runnals MRA')
+     subplot(2,2,2)
+     plotGM2D(gm_Run_Opt,x1,x2,X);
+     title('Optimized Runnals MRA')
 %     subplot(2,3,4)
 %     plotGM2D(gm_Salm,x1,x2,X);
 %     title('Salmond MRA')
 %     subplot(2,3,5)
 %     plotGM2D(gm_Williams,x1,x2,X);
 %     title('Williams MRA');
+    subplot(2,2,3)
+    plotGM2D(gm_GMRC,x1,x2,X);
+    title('GMRC MRA')
 %     
  end
+ figure(2)
+ plot(1:NOptSteps, nISETraj); hold on
+ grid minor
+ title('nISE values over optimization epochs')
 
+ 
   

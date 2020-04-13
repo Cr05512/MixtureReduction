@@ -24,7 +24,9 @@ for k=1:NKMeansSteps
 
     for l=1:length(newMixture)
         clusterL = gmh(find(assignVector==l));
-        newMixture(l) = mpMerge(clusterL);
+        if ~isempty(clusterL)
+            newMixture(l) = mpMerge(clusterL);
+        end
     end
     
     KLDMatrixPrev = KLDMatrix;
