@@ -26,6 +26,8 @@ for k=1:NKMeansSteps
         clusterL = gmh(find(assignVector==l));
         if ~isempty(clusterL)
             newMixture(l) = mpMerge(clusterL);
+        else
+            newMixture(l) = [];
         end
     end
     

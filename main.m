@@ -8,12 +8,12 @@ plotComponents = 0;
 getSamples = 0;
 
 %Parameters to play with
-Nh = 10;  %Full mixture component number
-Nr = 4;   %Reduced mixture component number
+Nh = 20;  %Full mixture component number
+Nr = 3;   %Reduced mixture component number
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
-alpha = 2.5;  %Auxiliary factors
-beta = 1;
+alpha = 2.5;  %Mean spreading factor
+beta = 1.5; %Covariance tuning parameter
 nSamples = 1000;
 NKMeansSteps = 10;
 sk = 0.001; %Gradient step
@@ -60,11 +60,13 @@ gm = GMGen(w_bar,mu,Sigma);
 %disp('KI MRA nISE: ')
 %nISE(gm,gm_KI)
 
+
+
 gm_Run = RunnalsMRA(gm,Nr);
 disp('Runnals MRA nISE: ')
 nISE(gm,gm_Run)
 
-[gm_Run_Opt, nISETraj] = ISEOpt(gm,gm_Run,sk,NOptSteps,optWeights);
+[gm_Run_Opt, nISETrajRun] = ISEOpt(gm,gm_Run,sk,NOptSteps,optWeights);
 disp('Runnals Optimized MRA nISE: ')
 nISE(gm,gm_Run_Opt)
 
@@ -72,7 +74,7 @@ nISE(gm,gm_Run_Opt)
 %disp('Salmond MRA nISE: ')
 %nISE(gm,gm_Salm)
 
-gm_GMRC = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+[gm_GMRC, nISETrajGMRC] = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
 disp('GMRC MRA nISE: ')
 nISE(gm,gm_GMRC)
  
@@ -85,16 +87,16 @@ end
       figure(1)
       plotGM1D(gm,X); hold on
       %plotGM1D(gm_KI,X); hold on
-      plotGM1D(gm_Run,X); hold on
+      %plotGM1D(gm_Run,X); hold on
       %plotGM1D(gm_Salm,X); hold on
       %plotGM1D(gm_Williams,X); hold on
       plotGM1D(gm_Run_Opt,X); hold on
       plotGM1D(gm_GMRC,X); hold on
       grid minor
 % %     
-     legend('Original Mixture','Runnals MRA','Optimized Runnals','GMRC MRA');
+     legend('Original Mixture','Optimized Runnals','GMRC MRA');
 %     legend('Original Mixture','KI MRA','Runnals MRA','Salmond MRA','Williams MRA','Optimized Runnals');
-else
+ elseif n==2
 %    
      subplot(2,2,1)
      plotGM2D(gm,x1,x2,X); hold on
@@ -117,9 +119,15 @@ else
 %     
  end
  figure(2)
- plot(1:NOptSteps, nISETraj); hold on
+ subplot(2,1,1)
+ plot(0:NOptSteps-1, nISETrajRun); hold on
+ title('nISE Optimization for Runnals MRA')
  grid minor
- title('nISE values over optimization epochs')
+ subplot(2,1,2)
+ plot(0:NOptSteps-1, nISETrajGMRC); hold on
+ title('nISE Optimization for GMRC MRA')
+ grid minor
+
 
  
   
