@@ -5,42 +5,25 @@ close all
 global plotTotalGM plotComponents
 plotTotalGM = 1;
 plotComponents = 0;
-getSamples = 0;
+getSamples = 1;
 
 %Parameters to play with
-Nh = 20;  %Full mixture component number
-Nr = 4 ;   %Reduced mixture component number
+Nh = 50;  %Full mixture component number
+Nr = 4;   %Reduced mixture component number
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
-alpha = 2.8;  %Mean spreading factor
+alpha = 2.7;  %Mean spreading factor
 beta = 1; %Covariance tuning parameter
-nSamples = 1000;
+nSamples = Nr*n*500;
 NKMeansSteps = 10;
 sk = 0.001; %Gradient step
-NOptSteps = 20; %Gradient iterations
+NOptSteps = 30; %Gradient iterations
+NEMiter = 100;
 optWeights = 1; %flag to optimize weights or not
-
-%Generate weights
-w = rand(Nh,1);
-w_bar = w./sum(w);
-
-%Generate means
-mu = -alpha^3*ones(n,Nh) + alpha^3*2*rand(n,Nh);
-
-%Generate Symmetric Positive Definite Covariance matrices
-Sigma = zeros(n,n,Nh);
-for i=1:Nh
-    sigma = rand(n,n); % generate a random nxn matrix
-    % construct a symmetric matrix using either
-    %sigma = 0.5*(sigma+sigma');
-    sigma = sigma*sigma';
-    sigma = sigma + beta*n*eye(n);
-    Sigma(:,:,i) = sigma;
-end
 
 
 if n==1
-    X = linspace(-4*alpha^3, 4*alpha^3,nPoints);
+    X = linspace(-2*alpha^3, 2*alpha^3,nPoints);
 else
     x1 = linspace(-2*alpha^3, 2*alpha^3,nPoints);
     x2 = linspace(-2*alpha^3, 2*alpha^3,nPoints);
@@ -49,82 +32,116 @@ else
 
 end
 
-gm = GMGen(w_bar,mu,Sigma);
+gm = GMGen(Nh,n,alpha,beta);
 
-tic;
-gm_Williams = WilliamsMRA(gm,Nr);
-%disp('Williams MRA nISE: ')
-%nISE(gm,gm_Williams)
-WilliamsTime = toc;
-
-tic;
-gm_KI = KIDivergenceMRA(gm,Nr);
-%disp('KI MRA nISE: ')
-%nISE(gm,gm_KI)
-KIDTime = toc;
-
-tic;
-gm_Run = RunnalsMRA(gm,Nr);
-%disp('Runnals MRA nISE: ')
-%nISE(gm,gm_Run)
-RunnalsTime = toc;
-
-%[gm_Run_Opt, nISETrajRun] = ISEOpt(gm,gm_Run,sk,NOptSteps,optWeights);
-%disp('Runnals Optimized MRA nISE: ')
-%nISE(gm,gm_Run_Opt)
-
-tic;
-gm_Salm = SalmondMRA(gm,Nr);
-%disp('Salmond MRA nISE: ')
-%nISE(gm,gm_Salm)
-SalmondTime = toc;
-
-tic;
-[gm_GMRC, nISETrajGMRC] = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
-%disp('GMRC MRA nISE: ')
-%nISE(gm,gm_GMRC)
-GMRCTime = toc;
- 
 if getSamples==1
     samples = GMSamples(gm, nSamples);
 end
 
+%tic;
+%gm_Williams = WilliamsMRA(gm,Nr);
+%disp('Williams MRA nISE: ')
+%nISE(gm,gm_Williams)
+%WilliamsTime = toc;
+
+% tic;
+% gm_KI = KIDivergenceMRA(gm,Nr);
+% %disp('KI MRA nISE: ')
+% %nISE(gm,gm_KI)
+% KIDTime = toc;
+
+tic;
+[gm_GMRC, nISETrajGMRC] = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+disp('GMRC MRA nISE: ')
+nISE(gm,gm_GMRC)
+GMRCTime = toc;
+
+tic;
+gm_Run = RunnalsMRA(gm,Nr);
+disp('Runnals MRA nISE: ')
+nISE(gm,gm_Run)
+RunnalsTime = toc;
+
+% tic
+% gm_Refined = newAlgorithm(gm,gm_Run,sk,NOptSteps,optWeights);
+% disp('newAlgo MRA nISE: ');
+% nISE(gm,gm_Refined)
+% newAlgoTime = toc;
+
+% tic
+% [gm_Run_Opt, nISETrajRun] = ISEOpt(gm,gm_Run,sk,NOptSteps,optWeights);
+% disp('Runnals Optimized MRA nISE: ')
+% nISE(gm,gm_Run_Opt)
+% Run_OptTime = toc;
+
+% tic;
+% gm_Salm = SalmondMRA(gm,Nr);
+% %disp('Salmond MRA nISE: ')
+% %nISE(gm,gm_Salm)
+% SalmondTime = toc;
+
+tic;
+gm_GMRCMod = GMRCMod(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+disp('GMRCMod MRA nISE: ');
+nISE(gm,gm_GMRCMod)
+GMRCModTime = toc;
+
+tic;
+gm_EM = EM(gm_Run,samples,NEMiter);
+%nISE(gm,gm_EM)
+%gm_EM = ISEOpt(gm,gm_EM,sk,NOptSteps,optWeights);
+disp('EM MRA nISE: ');
+nISE(gm,gm_EM)
+EMTime = toc;
+
+
+
+%  
+
+
 
  if n==1
       figure(1)
-      subplot(2,3,1)
+      subplot(2,2,1)
       plotGM1D(gm,X); hold on
-      plotGM1D(gm_Williams,X); hold on
+      plotGM1D(gm_GMRCMod,X); hold on
       grid minor
-      title(strcat('Original vs Williams MRA. nISE: ',num2str(nISE(gm,gm_Williams)),', Time: ',num2str(WilliamsTime)));
-      legend('Original Mixture','Williams MRA');
-      subplot(2,3,2)
-      plotGM1D(gm,X); hold on
-      plotGM1D(gm_KI,X); hold on
-      grid minor
-      title(strcat('Original vs KID MRA. nISE: ',num2str(nISE(gm,gm_KI)),', Time: ',num2str(KIDTime)));
-      legend('Original Mixture','KID MRA');
-      subplot(2,3,3)
+      title(strcat('Original vs GMRCMod MRA. nISE: ',num2str(nISE(gm,gm_GMRCMod)),', Time: ',num2str(GMRCModTime),'s'));
+      legend('Original Mixture','GMRCMod MRA');
+%       subplot(2,2,2)
+%       plotGM1D(gm,X); hold on
+%       plotGM1D(gm_KI,X); hold on
+%       grid minor
+%       title(strcat('Original vs KID MRA. nISE: ',num2str(nISE(gm,gm_KI)),', Time: ',num2str(KIDTime),'s'));
+%       legend('Original Mixture','KID MRA');
+      subplot(2,2,2)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_Run,X); hold on
       grid minor
-      title(strcat('Original vs Runnals MRA. nISE: ',num2str(nISE(gm,gm_Run)),', Time: ',num2str(RunnalsTime)));
+      title(strcat('Original vs Runnals MRA. nISE: ',num2str(nISE(gm,gm_Run)),', Time: ',num2str(RunnalsTime),'s'));
       legend('Original Mixture','Runnals MRA');
-      subplot(2,3,4)
-      plotGM1D(gm,X); hold on
-      plotGM1D(gm_Salm,X); hold on
-      grid minor
-      title(strcat('Original vs Salmond MRA. nISE: ',num2str(nISE(gm,gm_Salm)),', Time: ',num2str(SalmondTime)));
-      legend('Original Mixture','Salmond MRA');
-      subplot(2,3,5)
+%       subplot(2,2,3)
+%       plotGM1D(gm,X); hold on
+%       plotGM1D(gm_Salm,X); hold on
+%       grid minor
+%       title(strcat('Original vs Salmond MRA. nISE: ',num2str(nISE(gm,gm_Salm)),', Time: ',num2str(SalmondTime),'s'));
+%       legend('Original Mixture','Salmond MRA');
+      subplot(2,2,3)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_GMRC,X); hold on
       grid minor
-      title(strcat('Original vs GMRC MRA. nISE: ',num2str(nISE(gm,gm_GMRC)),', Time: ',num2str(GMRCTime)));
+      title(strcat('Original vs GMRC MRA. nISE: ',num2str(nISE(gm,gm_GMRC)),', Time: ',num2str(GMRCTime),'s'));
       legend('Original Mixture','GMRC MRA');
-% %     
-%     legend('Original Mixture','Optimized Runnals','GMRC MRA');
-%     legend('Original Mixture','KI MRA','Runnals MRA','Salmond MRA','Williams MRA','Optimized Runnals');
+      
+      subplot(2,2,4)
+      plotGM1D(gm,X); hold on
+      plotGM1D(gm_EM,X); hold on
+      grid minor
+      title(strcat('Original vs EM MRA. niSE: ', num2str(nISE(gm,gm_EM)),', Time: ', num2str(EMTime + RunnalsTime),'s'));
+      legend('Original Mixture', 'EM MRA');
+% % %     
+% %     legend('Original Mixture','Optimized Runnals','GMRC MRA');
+% %     legend('Original Mixture','KI MRA','Runnals MRA','Salmond MRA','Williams MRA','Optimized Runnals');
  elseif n==2
 %    
      subplot(2,2,1)
@@ -133,9 +150,9 @@ end
 %     subplot(2,3,2)
 %     plotGM2D(gm_KI,x1,x2,X);
 %     title('KI MRA')
-%     subplot(2,2,2)
-%     plotGM2D(gm_Run_Opt,x1,x2,X);
-%     title('Optimized Runnals MRA')
+     subplot(2,2,2)
+     plotGM2D(gm_Run,x1,x2,X);
+     title('Runnals MRA')
 %     subplot(2,3,4)
 %     plotGM2D(gm_Salm,x1,x2,X);
 %     title('Salmond MRA')
@@ -145,7 +162,11 @@ end
     subplot(2,2,3)
     plotGM2D(gm_GMRC,x1,x2,X);
     title('GMRC MRA')
-%     
+    
+    subplot(2,2,4)
+    plotGM2D(gm_EM,x1,x2,X);
+    title('EM MRA')
+    
  end
 %  figure(2)
 %  subplot(2,1,1)

@@ -1,9 +1,6 @@
 function gmr = RunnalsMRA(gm, Nr)
 
-    gmr(1,length(gm)) = wGaussPDF();
-    for i=1:length(gm)
-        gmr(i).copyComponent(gm(i));
-    end
+    gmr = gm;
     BMatrix = zeros(length(gmr),length(gmr));
     
     while(length(gmr)-Nr>0)

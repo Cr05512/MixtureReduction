@@ -4,22 +4,20 @@ function [gmr_Opt, nISETraj] = ISEOpt(gmh,gmr,sk,Nsteps,optWeights)
 
 %First of all we apply some transformations to the parameters in order to
 %simplify the optimization process
-gmr_Opt(1,length(gmr)) = wGaussPDF();
-for i=1:length(gmr)
-    gmr_Opt(i).copyComponent(gmr(i));
-end
 
-n = size(gmr(1).getMean(),1);
+n = size(gmr(1).mu,1);
 m = length(gmr);
 
 q = zeros(m,1);
 mu = zeros(n,m);
 L = zeros(n,n,m);
 
+gmr_Opt = gmr;
+
 for i=1:length(gmr_Opt)
-    q(i) = sqrt(gmr_Opt(i).getWeight());
-    mu(:,i) = gmr_Opt(i).getMean();
-    L(:,:,i) = chol(gmr_Opt(i).getCovariance());
+    q(i) = sqrt(gmr_Opt(i).w);
+    mu(:,i) = gmr_Opt(i).mu;
+    L(:,:,i) = chol(gmr_Opt(i).Sigma);
 end
 
 nISETraj = zeros(1,Nsteps);
@@ -44,19 +42,19 @@ for k=1:Nsteps
    
     for j=1:length(gmr_Opt)
         for i=1:length(gmh)
-            prodPDFhr = wGaussPDF(1, mu(:,j), gmh(i).getCovariance() + L(:,:,j)'*L(:,:,j));
+            prodPDFhr = struct('w', 1, 'mu', mu(:,j), 'Sigma', gmh(i).Sigma + L(:,:,j)'*L(:,:,j));
             %Weights
             if optWeights == 1
-                dJhrdq(j) = dJhrdq(j) + gmh(i).getWeight()*prodPDFhr.getPDFValues(gmh(i).getMean()');
+                dJhrdq(j) = dJhrdq(j) + gmh(i).w*mvnpdf(gmh(i).mu', prodPDFhr.mu', prodPDFhr.Sigma);
             end
             %Means
-            dJhrdmu(:,j) = dJhrdmu(:,j) + gmh(i).getWeight()*inv(gmh(i).getCovariance()...
-                + L(:,:,j)'*L(:,:,j))*(mu(:,j)-gmh(i).getMean())*prodPDFhr.getPDFValues(gmh(i).getMean()');
+            dJhrdmu(:,j) = dJhrdmu(:,j) + gmh(i).w*inv(gmh(i).Sigma...
+                + L(:,:,j)'*L(:,:,j))*(mu(:,j)-gmh(i).mu)*mvnpdf(gmh(i).mu', prodPDFhr.mu', prodPDFhr.Sigma);
             %Covariances
-            dJhrdL(:,:,j) = dJhrdL(:,:,j) + gmh(i).getWeight()*q(j)^2*prodPDFhr.getPDFValues(gmh(i).getMean()')...
-                *inv(gmh(i).getCovariance() + L(:,:,j)'*L(:,:,j))*((gmh(i).getMean()-mu(:,j))*...
-                (gmh(i).getMean()-mu(:,j))' - (gmh(i).getCovariance()+ L(:,:,j)'*L(:,:,j)))...
-                *inv(gmh(i).getCovariance() + L(:,:,j)'*L(:,:,j))*L(:,:,j);
+            dJhrdL(:,:,j) = dJhrdL(:,:,j) + gmh(i).w*q(j)^2*mvnpdf(gmh(i).mu', prodPDFhr.mu', prodPDFhr.Sigma)...
+                *inv(gmh(i).Sigma + L(:,:,j)'*L(:,:,j))*((gmh(i).mu-mu(:,j))*...
+                (gmh(i).mu-mu(:,j))' - (gmh(i).Sigma+ L(:,:,j)'*L(:,:,j)))...
+                *inv(gmh(i).Sigma + L(:,:,j)'*L(:,:,j))*L(:,:,j);
         end
         %Weights
         if optWeights == 1
@@ -70,16 +68,16 @@ for k=1:Nsteps
     
     for j=1:length(gmr_Opt)
         for i=1:length(gmr_Opt)
-            prodPDFrr = wGaussPDF(1, mu(:,j), L(:,:,i)'*L(:,:,i) + L(:,:,j)'*L(:,:,j));
+            prodPDFrr = struct('w',1,'mu',mu(:,j),'Sigma',L(:,:,i)'*L(:,:,i) + L(:,:,j)'*L(:,:,j));
             %Weights
             if optWeights == 1
-                dJrrdq(j) = dJrrdq(j) + (q(i)^2)*prodPDFrr.getPDFValues(mu(:,i)');
+                dJrrdq(j) = dJrrdq(j) + (q(i)^2)*mvnpdf(mu(:,i)', prodPDFrr.mu', prodPDFrr.Sigma);
             end
             %Means
             dJrrdmu(:,j) = dJrrdmu(:,j) + (q(i)^2)*inv(L(:,:,i)'*L(:,:,i)...
-                + L(:,:,j)'*L(:,:,j))*(mu(:,j)-mu(:,i))*prodPDFrr.getPDFValues(mu(:,i)');
+                + L(:,:,j)'*L(:,:,j))*(mu(:,j)-mu(:,i))*mvnpdf(mu(:,i)', prodPDFrr.mu', prodPDFrr.Sigma);
             %Covariances
-            dJrrdL(:,:,j) = dJrrdL(:,:,j) + (q(i)^2)*(q(j)^2)*prodPDFrr.getPDFValues(mu(:,i)')...
+            dJrrdL(:,:,j) = dJrrdL(:,:,j) + (q(i)^2)*(q(j)^2)*mvnpdf(mu(:,i)', prodPDFrr.mu', prodPDFrr.Sigma)...
                 *inv(L(:,:,i)'*L(:,:,i) + L(:,:,j)'*L(:,:,j))*((mu(:,i)-mu(:,j))*(mu(:,i)-mu(:,j))'...
                 -(L(:,:,i)'*L(:,:,i) + L(:,:,j)'*L(:,:,j)))*inv(L(:,:,i)'*L(:,:,i)...
                 +L(:,:,j)'*L(:,:,j))*L(:,:,j);
@@ -122,10 +120,10 @@ for k=1:Nsteps
     end
     for i=1:length(gmr_Opt)
         if optWeights == 1
-            gmr_Opt(i).setWeight(p(i));
+            gmr_Opt(i).w = p(i);
         end
-        gmr_Opt(i).setMean(mu(:,i));
-        gmr_Opt(i).setCovariance(L(:,:,i)'*L(:,:,i));
+        gmr_Opt(i).mu = mu(:,i);
+        gmr_Opt(i).Sigma = L(:,:,i)'*L(:,:,i);
     end
     
     nISETraj(k) = nISE(gmh,gmr_Opt);

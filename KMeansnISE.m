@@ -5,20 +5,20 @@ function newMixture = KMeans(gmh,gmr,NKMeansSteps)
 
 newMixture = gmr;
 
-KLDMatrix = zeros(length(gmh),length(newMixture));
-KLDMatrixPrev = KLDMatrix;
+nISEMatrix = zeros(length(gmh),length(newMixture));
+nISEMatrixPrev = nISEMatrix;
 for k=1:NKMeansSteps
     for i=1:length(gmh)
         for j=1:length(newMixture)
-            KLDMatrix(i,j) = KLD(newMixture(j),gmh(i));
+            nISEMatrix(i,j) = nISE(newMixture(j),gmh(i));
         end
     end
     
-    if norm(KLDMatrix-KLDMatrixPrev)<1e-9
+    if norm(nISEMatrix-nISEMatrixPrev)<1e-9
         return
     end
 
-    [~,assignVector] = min(KLDMatrix,[],2);
+    [~,assignVector] = min(nISEMatrix,[],2);
 
     for l=1:length(newMixture)
         clusterL = gmh(find(assignVector==l));
@@ -29,7 +29,7 @@ for k=1:NKMeansSteps
         end
     end
     
-    KLDMatrixPrev = KLDMatrix;
+    nISEMatrixPrev = nISEMatrix;
 end
 
 end

@@ -6,29 +6,29 @@ if isempty(pdfs)
     disp('The array is empty');
 end
 
-pdfMerge = wGaussPDF();
+pdfMerge = struct('w',0,'mu',zeros(size(pdfs(1).mu)),'Sigma',size(pdfs(1).Sigma));
 
 w_merged = 0;
 for i=1:length(pdfs)
-    w_merged = w_merged + pdfs(i).getWeight();
+    w_merged = w_merged + pdfs(i).w;
 end
 
-mu_merged = zeros(size(pdfs(1).getMean()));
+mu_merged = zeros(size(pdfs(1).mu));
 for i=1:length(pdfs)
-    mu_merged = mu_merged + pdfs(i).getWeight()*pdfs(i).getMean();
+    mu_merged = mu_merged + pdfs(i).w*pdfs(i).mu;
 end
 mu_merged = (1/w_merged)*mu_merged;
 
-Sigma_merged = zeros(size(pdfs(1).getCovariance()));
+Sigma_merged = zeros(size(pdfs(1).Sigma));
 
 for i=1:length(pdfs)
-    Sigma_merged = Sigma_merged + (pdfs(i).getWeight()/w_merged)*(pdfs(i).getCovariance()...
-        + (pdfs(i).getMean() - mu_merged)*(pdfs(i).getMean() - mu_merged)');
+    Sigma_merged = Sigma_merged + (pdfs(i).w/w_merged)*(pdfs(i).Sigma...
+        + (pdfs(i).mu - mu_merged)*(pdfs(i).mu - mu_merged)');
 end
           
-pdfMerge.setWeight(w_merged);
-pdfMerge.setMean(mu_merged);
-pdfMerge.setCovariance(Sigma_merged);
+pdfMerge.w = w_merged;
+pdfMerge.mu = mu_merged;
+pdfMerge.Sigma = Sigma_merged;
 
 end
 

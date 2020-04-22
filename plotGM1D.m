@@ -6,14 +6,14 @@ gmTot = zeros(1,length(X));
 
 if plotComponents
     for i=1:length(gm)
-        plot(X,gm(i).getWeight()*gm(i).getPDFValues(X),'k'); hold on
+        plot(X,gm(i).w*normpdf(X,gm(i).mu,sqrt(gm(i).Sigma)),'k'); hold on
 
     end
 end
 
 if plotTotalGM
     for i=1:length(gm)
-        gmTot = gmTot + gm(i).getWeight()*gm(i).getPDFValues(X);
+        gmTot = gmTot + gm(i).w*normpdf(X,gm(i).mu,sqrt(gm(i).Sigma));
     end
     plot(X,gmTot,'LineWidth',1.5); hold on
 end

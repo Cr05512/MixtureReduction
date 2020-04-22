@@ -4,8 +4,8 @@ Jhh = 0;
 
 for i=1:length(gmh)
     for j=1:length(gmh)
-        prodPDFhh = wGaussPDF(1, gmh(j).getMean(), gmh(i).getCovariance() + gmh(j).getCovariance());
-        Jhh = Jhh + gmh(i).getWeight()*gmh(j).getWeight()*prodPDFhh.getPDFValues(gmh(i).getMean()');
+        prodPDFhh = struct('w',1,'mu',gmh(j).mu,'Sigma',gmh(i).Sigma + gmh(j).Sigma);
+        Jhh = Jhh + gmh(i).w*gmh(j).w*mvnpdf(gmh(i).mu',prodPDFhh.mu',prodPDFhh.Sigma);
     end
 end
 
