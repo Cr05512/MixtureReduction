@@ -5,11 +5,11 @@ close all
 %Parameters to play with
 N = 10; %Mixture components
 n = 1;    %Dimension
-nSamples = n*N*2000;
+nSamples = n*N*1000;
 nPoints = 300;  %Evaluation points per dimension 
 alpha = 2.5;  %Mean spreading factor
 beta = 1; %Covariance tuning parameter
-numIter = 300;
+numIter = 100;
 
 gm = GMGen(N,n,alpha,beta);
 

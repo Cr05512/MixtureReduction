@@ -2,9 +2,6 @@ clc
 clear
 close all
 
-global plotTotalGM plotComponents
-plotTotalGM = 1;
-plotComponents = 0;
 getSamples = 0;
 
 %Parameters to play with

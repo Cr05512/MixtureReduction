@@ -2,29 +2,25 @@ clc
 clear
 close all
 
-global plotTotalGM plotComponents
-plotTotalGM = 1;
-plotComponents = 0;
-getSamples = 1;
 
 %Parameters to play with
-Nh = 50;  %Full mixture component number
-Nr = 4;   %Reduced mixture component number
+Nh = 20;  %Full mixture component number
+Nr = 5;   %Reduced mixture component number
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
 alpha = 2.7;  %Mean spreading factor
-beta = 1; %Covariance tuning parameter
-nSamples = Nr*n*500;
-NKMeansSteps = 10;
-sk = 0.001; %Gradient step
+beta = 2; %Covariance tuning parameter
+nSamples = Nr*500;
+NKMeansSteps = 20;
+sk = 0.005; %Gradient step
 NOptSteps = 30; %Gradient iterations
-NEMiter = 100;
+NEMiter = 30;
 optWeights = 1; %flag to optimize weights or not
 
 
 if n==1
     X = linspace(-2*alpha^3, 2*alpha^3,nPoints);
-else
+elseif n==2
     x1 = linspace(-2*alpha^3, 2*alpha^3,nPoints);
     x2 = linspace(-2*alpha^3, 2*alpha^3,nPoints);
     [X1,X2] = meshgrid(x1,x2);
@@ -34,9 +30,7 @@ end
 
 gm = GMGen(Nh,n,alpha,beta);
 
-if getSamples==1
-    samples = GMSamples(gm, nSamples);
-end
+
 
 %tic;
 %gm_Williams = WilliamsMRA(gm,Nr);
@@ -49,18 +43,18 @@ end
 % %disp('KI MRA nISE: ')
 % %nISE(gm,gm_KI)
 % KIDTime = toc;
-
+%%
 tic;
 [gm_GMRC, nISETrajGMRC] = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+GMRCTime = toc;
 disp('GMRC MRA nISE: ')
 nISE(gm,gm_GMRC)
-GMRCTime = toc;
-
+%%
 tic;
 gm_Run = RunnalsMRA(gm,Nr);
+RunnalsTime = toc;
 disp('Runnals MRA nISE: ')
 nISE(gm,gm_Run)
-RunnalsTime = toc;
 
 % tic
 % gm_Refined = newAlgorithm(gm,gm_Run,sk,NOptSteps,optWeights);
@@ -80,34 +74,37 @@ RunnalsTime = toc;
 % %nISE(gm,gm_Salm)
 % SalmondTime = toc;
 
-tic;
-gm_GMRCMod = GMRCMod(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
-disp('GMRCMod MRA nISE: ');
-nISE(gm,gm_GMRCMod)
-GMRCModTime = toc;
+% tic;
+% gm_GMRCMod = GMRCMod(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+% disp('GMRCMod MRA nISE: ');
+% nISE(gm,gm_GMRCMod)
+% GMRCModTime = toc;
 
+%%
+%gm_Init = GMGen(Nr,n,alpha,beta);
 tic;
+samples = GMSamples(gm,nSamples);
 gm_EM = EM(gm_Run,samples,NEMiter);
 %nISE(gm,gm_EM)
-%gm_EM = ISEOpt(gm,gm_EM,sk,NOptSteps,optWeights);
+%gm_EM = ISEOpt(gm,gm_EM,sk,NOptSteps,1);
+EMTime = toc;
 disp('EM MRA nISE: ');
 nISE(gm,gm_EM)
-EMTime = toc;
 
 
 
 %  
-
+%%
 
 
  if n==1
       figure(1)
-      subplot(2,2,1)
-      plotGM1D(gm,X); hold on
-      plotGM1D(gm_GMRCMod,X); hold on
-      grid minor
-      title(strcat('Original vs GMRCMod MRA. nISE: ',num2str(nISE(gm,gm_GMRCMod)),', Time: ',num2str(GMRCModTime),'s'));
-      legend('Original Mixture','GMRCMod MRA');
+%       subplot(2,2,1)
+%       plotGM1D(gm,X); hold on
+%       plotGM1D(gm_GMRCMod,X); hold on
+%       grid minor
+%       title(strcat('Original vs GMRCMod MRA. nISE: ',num2str(nISE(gm,gm_GMRCMod)),', Time: ',num2str(GMRCModTime),'s'));
+%       legend('Original Mixture','GMRCMod MRA');
 %       subplot(2,2,2)
 %       plotGM1D(gm,X); hold on
 %       plotGM1D(gm_KI,X); hold on
@@ -133,11 +130,11 @@ EMTime = toc;
       title(strcat('Original vs GMRC MRA. nISE: ',num2str(nISE(gm,gm_GMRC)),', Time: ',num2str(GMRCTime),'s'));
       legend('Original Mixture','GMRC MRA');
       
-      subplot(2,2,4)
+      subplot(2,2,1)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_EM,X); hold on
       grid minor
-      title(strcat('Original vs EM MRA. niSE: ', num2str(nISE(gm,gm_EM)),', Time: ', num2str(EMTime + RunnalsTime),'s'));
+      title(strcat('Original vs EM MRA. niSE: ', num2str(nISE(gm,gm_EM)),', Time: ', num2str(EMTime),'s'));
       legend('Original Mixture', 'EM MRA');
 % % %     
 % %     legend('Original Mixture','Optimized Runnals','GMRC MRA');
@@ -152,7 +149,7 @@ EMTime = toc;
 %     title('KI MRA')
      subplot(2,2,2)
      plotGM2D(gm_Run,x1,x2,X);
-     title('Runnals MRA')
+     title(strcat('Runnals MRA. nISE: ',num2str(nISE(gm,gm_Run)),', Time: ',num2str(RunnalsTime),'s'));
 %     subplot(2,3,4)
 %     plotGM2D(gm_Salm,x1,x2,X);
 %     title('Salmond MRA')
@@ -161,11 +158,15 @@ EMTime = toc;
 %     title('Williams MRA');
     subplot(2,2,3)
     plotGM2D(gm_GMRC,x1,x2,X);
-    title('GMRC MRA')
+    title(strcat('GMRC MRA. nISE: ',num2str(nISE(gm,gm_GMRC)),', Time: ',num2str(GMRCTime),'s'));
     
     subplot(2,2,4)
     plotGM2D(gm_EM,x1,x2,X);
-    title('EM MRA')
+    title(strcat('EM MRA. niSE: ', num2str(nISE(gm,gm_EM)),', Time: ', num2str(EMTime + RunnalsTime),'s'));
+ else
+     disp(strcat('Runnals MRA. niSE: ', num2str(nISE(gm,gm_Run)),', Time: ', num2str(RunnalsTime),'s'));
+     disp(strcat('GMRC MRA. niSE: ', num2str(nISE(gm,gm_GMRC)),', Time: ', num2str(GMRCTime),'s'));
+     disp(strcat('EM MRA. niSE: ', num2str(nISE(gm,gm_EM)),', Time: ', num2str(EMTime),'s'));
     
  end
 %  figure(2)

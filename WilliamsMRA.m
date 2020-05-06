@@ -6,10 +6,8 @@ function gmr = WilliamsMRA(gm, Nr)
 %approach, that is by considering the full mixture in the distance
 %calculation instead of single pairs of components. This allows even the
 %pruning, and not only merging
-    gmr(1,length(gm)) = wGaussPDF();
-    for i=1:length(gm)
-        gmr(i).copyComponent(gm(i));
-    end
+
+    gmr = gm;
     ISEMatrix = zeros(length(gm),length(gm));
         
     while(length(gmr)-Nr>0)

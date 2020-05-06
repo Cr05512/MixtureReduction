@@ -10,7 +10,7 @@ KLDMatrixPrev = KLDMatrix;
 for k=1:NKMeansSteps
     for i=1:length(gmh)
         for j=1:length(newMixture)
-            KLDMatrix(i,j) = KLD(newMixture(j),gmh(i));
+            KLDMatrix(i,j) = KLD(gmh(i),newMixture(j));
         end
     end
     
