@@ -40,7 +40,10 @@ function gmr = WilliamsMRA(gm, Nr)
             gmr(j) = [];
         else
             gmr(i) = [];
+            w_norm = num2cell([gmr.w]./sum([gmr.w]));
+            [gmr.w] = w_norm{:};
         end
+        
         ISEMatrix = ISEMatrix(1:end-1,1:end-1);
         
     end

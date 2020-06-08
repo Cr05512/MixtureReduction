@@ -4,17 +4,17 @@ close all
 
 
 %Parameters to play with
-Nh = 20;  %Full mixture component number
-Nr = 5;   %Reduced mixture component number
+Nh = 40;  %Full mixture component number
+Nr = 10;   %Reduced mixture component number
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
-alpha = 2.7;  %Mean spreading factor
-beta = 2; %Covariance tuning parameter
-nSamples = Nr*500;
+alpha = 2.6;  %Mean spreading factor
+beta = 1; %Covariance tuning parameter
+nSamples = Nr*1500;
 NKMeansSteps = 20;
 sk = 0.005; %Gradient step
 NOptSteps = 30; %Gradient iterations
-NEMiter = 30;
+NEMiter = 10;
 optWeights = 1; %flag to optimize weights or not
 
 
@@ -29,14 +29,15 @@ elseif n==2
 end
 
 gm = GMGen(Nh,n,alpha,beta);
+%%
 
 
-
-%tic;
-%gm_Williams = WilliamsMRA(gm,Nr);
-%disp('Williams MRA nISE: ')
-%nISE(gm,gm_Williams)
-%WilliamsTime = toc;
+tic;
+gm_Williams = WilliamsMRA(gm,Nr);
+gm_Williams = ISEOpt(gm,gm_Williams,sk,NOptSteps,optWeights);
+WilliamsTime = toc;
+disp('Williams MRA nISE: ')
+nISE(gm,gm_Williams)
 
 % tic;
 % gm_KI = KIDivergenceMRA(gm,Nr);
@@ -68,11 +69,11 @@ nISE(gm,gm_Run)
 % nISE(gm,gm_Run_Opt)
 % Run_OptTime = toc;
 
-% tic;
-% gm_Salm = SalmondMRA(gm,Nr);
-% %disp('Salmond MRA nISE: ')
-% %nISE(gm,gm_Salm)
-% SalmondTime = toc;
+tic;
+gm_Salm = SalmondMRA(gm,Nr);
+disp('Salmond MRA nISE: ')
+nISE(gm,gm_Salm)
+SalmondTime = toc;
 
 % tic;
 % gm_GMRCMod = GMRCMod(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
@@ -82,14 +83,14 @@ nISE(gm,gm_Run)
 
 %%
 %gm_Init = GMGen(Nr,n,alpha,beta);
-tic;
-samples = GMSamples(gm,nSamples);
-gm_EM = EM(gm_Run,samples,NEMiter);
-%nISE(gm,gm_EM)
-%gm_EM = ISEOpt(gm,gm_EM,sk,NOptSteps,1);
-EMTime = toc;
-disp('EM MRA nISE: ');
-nISE(gm,gm_EM)
+% tic;
+% samples = GMSamples(gm,nSamples);
+% gm_EM = EM(gm_Run,samples,NEMiter);
+% nISE(gm,gm_EM)
+% %gm_EM = ISEOpt(gm,gm_EM,sk,NOptSteps,1);
+% EMTime = toc;
+% disp('EM MRA nISE: ');
+% nISE(gm,gm_EM)
 
 
 
@@ -99,46 +100,32 @@ nISE(gm,gm_EM)
 
  if n==1
       figure(1)
-%       subplot(2,2,1)
-%       plotGM1D(gm,X); hold on
-%       plotGM1D(gm_GMRCMod,X); hold on
-%       grid minor
-%       title(strcat('Original vs GMRCMod MRA. nISE: ',num2str(nISE(gm,gm_GMRCMod)),', Time: ',num2str(GMRCModTime),'s'));
-%       legend('Original Mixture','GMRCMod MRA');
-%       subplot(2,2,2)
-%       plotGM1D(gm,X); hold on
-%       plotGM1D(gm_KI,X); hold on
-%       grid minor
-%       title(strcat('Original vs KID MRA. nISE: ',num2str(nISE(gm,gm_KI)),', Time: ',num2str(KIDTime),'s'));
-%       legend('Original Mixture','KID MRA');
+      subplot(2,2,1)
+      plotGM1D(gm,X); hold on
+      plotGM1D(gm_Salm,X); hold on
+      grid minor
+      title(strcat('nISE: ',num2str(nISE(gm,gm_Salm)),', Time: ',num2str(SalmondTime),'s'),'FontSize',14);
+      legend('Original','Salmond','FontSize',11);
       subplot(2,2,2)
+      plotGM1D(gm,X); hold on
+      plotGM1D(gm_Williams,X); hold on
+      grid minor
+      title(strcat('nISE: ',num2str(nISE(gm,gm_Williams)),', Time: ',num2str(WilliamsTime),'s'),'FontSize',14);
+      legend('Original','Williams','FontSize',11);
+      subplot(2,2,3)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_Run,X); hold on
       grid minor
-      title(strcat('Original vs Runnals MRA. nISE: ',num2str(nISE(gm,gm_Run)),', Time: ',num2str(RunnalsTime),'s'));
-      legend('Original Mixture','Runnals MRA');
-%       subplot(2,2,3)
-%       plotGM1D(gm,X); hold on
-%       plotGM1D(gm_Salm,X); hold on
-%       grid minor
-%       title(strcat('Original vs Salmond MRA. nISE: ',num2str(nISE(gm,gm_Salm)),', Time: ',num2str(SalmondTime),'s'));
-%       legend('Original Mixture','Salmond MRA');
-      subplot(2,2,3)
+      title(strcat('nISE: ',num2str(nISE(gm,gm_Run)),', Time: ',num2str(RunnalsTime),'s'),'FontSize',14);
+      legend('Original','Runnals','FontSize',11);
+      subplot(2,2,4)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_GMRC,X); hold on
       grid minor
-      title(strcat('Original vs GMRC MRA. nISE: ',num2str(nISE(gm,gm_GMRC)),', Time: ',num2str(GMRCTime),'s'));
-      legend('Original Mixture','GMRC MRA');
+      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRC)),', Time: ',num2str(GMRCTime),'s'),'FontSize',14);
+      legend('Original','GMRC','FontSize',11);
       
-      subplot(2,2,1)
-      plotGM1D(gm,X); hold on
-      plotGM1D(gm_EM,X); hold on
-      grid minor
-      title(strcat('Original vs EM MRA. niSE: ', num2str(nISE(gm,gm_EM)),', Time: ', num2str(EMTime),'s'));
-      legend('Original Mixture', 'EM MRA');
-% % %     
-% %     legend('Original Mixture','Optimized Runnals','GMRC MRA');
-% %     legend('Original Mixture','KI MRA','Runnals MRA','Salmond MRA','Williams MRA','Optimized Runnals');
+  
  elseif n==2
 %    
      subplot(2,2,1)

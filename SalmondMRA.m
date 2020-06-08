@@ -1,20 +1,18 @@
 function gmr = SalmondMRA(gm, Nr)
     
-    gmr(1,length(gm)) = wGaussPDF();
-    for i=1:length(gm)
-        gmr(i).copyComponent(gm(i));
-    end
+    gmr = gm;
+
     WMatrix = zeros(length(gmr),length(gmr));
     
     while(length(gmr)-Nr>0)
         %We first compute the KLD bounds for every merging action
         pdfMerged = mpMerge(gmr);
-        P = pdfMerged.getCovariance();
+        P = pdfMerged.Sigma;
         for i=1:length(gmr)
             for j=1:length(gmr)
                 if(i<j)
-                    WMatrix(i,j) = gmr(i).getWeight()*gmr(j).getWeight()/(gmr(i).getWeight()+gmr(j).getWeight())...
-                                    *mahalSquaredDist(gmr(i).getMean(),gmr(j).getMean(),P);
+                    WMatrix(i,j) = gmr(i).w*gmr(j).w/(gmr(i).w+gmr(j).w)...
+                                    *mahalSquaredDist(gmr(i).mu,gmr(j).mu,P);
                 end
             end
         end

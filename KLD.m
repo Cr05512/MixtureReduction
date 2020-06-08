@@ -7,8 +7,8 @@ Pi = pdfi.Sigma;
 Pj = pdfj.Sigma;
 d = size(mui,1);
 
-%dKLij = trace(inv(Pj)*(Pi-Pj+(mui-muj)*(mui-muj)'))+log(det(Pj)/det(Pi));
-dKLij = 0.5*(trace(inv(pdfj.Sigma)*pdfi.Sigma) + log(det(2*pi*pdfj.Sigma)) - d) - log(mvnpdf(pdfi.mu,pdfj.mu,pdfj.Sigma));
+%dKLij = 0.5*(trace(inv(Pj)*Pi) + log(det(2*pi*Pj))-d)-log(mvnpdf(mui,muj,Pj));
+dKLij = 0.5*(trace(inv(Pj)*Pi) + (muj-mui)'*inv(Pj)*(muj-mui)-d+log(det(Pj)/det(Pi)));
 
 end
 

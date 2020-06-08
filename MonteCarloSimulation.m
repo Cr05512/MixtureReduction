@@ -8,16 +8,16 @@ n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
 alpha = 2.5;  %Mean spreading factor
 beta = 1; %Covariance tuning parameter
-nSamples = Nr*1250;
+nSamples = Nr*1000;
 NKMeansSteps = 20;
 sk = 0.005; %Gradient step
 NOptSteps = 30; %Gradient iterations
-NEMiter = 30;
+NEMiter = 10;
 optWeights = 1; %flag to optimize weights or not
-NumTests = 1;
+NumTests = 50;
 
-nISEVector = zeros(3,NumTests);
-timeVector = zeros(3,NumTests);
+nISEVector = zeros(4,NumTests);
+timeVector = zeros(4,NumTests);
 
 for m = 1:NumTests
     
@@ -30,6 +30,13 @@ for m = 1:NumTests
     timeVector(1,m) = GMRCTime;
     %disp('GMRC MRA nISE: ')
     %nISE(gm,gm_GMRC)
+    
+    tic;
+    gm_Williams = WilliamsMRA(gm,Nr);
+    gm_Williams = ISEOpt(gm,gm_Williams,sk,NOptSteps,optWeights);
+    WilliamsTime = toc;
+    nISEVector(4,m) = nISE(gm,gm_Williams);
+    timeVector(4,m) = WilliamsTime;
 
     tic;
     gm_Run = RunnalsMRA(gm,Nr);
@@ -40,13 +47,21 @@ for m = 1:NumTests
     %nISE(gm,gm_Run)
     
     tic;
-    samples = GMSamples(gm,nSamples);
-    gm_EM = EM(gm_Run,samples,NEMiter);
-    %nISE(gm,gm_EM)
-    %gm_EM = ISEOpt(gm,gm_EM,sk,NOptSteps,1);
-    EMTime = toc;
-    nISEVector(3,m) = nISE(gm,gm_EM);
-    timeVector(3,m) = EMTime + RunnalsTime;
+    gm_Salm = SalmondMRA(gm,Nr);
+    SalmondTime = toc;
+    %disp('Salmond MRA nISE: ')
+    nISEVector(3,m) = nISE(gm,gm_Salm);
+    timeVector(3,m) = SalmondTime;
+    
+    
+%     tic;
+%     samples = GMSamples(gm,nSamples);
+%     gm_EM = EM(gm_Run,samples,NEMiter);
+%     %nISE(gm,gm_EM)
+%     %gm_EM = ISEOpt(gm,gm_EM,sk,NOptSteps,1);
+%     EMTime = toc;
+%     nISEVector(3,m) = nISE(gm,gm_EM);
+%     timeVector(3,m) = EMTime + RunnalsTime;
     %disp('EM MRA nISE: ');
     %nISE(gm,gm_EM)
 
