@@ -33,7 +33,7 @@ function gmr = WilliamsMRA(gm, Nr)
                 end
             end
         end
-        [i,j] = find(ISEMatrix == min(ISEMatrix(ISEMatrix>0)));
+        [i,j] = find(ISEMatrix == min(ISEMatrix(ISEMatrix>0)),1);
 
         if i~=j
             gmr(i) = mpMerge([gmr(i),gmr(j)]);

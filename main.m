@@ -4,9 +4,9 @@ close all
 
 
 %Parameters to play with
-Nh = 40;  %Full mixture component number
-Nr = 10;   %Reduced mixture component number
-n = 1;    %Dimension
+Nh = 4;  %Full mixture component number
+Nr = 3;   %Reduced mixture component number
+n = 2;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
 alpha = 2.6;  %Mean spreading factor
 beta = 1; %Covariance tuning parameter
@@ -28,7 +28,8 @@ elseif n==2
 
 end
 
-gm = GMGen(Nh,n,alpha,beta);
+%gm = GMGen(Nh,n,alpha,beta);
+gm = test1CompGen(Nh,10);
 %%
 
 
@@ -128,13 +129,13 @@ SalmondTime = toc;
   
  elseif n==2
 %    
-     subplot(2,2,1)
+     subplot(3,2,1)
      plotGM2D(gm,x1,x2,X); hold on
      title('Original Mixture')
 %     subplot(2,3,2)
 %     plotGM2D(gm_KI,x1,x2,X);
 %     title('KI MRA')
-     subplot(2,2,2)
+     subplot(3,2,2)
      plotGM2D(gm_Run,x1,x2,X);
      title(strcat('Runnals MRA. nISE: ',num2str(nISE(gm,gm_Run)),', Time: ',num2str(RunnalsTime),'s'));
 %     subplot(2,3,4)
@@ -143,13 +144,17 @@ SalmondTime = toc;
 %     subplot(2,3,5)
 %     plotGM2D(gm_Williams,x1,x2,X);
 %     title('Williams MRA');
-    subplot(2,2,3)
+    subplot(3,2,3)
     plotGM2D(gm_GMRC,x1,x2,X);
     title(strcat('GMRC MRA. nISE: ',num2str(nISE(gm,gm_GMRC)),', Time: ',num2str(GMRCTime),'s'));
     
-    subplot(2,2,4)
-    plotGM2D(gm_EM,x1,x2,X);
-    title(strcat('EM MRA. niSE: ', num2str(nISE(gm,gm_EM)),', Time: ', num2str(EMTime + RunnalsTime),'s'));
+    subplot(3,2,4)
+    plotGM2D(gm_Salm,x1,x2,X);
+    title(strcat('Salmond MRA. niSE: ', num2str(nISE(gm,gm_Salm)),', Time: ', num2str(SalmondTime),'s'));
+    
+     subplot(3,2,5)
+    plotGM2D(gm_Williams,x1,x2,X);
+    title(strcat('Williams MRA. niSE: ', num2str(nISE(gm,gm_Williams)),', Time: ', num2str(WilliamsTime),'s'));
  else
      disp(strcat('Runnals MRA. niSE: ', num2str(nISE(gm,gm_Run)),', Time: ', num2str(RunnalsTime),'s'));
      disp(strcat('GMRC MRA. niSE: ', num2str(nISE(gm,gm_GMRC)),', Time: ', num2str(GMRCTime),'s'));
