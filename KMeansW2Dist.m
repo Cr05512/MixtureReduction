@@ -5,31 +5,31 @@ function newMixture = KMeansWas(gmh,gmr,NKMeansSteps)
 
 newMixture = gmr;
 
-KLDMatrix = zeros(length(gmh),length(newMixture));
-KLDMatrixPrev = KLDMatrix;
+W2Matrix = zeros(length(gmh),length(newMixture));
+W2MatrixPrev = W2Matrix;
 for k=1:NKMeansSteps
     for i=1:length(gmh)
         for j=1:length(newMixture)
-            KLDMatrix(i,j) = Wasserstein2Dist(gmh(i),newMixture(j));
+            W2Matrix(i,j) = Wasserstein2Dist(gmh(i),newMixture(j));
         end
     end
     
-    if norm(KLDMatrix-KLDMatrixPrev)<1e-9
+    if norm(W2Matrix-W2MatrixPrev)<1e-9
         return
     end
 
-    [~,assignVector] = min(KLDMatrix,[],2);
+    [~,assignVector] = min(W2Matrix,[],2);
 
     for l=1:length(newMixture)
         clusterL = gmh(find(assignVector==l));
         if ~isempty(clusterL)
-            newMixture(l) = mpMerge(clusterL);
+            newMixture(l) = WassersteinAvg(clusterL);
         else
             newMixture(l) = [];
         end
     end
     
-    KLDMatrixPrev = KLDMatrix;
+    W2MatrixPrev = W2Matrix;
 end
 
 end

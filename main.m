@@ -5,8 +5,8 @@ close all
 
 %Parameters to play with
 global Nh Nr n
-Nh = 6;  %Full mixture component number
-Nr = 4;   %Reduced mixture component number
+Nh = 8;  %Full mixture component number
+Nr = 5;   %Reduced mixture component number
 r = 8;
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
@@ -86,11 +86,11 @@ disp('Salmond MRA nISE: ')
 nISE(gm,gm_Salm)
 SalmondTime = toc;
 
-% tic;
-% gm_GMRCMod = GMRCMod(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
-% disp('GMRCMod MRA nISE: ');
-% nISE(gm,gm_GMRCMod)
-% GMRCModTime = toc;
+tic;
+gm_GMRCWas = GMRCWas(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+disp('GMRCWas MRA nISE: ');
+nISE(gm,gm_GMRCWas)
+GMRCWasTime = toc;
 
 %%
 %gm_Init = GMGen(Nr,n,alpha,beta);
@@ -141,6 +141,12 @@ SalmondTime = toc;
       grid minor
       title(strcat('nISE: ',num2str(nISE(gm,gm_Was)),', Time: ',num2str(WassersteinTime),'s'),'FontSize',14);
       legend('Original','Wasserstein','FontSize',11);
+      subplot(2,3,6)
+      plotGM1D(gm,X); hold on
+      plotGM1D(gm_GMRCWas,X); hold on
+      grid minor
+      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRCWas)),', Time: ',num2str(GMRCWasTime),'s'),'FontSize',14);
+      legend('Original','GMRCWas','FontSize',11);
       
       
   
@@ -172,6 +178,10 @@ SalmondTime = toc;
      subplot(3,2,5)
     plotGM2D(gm_Williams,x1,x2,X);
     title(strcat('Williams MRA. niSE: ', num2str(nISE(gm,gm_Williams)),', Time: ', num2str(WilliamsTime),'s'));
+    
+      subplot(3,2,6)
+    plotGM2D(gm_Was,x1,x2,X);
+    title(strcat('Wasserstein MRA. niSE: ', num2str(nISE(gm,gm_Was)),', Time: ', num2str(WassersteinTime),'s'));
  else
      disp(strcat('Runnals MRA. niSE: ', num2str(nISE(gm,gm_Run)),', Time: ', num2str(RunnalsTime),'s'));
      disp(strcat('GMRC MRA. niSE: ', num2str(nISE(gm,gm_GMRC)),', Time: ', num2str(GMRCTime),'s'));

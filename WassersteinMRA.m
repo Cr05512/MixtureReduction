@@ -15,7 +15,22 @@ function gmr = WassersteinMRA(gm, Nr)
         %We then find the action with the lowest KLD bound and we merge the
         %corresponding mixture components
         [i,j] = find(WMatrix == min(WMatrix(WMatrix>0)),1);
-        pdf_merged = mpMerge([gmr(i),gmr(j)]);
+        
+        %We now compute the WD-average-minimizing component for the merge
+        w_merge = gmr(i).w + gmr(j).w;
+        
+        wi_tilde = gmr(i).w/w_merge;
+        wj_tilde = gmr(j).w/w_merge;
+        mu_merge = wi_tilde*gmr(i).mu + wj_tilde*gmr(j).mu;
+ 
+        Sigma_merge = wi_tilde^2*gmr(i).Sigma + wj_tilde^2*gmr(j).Sigma +...
+            wi_tilde*wj_tilde*( sqrt(gmr(j).Sigma*gmr(i).Sigma) + sqrt(gmr(i).Sigma*gmr(j).Sigma)  );
+       
+        pdf_merged = struct('w',w_merge,'mu',mu_merge,'Sigma',Sigma_merge);
+        
+        
+      %  pdf_merged = mpMerge([gmr(i);gmr(j)]);
+        
         gmr(i) = pdf_merged;
         gmr(j) = [];
         %We then shrink both the component vector and bound matrix
