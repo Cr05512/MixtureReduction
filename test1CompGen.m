@@ -1,6 +1,12 @@
 function gm = test1CompGen(numComp,r)
-%UNTITLED
+%This script generate numComp components on a polygon vertices, all have
+%the same covariance matrix and weights
 sweepAngle = 2*pi/numComp;
+
+global Nh Nr n
+Nh = numComp;
+Nr = Nh-1;
+n = 2;
 
 xcoords = zeros(numComp,1);
 ycoords = zeros(numComp,1);
