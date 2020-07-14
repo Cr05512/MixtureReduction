@@ -1,7 +1,7 @@
 function gmr = WassersteinMRA(gm, Nr)
 
     gmr = gm;
-    WMatrix = zeros(length(gmr),length(gmr));
+    WMatrix = Inf(length(gmr),length(gmr));
     
     while(length(gmr)-Nr>0)
         %We first compute the KLD bounds for every merging action
@@ -14,7 +14,7 @@ function gmr = WassersteinMRA(gm, Nr)
         end
         %We then find the action with the lowest KLD bound and we merge the
         %corresponding mixture components
-        [i,j] = find(WMatrix == min(WMatrix(WMatrix>0)),1);
+        [i,j] = find(WMatrix == min(WMatrix(WMatrix<Inf)),1);
         
         %We now compute the WD-average-minimizing component for the merge
         w_merge = gmr(i).w + gmr(j).w;

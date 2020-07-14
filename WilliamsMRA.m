@@ -8,7 +8,7 @@ function gmr = WilliamsMRA(gm, Nr)
 %pruning, and not only merging
 
     gmr = gm;
-    ISEMatrix = zeros(length(gm),length(gm));
+    ISEMatrix = Inf(length(gm),length(gm));
         
     while(length(gmr)-Nr>0)
         %The Jhh is something to be calculated once per reduction step, so
@@ -28,12 +28,13 @@ function gmr = WilliamsMRA(gm, Nr)
                     gm_temp(j) = [];
                     Jhr = crossLikeness(gmr,gm_temp);
                     Jrr = selfLikeness(gm_temp);
-                    ISEMatrix(i,j) = Jhh - 2*Jhr + Jrr;
+                    ISE = Jhh - 2*Jhr + Jrr;
+                    ISEMatrix(i,j) = ISE;
                     gm_temp = gmr;
                 end
             end
         end
-        [i,j] = find(ISEMatrix == min(ISEMatrix(ISEMatrix>0)),1);
+        [i,j] = find(ISEMatrix == min(ISEMatrix(ISEMatrix<Inf)),1)
 
         if i~=j
             gmr(i) = mpMerge([gmr(i),gmr(j)]);

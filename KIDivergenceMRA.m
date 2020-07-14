@@ -2,7 +2,7 @@ function gmr = KIDivergenceMRA(gm, Nr)
     
 
     gmr = gm;
-    DKIMatrix = zeros(length(gmr),length(gmr));
+    DKIMatrix = Inf(length(gmr),length(gmr));
     
     while(length(gmr)-Nr>0)
         %We first compute the KI Divergence for every merging action
@@ -21,7 +21,7 @@ function gmr = KIDivergenceMRA(gm, Nr)
         
         %We then find the action with the lowest KI Divergence and we merge the
         %corresponding mixture components
-        [i,j] = find(DKIMatrix == min(DKIMatrix(DKIMatrix>0)));
+        [i,j] = find(DKIMatrix == min(DKIMatrix(DKIMatrix<Inf)));
         pdf_merged = mpMerge([gmr(i),gmr(j)]);
         gmr(i) = pdf_merged;
         gmr(j) = [];

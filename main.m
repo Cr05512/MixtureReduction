@@ -5,28 +5,28 @@ close all
 
 %Parameters to play with
 global Nh Nr n
-Nh = 8;  %Full mixture component number
-Nr = 5;   %Reduced mixture component number
+Nh = 2;  %Full mixture component number
+Nr = 1;   %Reduced mixture component number
 r = 8;
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
-alpha = 3;  %Mean spreading factor
-beta = 5; %Covariance tuning parameter
+alpha = 2.6;  %Mean spreading factor
+beta = 4; %Covariance tuning parameter
 nSamples = Nr*1500;
 NKMeansSteps = 20;
 sk = 0.005; %Gradient step
-NOptSteps = 30; %Gradient iterations
+NOptSteps = 10; %Gradient iterations
 NEMiter = 10;
 optWeights = 1; %flag to optimize weights or not
 
 
-gm = GMGen(Nh,n,alpha,beta);
+%gm = GMGen(Nh,n,alpha,beta);
 %gm = test4CompGen(Nh,r);
-%gm = test5CompGen();
+gm = testWilliamsCompGen();
 %%
 
 if n==1
-    X = linspace(-2*alpha^3, 2*alpha^3,nPoints);
+    X = linspace(-alpha^3, alpha^3,nPoints);
 elseif n==2
     x1 = linspace(-2*alpha^3, 2*alpha^3,nPoints);
     x2 = linspace(-2*alpha^3, 2*alpha^3,nPoints);
@@ -51,7 +51,7 @@ nISE(gm,gm_Williams)
 % KIDTime = toc;
 %%
 tic;
-[gm_GMRC, nISETrajGMRC] = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+[gm_GMRC,nISETraj] = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
 GMRCTime = toc;
 disp('GMRC MRA nISE: ')
 nISE(gm,gm_GMRC)
@@ -197,7 +197,6 @@ GMRCWasTime = toc;
 %  plot(0:NOptSteps-1, nISETrajGMRC); hold on
 %  title('nISE Optimization for GMRC MRA')
 %  grid minor
-
 
  
   

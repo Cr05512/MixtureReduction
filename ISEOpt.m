@@ -94,24 +94,35 @@ for k=1:Nsteps
    
     if optWeights == 1
         gfq = dJrrdq - 2*dJhrdq;
-        gfq = gfq/norm(gfq);
-        q = q - sk*gfq;
+        if norm(gfq)>0
+            gfq = gfq/norm(gfq);
+            q = q - sk*gfq;
+        end
     end
     gfmu = dJrrdmu - 2*dJhrdmu;
-    gfmu = gfmu/norm(gfmu);
-    gfL = dJrrdL - 2*dJhrdL;
-    
-    
-    if n>1
-        for i = 1:length(gmr_Opt)
-            gfL(:,:,i) = gfL(:,:,i)./norm(gfL(:,:,i));
-        end
-    else
-        gfLTemp = reshape(gfL,1,m);
-        gfL = gfL./norm(gfLTemp);
+    if norm(gfmu)>0
+        gfmu = gfmu/norm(gfmu);
+        mu = mu - sk*gfmu;
     end
     
-    mu = mu - sk*gfmu;
+    
+    gfL = dJrrdL - 2*dJhrdL;
+    
+    if n==1
+        gfLTemp = reshape(gfL,1,m);
+        gfL = gfL./norm(gfLTemp);
+    else
+%        normTot = 0;
+%         for i=1:size(gfL,3)
+%             normTot = normTot + norm(gfL(:,:,i));
+%         end
+        for i=1:size(gfL,3)
+            gfL(:,:,i) = gfL(:,:,i)./norm(gfL(:,:,i));
+        end
+        
+    end
+    
+    
     L = L - sk*gfL;
     
     if optWeights == 1
