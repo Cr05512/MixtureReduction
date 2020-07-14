@@ -5,28 +5,30 @@ close all
 
 %Parameters to play with
 global Nh Nr n
-Nh = 2;  %Full mixture component number
-Nr = 1;   %Reduced mixture component number
+Nh = 20;  %Full mixture component number
+Nr = 5;   %Reduced mixture component number
 r = 8;
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
-alpha = 2.6;  %Mean spreading factor
-beta = 4; %Covariance tuning parameter
+alpha = 3.4;  %Mean spreading factor
+beta = 3; %Covariance tuning parameter
 nSamples = Nr*1500;
 NKMeansSteps = 20;
 sk = 0.005; %Gradient step
-NOptSteps = 10; %Gradient iterations
+NOptSteps = 50; %Gradient iterations
 NEMiter = 10;
 optWeights = 1; %flag to optimize weights or not
 
 
 %gm = GMGen(Nh,n,alpha,beta);
 %gm = test4CompGen(Nh,r);
-gm = testWilliamsCompGen();
+%gm = testWilliamsCompGen();
+%gm = testRunnalsCompGen();
+gm = test5CompGen();
 %%
 
 if n==1
-    X = linspace(-alpha^3, alpha^3,nPoints);
+    X = linspace(-2*alpha^3, 2*alpha^3,nPoints);
 elseif n==2
     x1 = linspace(-2*alpha^3, 2*alpha^3,nPoints);
     x2 = linspace(-2*alpha^3, 2*alpha^3,nPoints);
@@ -185,7 +187,6 @@ GMRCWasTime = toc;
  else
      disp(strcat('Runnals MRA. niSE: ', num2str(nISE(gm,gm_Run)),', Time: ', num2str(RunnalsTime),'s'));
      disp(strcat('GMRC MRA. niSE: ', num2str(nISE(gm,gm_GMRC)),', Time: ', num2str(GMRCTime),'s'));
-     disp(strcat('EM MRA. niSE: ', num2str(nISE(gm,gm_EM)),', Time: ', num2str(EMTime),'s'));
     
  end
 %  figure(2)
