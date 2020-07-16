@@ -17,7 +17,7 @@ end
 
 for i=1:Ki
     for j=1:Ki
-        Sigma_avg = Sigma_avg + (cluster(i).w*cluster(j).w)/(w_avg^2) * chol(cluster(i).Sigma)' * chol(cluster(j).Sigma);
+        Sigma_avg = Sigma_avg + (cluster(i).w*cluster(j).w)/(w_avg^2) * real(sqrtm(cluster(i).Sigma)) * real(sqrtm(cluster(j).Sigma));
     end
 end
 

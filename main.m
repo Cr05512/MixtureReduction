@@ -5,12 +5,12 @@ close all
 
 %Parameters to play with
 global Nh Nr n
-Nh = 20;  %Full mixture component number
-Nr = 5;   %Reduced mixture component number
+Nh = 8;  %Full mixture component number
+Nr = 4;   %Reduced mixture component number
 r = 8;
-n = 1;    %Dimension
+n = 2;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
-alpha = 3.4;  %Mean spreading factor
+alpha = 2.5;  %Mean spreading factor
 beta = 3; %Covariance tuning parameter
 nSamples = Nr*1500;
 NKMeansSteps = 20;
@@ -20,11 +20,11 @@ NEMiter = 10;
 optWeights = 1; %flag to optimize weights or not
 
 
-%gm = GMGen(Nh,n,alpha,beta);
+gm = GMGen(Nh,n,alpha,beta);
 %gm = test4CompGen(Nh,r);
 %gm = testWilliamsCompGen();
 %gm = testRunnalsCompGen();
-gm = test5CompGen();
+%gm = test5CompGen();
 %%
 
 if n==1
@@ -41,7 +41,7 @@ end
 
 tic;
 gm_Williams = WilliamsMRA(gm,Nr);
-gm_Williams = ISEOpt(gm,gm_Williams,sk,NOptSteps,optWeights);
+[gm_Williams, nISETrajWilliams] = ISEOpt(gm,gm_Williams,sk,NOptSteps,optWeights);
 WilliamsTime = toc;
 disp('Williams MRA nISE: ')
 nISE(gm,gm_Williams)
@@ -53,7 +53,7 @@ nISE(gm,gm_Williams)
 % KIDTime = toc;
 %%
 tic;
-[gm_GMRC,nISETraj] = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+[gm_GMRC,nISETrajGMRC] = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
 GMRCTime = toc;
 disp('GMRC MRA nISE: ')
 nISE(gm,gm_GMRC)

@@ -24,7 +24,7 @@ function gmr = WassersteinMRA(gm, Nr)
         mu_merge = wi_tilde*gmr(i).mu + wj_tilde*gmr(j).mu;
  
         Sigma_merge = wi_tilde^2*gmr(i).Sigma + wj_tilde^2*gmr(j).Sigma +...
-            wi_tilde*wj_tilde*( sqrt(gmr(j).Sigma*gmr(i).Sigma) + sqrt(gmr(i).Sigma*gmr(j).Sigma)  );
+            wi_tilde*wj_tilde*( real(sqrtm(gmr(j).Sigma*gmr(i).Sigma)) + real(sqrtm(gmr(i).Sigma*gmr(j).Sigma))  );
        
         pdf_merged = struct('w',w_merge,'mu',mu_merge,'Sigma',Sigma_merge);
         
