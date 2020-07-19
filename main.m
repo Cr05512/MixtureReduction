@@ -8,9 +8,9 @@ global Nh Nr n
 Nh = 8;  %Full mixture component number
 Nr = 4;   %Reduced mixture component number
 r = 8;
-n = 2;    %Dimension
+n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
-alpha = 2.5;  %Mean spreading factor
+alpha = 2.8;  %Mean spreading factor
 beta = 3; %Covariance tuning parameter
 nSamples = Nr*1500;
 NKMeansSteps = 20;
@@ -46,11 +46,11 @@ WilliamsTime = toc;
 disp('Williams MRA nISE: ')
 nISE(gm,gm_Williams)
 
-% tic;
-% gm_KI = KIDivergenceMRA(gm,Nr);
-% %disp('KI MRA nISE: ')
-% %nISE(gm,gm_KI)
-% KIDTime = toc;
+tic;
+gm_KI = KIDivergenceMRA(gm,Nr);
+%disp('KI MRA nISE: ')
+%nISE(gm,gm_KI)
+KIDTime = toc;
 %%
 tic;
 [gm_GMRC,nISETrajGMRC] = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
@@ -70,29 +70,27 @@ WassersteinTime = toc;
 disp('Wasserstein MRA nISE: ')
 nISE(gm,gm_Was)
 
-% tic
-% gm_Refined = newAlgorithm(gm,gm_Run,sk,NOptSteps,optWeights);
-% disp('newAlgo MRA nISE: ');
-% nISE(gm,gm_Refined)
-% newAlgoTime = toc;
-
-% tic
-% [gm_Run_Opt, nISETrajRun] = ISEOpt(gm,gm_Run,sk,NOptSteps,optWeights);
-% disp('Runnals Optimized MRA nISE: ')
-% nISE(gm,gm_Run_Opt)
-% Run_OptTime = toc;
 
 tic;
 gm_Salm = SalmondMRA(gm,Nr);
+SalmondTime = toc;
 disp('Salmond MRA nISE: ')
 nISE(gm,gm_Salm)
-SalmondTime = toc;
 
+
+% tic;
+% gm_GMRCWas = GMRCWas(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+% GMRCWasTime = toc;
+% disp('GMRCWas MRA nISE: ');
+% nISE(gm,gm_GMRCWas)
+
+%%
 tic;
-gm_GMRCWas = GMRCWas(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
-disp('GMRCWas MRA nISE: ');
-nISE(gm,gm_GMRCWas)
-GMRCWasTime = toc;
+gm_ARKLD = ARKLDMRA(gm,Nr);
+ARKLDTime = toc;
+disp('ARKLD MRA nISE: ')
+nISE(gm,gm_ARKLD)
+
 
 %%
 %gm_Init = GMGen(Nr,n,alpha,beta);
@@ -143,12 +141,19 @@ GMRCWasTime = toc;
       grid minor
       title(strcat('nISE: ',num2str(nISE(gm,gm_Was)),', Time: ',num2str(WassersteinTime),'s'),'FontSize',14);
       legend('Original','Wasserstein','FontSize',11);
+%       subplot(2,3,6)
+%       plotGM1D(gm,X); hold on
+%       plotGM1D(gm_GMRCWas,X); hold on
+%       grid minor
+%       title(strcat('nISE: ',num2str(nISE(gm,gm_GMRCWas)),', Time: ',num2str(GMRCWasTime),'s'),'FontSize',14);
+%       legend('Original','GMRCWas','FontSize',11);
       subplot(2,3,6)
       plotGM1D(gm,X); hold on
-      plotGM1D(gm_GMRCWas,X); hold on
+      plotGM1D(gm_ARKLD,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRCWas)),', Time: ',num2str(GMRCWasTime),'s'),'FontSize',14);
-      legend('Original','GMRCWas','FontSize',11);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_ARKLD)),', Time: ',num2str(ARKLDTime),'s'),'FontSize',14);
+      legend('Original','ARKLD','FontSize',11);
+
       
       
   
@@ -181,23 +186,19 @@ GMRCWasTime = toc;
     plotGM2D(gm_Williams,x1,x2,X);
     title(strcat('Williams MRA. niSE: ', num2str(nISE(gm,gm_Williams)),', Time: ', num2str(WilliamsTime),'s'));
     
+%       subplot(3,2,6)
+%     plotGM2D(gm_Was,x1,x2,X);
+%     title(strcat('Wasserstein MRA. niSE: ', num2str(nISE(gm,gm_Was)),', Time: ', num2str(WassersteinTime),'s'));
+
       subplot(3,2,6)
-    plotGM2D(gm_Was,x1,x2,X);
-    title(strcat('Wasserstein MRA. niSE: ', num2str(nISE(gm,gm_Was)),', Time: ', num2str(WassersteinTime),'s'));
+    plotGM2D(gm_ARKLD,x1,x2,X);
+    title(strcat('ARKLD MRA. niSE: ', num2str(nISE(gm,gm_ARKLD)),', Time: ', num2str(ARKLDTime),'s'));
+
  else
      disp(strcat('Runnals MRA. niSE: ', num2str(nISE(gm,gm_Run)),', Time: ', num2str(RunnalsTime),'s'));
      disp(strcat('GMRC MRA. niSE: ', num2str(nISE(gm,gm_GMRC)),', Time: ', num2str(GMRCTime),'s'));
     
  end
-%  figure(2)
-%  subplot(2,1,1)
-%  plot(0:NOptSteps-1, nISETrajRun); hold on
-%  title('nISE Optimization for Runnals MRA')
-%  grid minor
-%  subplot(2,1,2)
-%  plot(0:NOptSteps-1, nISETrajGMRC); hold on
-%  title('nISE Optimization for GMRC MRA')
-%  grid minor
 
  
   

@@ -25,8 +25,13 @@ function gmr = WassersteinMRA(gm, Nr)
  
         Sigma_merge = wi_tilde^2*gmr(i).Sigma + wj_tilde^2*gmr(j).Sigma +...
             wi_tilde*wj_tilde*( real(sqrtm(gmr(j).Sigma*gmr(i).Sigma)) + real(sqrtm(gmr(i).Sigma*gmr(j).Sigma))  );
-       
         pdf_merged = struct('w',w_merge,'mu',mu_merge,'Sigma',Sigma_merge);
+
+        %Alternatively we use the barycenter with respect to the W2
+        %distance as merging algorithm
+%        pdf_merged = WassersteinBarycenter([gmr(i);gmr(j)],50);
+%        
+        
         
         
       %  pdf_merged = mpMerge([gmr(i);gmr(j)]);

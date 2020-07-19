@@ -2,11 +2,6 @@ function gmr = WilliamsMRA(gm, Nr)
 
 %This implementation is particularly inefficient. A lot of calculation is
 %redundant and could be avoided
-%Unlike the other algorithms, this is the only one following a global
-%approach, that is by considering the full mixture in the distance
-%calculation instead of single pairs of components. This allows even the
-%pruning, and not only merging
-
     gmr = gm;
     ISEMatrix = Inf(length(gm),length(gm));
     
