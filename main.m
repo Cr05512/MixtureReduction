@@ -4,13 +4,13 @@ close all
 
 
 %Parameters to play with
-global Nh Nr n
-Nh = 8;  %Full mixture component number
+global Nh Nr n alpha
+Nh = 20;  %Full mixture component number
 Nr = 4;   %Reduced mixture component number
 r = 8;
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
-alpha = 2.8;  %Mean spreading factor
+alpha = 2.6;  %Mean spreading factor
 beta = 3; %Covariance tuning parameter
 nSamples = Nr*1500;
 NKMeansSteps = 20;
@@ -25,10 +25,16 @@ gm = GMGen(Nh,n,alpha,beta);
 %gm = testWilliamsCompGen();
 %gm = testRunnalsCompGen();
 %gm = test5CompGen();
+%gm = testCrouseCompGen();
 %%
 
 if n==1
-    X = linspace(-2*alpha^3, 2*alpha^3,nPoints);
+    [maxMu,indMax] = max([gm.mu]);
+    [minMu,indMin] = min([gm.mu]);
+    maxSigma = max([gm.Sigma]);
+    center = (maxMu-minMu)/2;
+    
+    X = linspace(-(abs(minMu) + 1.5*sqrt(maxSigma) + center), (abs(maxMu) + 1.5*sqrt(maxSigma) + center),nPoints);
 elseif n==2
     x1 = linspace(-2*alpha^3, 2*alpha^3,nPoints);
     x2 = linspace(-2*alpha^3, 2*alpha^3,nPoints);
