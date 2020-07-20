@@ -22,10 +22,10 @@ optWeights = 1; %flag to optimize weights or not
 
 %gm = GMGen(Nh,n,alpha,beta);
 %gm = test4CompGen(Nh,r);
-%gm = testWilliamsCompGen();
+gm = testWilliamsCompGen();
 %gm = testRunnalsCompGen();
 %gm = test5CompGen();
-gm = testCrouseCompGen();
+%gm = testCrouseCompGen();
 %%
 
 if n==1
