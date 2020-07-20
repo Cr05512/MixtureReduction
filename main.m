@@ -22,10 +22,10 @@ optWeights = 1; %flag to optimize weights or not
 
 %gm = GMGen(Nh,n,alpha,beta);
 %gm = test4CompGen(Nh,r);
-gm = testWilliamsCompGen();
+%gm = testWilliamsCompGen();
 %gm = testRunnalsCompGen();
 %gm = test5CompGen();
-%gm = testCrouseCompGen();
+gm = testCrouseCompGen();
 %%
 
 if n==1
@@ -84,11 +84,11 @@ disp('Salmond MRA nISE: ')
 nISE(gm,gm_Salm)
 
 
-% tic;
-% gm_GMRCWas = GMRCWas(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
-% GMRCWasTime = toc;
-% disp('GMRCWas MRA nISE: ');
-% nISE(gm,gm_GMRCWas)
+tic;
+gm_GMRCWas = GMRCWas(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+GMRCWasTime = toc;
+disp('GMRCWas MRA nISE: ');
+nISE(gm,gm_GMRCWas)
 
 %%
 tic;
@@ -147,18 +147,18 @@ nISE(gm,gm_ARKLD)
       grid minor
       title(strcat('nISE: ',num2str(nISE(gm,gm_Was)),', Time: ',num2str(WassersteinTime),'s'),'FontSize',14);
       legend('Original','Wasserstein','FontSize',11);
-%       subplot(2,3,6)
-%       plotGM1D(gm,X); hold on
-%       plotGM1D(gm_GMRCWas,X); hold on
-%       grid minor
-%       title(strcat('nISE: ',num2str(nISE(gm,gm_GMRCWas)),', Time: ',num2str(GMRCWasTime),'s'),'FontSize',14);
-%       legend('Original','GMRCWas','FontSize',11);
       subplot(2,3,6)
       plotGM1D(gm,X); hold on
-      plotGM1D(gm_ARKLD,X); hold on
+      plotGM1D(gm_GMRCWas,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_ARKLD)),', Time: ',num2str(ARKLDTime),'s'),'FontSize',14);
-      legend('Original','ARKLD','FontSize',11);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRCWas)),', Time: ',num2str(GMRCWasTime),'s'),'FontSize',14);
+      legend('Original','GMRCWas','FontSize',11);
+%       subplot(2,3,6)
+%       plotGM1D(gm,X); hold on
+%       plotGM1D(gm_ARKLD,X); hold on
+%       grid minor
+%       title(strcat('nISE: ',num2str(nISE(gm,gm_ARKLD)),', Time: ',num2str(ARKLDTime),'s'),'FontSize',14);
+%       legend('Original','ARKLD','FontSize',11);
 
       
       

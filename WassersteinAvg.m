@@ -1,5 +1,7 @@
 function  pdf_avg = WassersteinAvg(cluster)
 
+%This is equivalent to computing Wasserstein Barycenters
+
 n = size(cluster(1).mu,1);
 Ki = length(cluster);
 

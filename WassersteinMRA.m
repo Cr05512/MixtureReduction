@@ -29,10 +29,8 @@ function gmr = WassersteinMRA(gm, Nr)
 
         %Alternatively we can compute the barycenter of the desired
         %measures 
-        pdf_merged = WassersteinBarycenter([gmr(i);gmr(j)],50);
-%        
-        
-        
+       pdf_merged = WassersteinBarycenter([gmr(i);gmr(j)],50);
+       
         
         gmr(i) = pdf_merged;
         gmr(j) = [];

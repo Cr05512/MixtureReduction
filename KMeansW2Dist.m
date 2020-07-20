@@ -23,7 +23,7 @@ for k=1:NKMeansSteps
     for l=1:length(newMixture)
         clusterL = gmh(find(assignVector==l));
         if ~isempty(clusterL)
-            newMixture(l) = WassersteinAvg(clusterL);
+            newMixture(l) = WassersteinBarycenter(clusterL,50);
         else
             newMixture(l) = [];
         end
