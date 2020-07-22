@@ -5,10 +5,10 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha
-Nh = 20;  %Full mixture component number
-Nr = 5;   %Reduced mixture component number
+Nh = 4;  %Full mixture component number
+Nr = 3;   %Reduced mixture component number
 r = 8;
-n = 1;    %Dimension
+n = 2;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
 alpha = 2.6;  %Mean spreading factor
 beta = 2; %Covariance tuning parameter
@@ -173,7 +173,7 @@ nISE(gm,gm_ARKLD)
 %     title('KI MRA')
      subplot(3,2,2)
      plotGM2D(gm_Run,x1,x2,X);
-     title(strcat('Runnals MRA. nISE: ',num2str(nISE(gm,gm_Run)),', Time: ',num2str(RunnalsTime),'s'));
+     title(strcat('Runnals MRA ',' nISE: ',num2str(nISE(gm,gm_Run)),' W2: ',num2str(GMWassersteinDistance(gm,gm_Run)),', Time: ',num2str(RunnalsTime),'s'));
 %     subplot(2,3,4)
 %     plotGM2D(gm_Salm,x1,x2,X);
 %     title('Salmond MRA')
@@ -182,23 +182,23 @@ nISE(gm,gm_ARKLD)
 %     title('Williams MRA');
     subplot(3,2,3)
     plotGM2D(gm_GMRC,x1,x2,X);
-    title(strcat('GMRC MRA. nISE: ',num2str(nISE(gm,gm_GMRC)),', Time: ',num2str(GMRCTime),'s'));
+    title(strcat('GMRC MRA ',' nISE: ',num2str(nISE(gm,gm_GMRC)),' W2: ',num2str(GMWassersteinDistance(gm,gm_GMRC)),', Time: ',num2str(GMRCTime),'s'));
     
     subplot(3,2,4)
     plotGM2D(gm_Salm,x1,x2,X);
-    title(strcat('Salmond MRA. niSE: ', num2str(nISE(gm,gm_Salm)),', Time: ', num2str(SalmondTime),'s'));
+    title(strcat('Salmond MRA ',' nISE: ',num2str(nISE(gm,gm_Salm)),' W2: ',num2str(GMWassersteinDistance(gm,gm_Salm)),', Time: ',num2str(SalmondTime),'s'));
     
      subplot(3,2,5)
     plotGM2D(gm_Williams,x1,x2,X);
-    title(strcat('Williams MRA. niSE: ', num2str(nISE(gm,gm_Williams)),', Time: ', num2str(WilliamsTime),'s'));
+    title(strcat('Williams MRA ',' nISE: ',num2str(nISE(gm,gm_Williams)),' W2: ',num2str(GMWassersteinDistance(gm,gm_Williams)),', Time: ',num2str(WilliamsTime),'s'));
     
-%       subplot(3,2,6)
-%     plotGM2D(gm_Was,x1,x2,X);
-%     title(strcat('Wasserstein MRA. niSE: ', num2str(nISE(gm,gm_Was)),', Time: ', num2str(WassersteinTime),'s'));
-
       subplot(3,2,6)
-    plotGM2D(gm_ARKLD,x1,x2,X);
-    title(strcat('ARKLD MRA. niSE: ', num2str(nISE(gm,gm_ARKLD)),', Time: ', num2str(ARKLDTime),'s'));
+    plotGM2D(gm_Was,x1,x2,X);
+    title(strcat('Wasserstein MRA ',' nISE: ',num2str(nISE(gm,gm_Was)),' W2: ',num2str(GMWassersteinDistance(gm,gm_Was)),', Time: ',num2str(WassersteinTime),'s'));
+
+%       subplot(3,2,6)
+%     plotGM2D(gm_ARKLD,x1,x2,X);
+%     title(strcat('ARKLD MRA. niSE: ', num2str(nISE(gm,gm_ARKLD)),', Time: ', num2str(ARKLDTime),'s'));
 
  else
      disp(strcat('Runnals MRA. niSE: ', num2str(nISE(gm,gm_Run)),', Time: ', num2str(RunnalsTime),'s'));
