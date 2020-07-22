@@ -7,7 +7,7 @@ function gmr = WassersteinMRA(gm, Nr)
         %We first compute the KLD bounds for every merging action
         for i=1:length(gmr)
             for j=1:length(gmr)
-                if(i<j)
+                if i<j
                     WMatrix(i,j) = Wasserstein2Dist(gmr(i),gmr(j));
                 end
             end

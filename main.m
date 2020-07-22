@@ -5,13 +5,13 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha
-Nh = 20;  %Full mixture component number
-Nr = 4;   %Reduced mixture component number
+Nh = 3;  %Full mixture component number
+Nr = 2;   %Reduced mixture component number
 r = 8;
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
-alpha = 2.6;  %Mean spreading factor
-beta = 3; %Covariance tuning parameter
+alpha = 3.6;  %Mean spreading factor
+beta = 1; %Covariance tuning parameter
 nSamples = Nr*1500;
 NKMeansSteps = 20;
 sk = 0.005; %Gradient step

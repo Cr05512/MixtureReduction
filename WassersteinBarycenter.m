@@ -17,11 +17,11 @@ S_prev = S_prev./n;
 for k=1:maxIter
     S = zeros(d,d);
     S_prev = real(sqrtm(S_prev));
-    S_prev_inv = inv(S_prev);
+    %S_prev_inv = inv(S_prev);
     for i=1:n
         S = S + (gm(i).w/w_bar)*real(sqrtm(S_prev*gm(i).Sigma*S_prev));
     end
-    S = S_prev_inv*S^2*S_prev_inv; %This multiplication can be avoided, but there is no result on the convergence
+    %S = S_prev_inv*S^2*S_prev_inv; %This multiplication can be avoided, but there is no result on the convergence
     if norm(real(sqrtm(S))-S_prev)<1e-10
         break;
     else

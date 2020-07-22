@@ -1,36 +1,37 @@
-clc
+(inclc
 clear
 close all
 
 Nh = 30;  %Full mixture component number
-Nr = 5;   %Reduced mixture component number
+Nr = 20;   %Reduced mixture component number
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
-alpha = 2.7;  %Mean spreading factor
-beta = 1; %Covariance tuning parameter
+alpha = 3.2;  %Mean spreading factor
+beta = 4; %Covariance tuning parameter
 nSamples = Nr*1000;
 NKMeansSteps = 20;
 sk = 0.005; %Gradient step
 NOptSteps = 30; %Gradient iterations
 NEMiter = 10;
 optWeights = 1; %flag to optimize weights or not
-NumTests = 100;
+NumTests = 50;
 
-nISEVector = zeros(3,NumTests);
-timeVector = zeros(3,NumTests);
+nISEVector = zeros(2,NumTests);
+timeVector = zeros(2,NumTests);
+W2Vector = zeros(2,NumTests);
 
 for m = 1:NumTests
     
     gm = GMGen(Nh,n,alpha,beta);
-    
-    tic;
-    [gm_GMRC, nISETrajGMRC] = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
-    GMRCTime = toc;
-    nISEVector(1,m) = nISE(gm,gm_GMRC);
-    timeVector(1,m) = GMRCTime;
-    %disp('GMRC MRA nISE: ')
-    %nISE(gm,gm_GMRC)
-    
+%     
+%     tic;
+%     [gm_GMRC, nISETrajGMRC] = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+%     GMRCTime = toc;
+%     nISEVector(1,m) = nISE(gm,gm_GMRC);
+%     timeVector(1,m) = GMRCTime;
+%     %disp('GMRC MRA nISE: ')
+%     %nISE(gm,gm_GMRC)
+%     
 %     tic;
 %     gm_Williams = WilliamsMRA(gm,Nr);
 %     gm_Williams = ISEOpt(gm,gm_Williams,sk,NOptSteps,optWeights);
@@ -38,13 +39,13 @@ for m = 1:NumTests
 %     nISEVector(4,m) = nISE(gm,gm_Williams);
 %     timeVector(4,m) = WilliamsTime;
 
-    tic;
-    gm_GMRCWas = GMRCWas(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
-    GMRCWasTime = toc;
-    nISEVector(2,m) = nISE(gm,gm_GMRCWas);
-    timeVector(2,m) = GMRCWasTime;
-    %disp('Runnals MRA nISE: ')
-    %nISE(gm,gm_Run)
+%     tic;
+%     gm_GMRCWas = GMRCWas(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+%     GMRCWasTime = toc;
+%     nISEVector(2,m) = nISE(gm,gm_GMRCWas);
+%     timeVector(2,m) = GMRCWasTime;
+%     %disp('Runnals MRA nISE: ')
+%     %nISE(gm,gm_Run)
 %     
 %     tic;
 %     gm_Salm = SalmondMRA(gm,Nr);
@@ -56,8 +57,16 @@ for m = 1:NumTests
     tic;
     gm_Was = WassersteinMRA(gm,Nr);
     WassersteinTime = toc;
-    nISEVector(3,m) = nISE(gm,gm_Was);
-    timeVector(3,m) = WassersteinTime;
+    nISEVector(1,m) = nISE(gm,gm_Was);
+    timeVector(1,m) = WassersteinTime;
+    W2Vector(1,m) = GMWassersteinDistance(gm,gm_Was);
+    
+    tic;
+    gm_Run = RunnalsMRA(gm,Nr);
+    RunnalsTime = toc;
+    nISEVector(2,m) = nISE(gm,gm_Run);
+    timeVector(2,m) = RunnalsTime;
+    W2Vector(2,m) = GMWassersteinDistance(gm,gm_Run);
     
     
 %     tic;
@@ -76,3 +85,4 @@ end
 
 avgnISE = sum(nISEVector,2)./NumTests
 avgTime = sum(timeVector,2)./NumTests
+avgW2 = sum(W2Vector,2)./NumTests
