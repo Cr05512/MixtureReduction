@@ -1,20 +1,20 @@
-(inclc
+clc
 clear
 close all
 
-Nh = 30;  %Full mixture component number
-Nr = 20;   %Reduced mixture component number
+Nh = 70;  %Full mixture component number
+Nr = 10;   %Reduced mixture component number
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
-alpha = 3.2;  %Mean spreading factor
-beta = 4; %Covariance tuning parameter
+alpha = 2.5;  %Mean spreading factor
+beta = 2; %Covariance tuning parameter
 nSamples = Nr*1000;
 NKMeansSteps = 20;
 sk = 0.005; %Gradient step
 NOptSteps = 30; %Gradient iterations
 NEMiter = 10;
 optWeights = 1; %flag to optimize weights or not
-NumTests = 50;
+NumTests = 10;
 
 nISEVector = zeros(2,NumTests);
 timeVector = zeros(2,NumTests);
