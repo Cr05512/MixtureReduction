@@ -5,13 +5,13 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha
-Nh = 3;  %Full mixture component number
-Nr = 2;   %Reduced mixture component number
+Nh = 20;  %Full mixture component number
+Nr = 5;   %Reduced mixture component number
 r = 8;
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
-alpha = 3.6;  %Mean spreading factor
-beta = 1; %Covariance tuning parameter
+alpha = 2.6;  %Mean spreading factor
+beta = 2; %Covariance tuning parameter
 nSamples = Nr*1500;
 NKMeansSteps = 20;
 sk = 0.005; %Gradient step
@@ -20,12 +20,12 @@ NEMiter = 10;
 optWeights = 1; %flag to optimize weights or not
 
 
-%gm = GMGen(Nh,n,alpha,beta);
+gm = GMGen(Nh,n,alpha,beta);
 %gm = test4CompGen(Nh,r);
 %gm = testWilliamsCompGen();
 %gm = testRunnalsCompGen();
 %gm = test5CompGen();
-gm = testCrouseCompGen();
+%gm = testCrouseCompGen();
 %%
 
 if n==1
@@ -85,7 +85,7 @@ nISE(gm,gm_Salm)
 
 
 tic;
-gm_GMRCWas = GMRCWas(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+gm_GMRCWas = GMRCWas(gm,Nr,NKMeansSteps);
 GMRCWasTime = toc;
 disp('GMRCWas MRA nISE: ');
 nISE(gm,gm_GMRCWas)
@@ -121,37 +121,37 @@ nISE(gm,gm_ARKLD)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_Salm,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_Salm)),', Time: ',num2str(SalmondTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_Salm)),' W2: ',num2str(GMWassersteinDistance(gm,gm_Salm)),' Time: ',num2str(SalmondTime),'s'),'FontSize',14);
       legend('Original','Salmond','FontSize',11);
       subplot(2,3,2)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_Williams,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_Williams)),', Time: ',num2str(WilliamsTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_Williams)),' W2: ',num2str(GMWassersteinDistance(gm,gm_Williams)),', Time: ',num2str(WilliamsTime),'s'),'FontSize',14);
       legend('Original','Williams','FontSize',11);
       subplot(2,3,3)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_Run,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_Run)),', Time: ',num2str(RunnalsTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_Run)),' W2: ',num2str(GMWassersteinDistance(gm,gm_Run)),', Time: ',num2str(RunnalsTime),'s'),'FontSize',14);
       legend('Original','Runnals','FontSize',11);
       subplot(2,3,4)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_GMRC,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRC)),', Time: ',num2str(GMRCTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRC)),' W2: ',num2str(GMWassersteinDistance(gm,gm_GMRC)),', Time: ',num2str(GMRCTime),'s'),'FontSize',14);
       legend('Original','GMRC','FontSize',11);
       subplot(2,3,5)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_Was,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_Was)),', Time: ',num2str(WassersteinTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_Was)),' W2: ',num2str(GMWassersteinDistance(gm,gm_Was)),', Time: ',num2str(WassersteinTime),'s'),'FontSize',14);
       legend('Original','Wasserstein','FontSize',11);
       subplot(2,3,6)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_GMRCWas,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRCWas)),', Time: ',num2str(GMRCWasTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRCWas)),' W2: ',num2str(GMWassersteinDistance(gm,gm_GMRCWas)),', Time: ',num2str(GMRCWasTime),'s'),'FontSize',14);
       legend('Original','GMRCWas','FontSize',11);
 %       subplot(2,3,6)
 %       plotGM1D(gm,X); hold on
