@@ -8,7 +8,7 @@ global Nh Nr n alpha
 Nh = 4;  %Full mixture component number
 Nr = 3;   %Reduced mixture component number
 r = 8;
-n = 2;    %Dimension
+n = 10;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
 alpha = 2.8;  %Mean spreading factor
 beta = 2; %Covariance tuning parameter
@@ -20,12 +20,12 @@ NEMiter = 10;
 optWeights = 1; %flag to optimize weights or not
 
 
-gm = GMGen(Nh,n,alpha,beta);
+%gm = GMGen(Nh,n,alpha,beta);
 %gm = test4CompGen(Nh,r);
 %gm = testWilliamsCompGen();
 %gm = testRunnalsCompGen();
 %gm = test5CompGen();
-%gm = testCrouseCompGen();
+gm = testCrouseCompGen();
 %%
 
 if n==1
@@ -121,37 +121,37 @@ nISE(gm,gm_ARKLD)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_Salm,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_Salm)),' W2: ',num2str(GMWassersteinDistance(gm,gm_Salm)),' Time: ',num2str(SalmondTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_Salm)),' W2: ',num2str(TransportationDistanceW2(gm,gm_Salm)),' Time: ',num2str(SalmondTime),'s'),'FontSize',14);
       legend('Original','Salmond','FontSize',11);
       subplot(2,3,2)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_Williams,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_Williams)),' W2: ',num2str(GMWassersteinDistance(gm,gm_Williams)),', Time: ',num2str(WilliamsTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_Williams)),' W2: ',num2str(TransportationDistanceW2(gm,gm_Williams)),', Time: ',num2str(WilliamsTime),'s'),'FontSize',14);
       legend('Original','Williams','FontSize',11);
       subplot(2,3,3)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_Run,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_Run)),' W2: ',num2str(GMWassersteinDistance(gm,gm_Run)),', Time: ',num2str(RunnalsTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_Run)),' W2: ',num2str(TransportationDistanceW2(gm,gm_Run)),', Time: ',num2str(RunnalsTime),'s'),'FontSize',14);
       legend('Original','Runnals','FontSize',11);
       subplot(2,3,4)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_GMRC,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRC)),' W2: ',num2str(GMWassersteinDistance(gm,gm_GMRC)),', Time: ',num2str(GMRCTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRC)),' W2: ',num2str(TransportationDistanceW2(gm,gm_GMRC)),', Time: ',num2str(GMRCTime),'s'),'FontSize',14);
       legend('Original','GMRC','FontSize',11);
       subplot(2,3,5)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_Was,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_Was)),' W2: ',num2str(GMWassersteinDistance(gm,gm_Was)),', Time: ',num2str(WassersteinTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_Was)),' W2: ',num2str(TransportationDistanceW2(gm,gm_Was)),', Time: ',num2str(WassersteinTime),'s'),'FontSize',14);
       legend('Original','Wasserstein','FontSize',11);
       subplot(2,3,6)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_GMRCWas,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRCWas)),' W2: ',num2str(GMWassersteinDistance(gm,gm_GMRCWas)),', Time: ',num2str(GMRCWasTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRCWas)),' W2: ',num2str(TransportationDistanceW2(gm,gm_GMRCWas)),', Time: ',num2str(GMRCWasTime),'s'),'FontSize',14);
       legend('Original','GMRCWas','FontSize',11);
 %       subplot(2,3,6)
 %       plotGM1D(gm,X); hold on
@@ -173,7 +173,7 @@ nISE(gm,gm_ARKLD)
 %     title('KI MRA')
      subplot(3,2,2)
      plotGM2D(gm_Run,x1,x2,X);
-     title(strcat('Runnals MRA ',' nISE: ',num2str(nISE(gm,gm_Run)),' W2: ',num2str(GMWassersteinDistance(gm,gm_Run)),', Time: ',num2str(RunnalsTime),'s'));
+     title(strcat('Runnals MRA ',' nISE: ',num2str(nISE(gm,gm_Run)),' W2: ',num2str(TransportationDistanceW2(gm,gm_Run)),', Time: ',num2str(RunnalsTime),'s'));
 %     subplot(2,3,4)
 %     plotGM2D(gm_Salm,x1,x2,X);
 %     title('Salmond MRA')
@@ -182,27 +182,31 @@ nISE(gm,gm_ARKLD)
 %     title('Williams MRA');
     subplot(3,2,3)
     plotGM2D(gm_GMRC,x1,x2,X);
-    title(strcat('GMRC MRA ',' nISE: ',num2str(nISE(gm,gm_GMRC)),' W2: ',num2str(GMWassersteinDistance(gm,gm_GMRC)),', Time: ',num2str(GMRCTime),'s'));
+    title(strcat('GMRC MRA ',' nISE: ',num2str(nISE(gm,gm_GMRC)),' W2: ',num2str(TransportationDistanceW2(gm,gm_GMRC)),', Time: ',num2str(GMRCTime),'s'));
     
     subplot(3,2,4)
     plotGM2D(gm_Salm,x1,x2,X);
-    title(strcat('Salmond MRA ',' nISE: ',num2str(nISE(gm,gm_Salm)),' W2: ',num2str(GMWassersteinDistance(gm,gm_Salm)),', Time: ',num2str(SalmondTime),'s'));
+    title(strcat('Salmond MRA ',' nISE: ',num2str(nISE(gm,gm_Salm)),' W2: ',num2str(TransportationDistanceW2(gm,gm_Salm)),', Time: ',num2str(SalmondTime),'s'));
     
      subplot(3,2,5)
     plotGM2D(gm_Williams,x1,x2,X);
-    title(strcat('Williams MRA ',' nISE: ',num2str(nISE(gm,gm_Williams)),' W2: ',num2str(GMWassersteinDistance(gm,gm_Williams)),', Time: ',num2str(WilliamsTime),'s'));
+    title(strcat('Williams MRA ',' nISE: ',num2str(nISE(gm,gm_Williams)),' W2: ',num2str(TransportationDistanceW2(gm,gm_Williams)),', Time: ',num2str(WilliamsTime),'s'));
     
       subplot(3,2,6)
     plotGM2D(gm_Was,x1,x2,X);
-    title(strcat('Wasserstein MRA ',' nISE: ',num2str(nISE(gm,gm_Was)),' W2: ',num2str(GMWassersteinDistance(gm,gm_Was)),', Time: ',num2str(WassersteinTime),'s'));
+    title(strcat('Wasserstein MRA ',' nISE: ',num2str(nISE(gm,gm_Was)),' W2: ',num2str(TransportationDistanceW2(gm,gm_Was)),', Time: ',num2str(WassersteinTime),'s'));
 
 %       subplot(3,2,6)
 %     plotGM2D(gm_ARKLD,x1,x2,X);
 %     title(strcat('ARKLD MRA. niSE: ', num2str(nISE(gm,gm_ARKLD)),', Time: ', num2str(ARKLDTime),'s'));
 
  else
-     disp(strcat('Runnals MRA. niSE: ', num2str(nISE(gm,gm_Run)),', Time: ', num2str(RunnalsTime),'s'));
-     disp(strcat('GMRC MRA. niSE: ', num2str(nISE(gm,gm_GMRC)),', Time: ', num2str(GMRCTime),'s'));
+     disp(strcat('Williams MRA ',' nISE: ',num2str(nISE(gm,gm_Williams)),' W2: ',num2str(TransportationDistanceW2(gm,gm_Williams)),', Time: ',num2str(WilliamsTime),'s'));
+     disp(strcat('Salmond MRA ',' nISE: ',num2str(nISE(gm,gm_Salm)),' W2: ',num2str(TransportationDistanceW2(gm,gm_Salm)),', Time: ',num2str(SalmondTime),'s'));
+     disp(strcat('Runnals MRA ',' nISE: ',num2str(nISE(gm,gm_Run)),' W2: ',num2str(TransportationDistanceW2(gm,gm_Run)),', Time: ',num2str(RunnalsTime),'s'));
+     disp(strcat('GMRC MRA ',' nISE: ',num2str(nISE(gm,gm_GMRC)),' W2: ',num2str(TransportationDistanceW2(gm,gm_GMRC)),', Time: ',num2str(GMRCTime),'s'));
+     disp(strcat('Wasserstein MRA ',' nISE: ',num2str(nISE(gm,gm_Was)),' W2: ',num2str(TransportationDistanceW2(gm,gm_Was)),', Time: ',num2str(WassersteinTime),'s'));
+     
     
  end
 

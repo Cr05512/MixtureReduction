@@ -1,4 +1,4 @@
-function [d,C,pi_star] = GMWassersteinDistance(gmh,gmr)
+function [d,C,pi_star] = TransportationDistanceW2(gmh,gmr)
 %This function computes the distance between two gaussian mixtures based on
 % an upper bound on the Wasserstein2 distance
 
@@ -11,7 +11,7 @@ for i=1:length(gmh)
     end
 end
 
-pi_star = computeOPT(gmh,gmr);
+pi_star = computeOTP(gmh,gmr);
 
 d = 0;
 

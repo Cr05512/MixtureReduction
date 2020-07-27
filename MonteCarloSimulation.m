@@ -2,11 +2,11 @@ clc
 clear
 close all
 
-Nh = 70;  %Full mixture component number
-Nr = 10;   %Reduced mixture component number
-n = 1;    %Dimension
+Nh = 40;  %Full mixture component number
+Nr = 15;   %Reduced mixture component number
+n = 10;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
-alpha = 2.5;  %Mean spreading factor
+alpha = 2.8;  %Mean spreading factor
 beta = 2; %Covariance tuning parameter
 nSamples = Nr*1000;
 NKMeansSteps = 20;
@@ -14,15 +14,18 @@ sk = 0.005; %Gradient step
 NOptSteps = 30; %Gradient iterations
 NEMiter = 10;
 optWeights = 1; %flag to optimize weights or not
-NumTests = 10;
+NumTests = 50;
 
 nISEVector = zeros(2,NumTests);
 timeVector = zeros(2,NumTests);
 W2Vector = zeros(2,NumTests);
+h = waitbar(0,'Processing...');
+
 
 for m = 1:NumTests
     
     gm = GMGen(Nh,n,alpha,beta);
+    waitbar(m/NumTests,h)
 %     
 %     tic;
 %     [gm_GMRC, nISETrajGMRC] = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
@@ -82,6 +85,8 @@ for m = 1:NumTests
 
     
 end
+
+close(h);
 
 avgnISE = sum(nISEVector,2)./NumTests
 avgTime = sum(timeVector,2)./NumTests

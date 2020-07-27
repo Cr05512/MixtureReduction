@@ -1,4 +1,6 @@
-function pi = computeOPT(gmh,gmr)
+function pi = computeOTP(gmh,gmr)
+
+%This function computes the optimal transportation plan
  
 Nh = length(gmh);
 Nr = length(gmr);

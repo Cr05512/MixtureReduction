@@ -1,4 +1,4 @@
-function pi = computeOPTEntropicRegularized(gmh,gmr)
+function pi = computeOTPEntropicRegularized(gmh,gmr)
 %Sinkhorn algorithm to compute the optimal transportation plan between the
 %original and the reduced mixture (Entropic Regularized)
 gamma = 1; %reg for entropy. With this parameter and by removing the sqrt on the distance we obtain the same behavior as Assa Plataniotis' paper
