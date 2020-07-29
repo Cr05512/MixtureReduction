@@ -1,8 +1,6 @@
-function pi = computeEROTP(gmh,gmr)
+function pi = computeEROTP(gmh,gmr,gamma,maxiter)
 %Sinkhorn algorithm to compute the entropic regularized optimal transportation plan between the
 %original and the reduced mixture
-gamma = 6;
-maxiter = 100; % maxiter
  
 Nh = length(gmh);
 Nr = length(gmr);
