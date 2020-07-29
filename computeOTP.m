@@ -1,26 +1,18 @@
-function pi = computeOTP(gmh,gmr)
+function pi = computeOTP(C,wF,wG)
+%C is the cost matrix
+%wF is the marginal over row elements sum, that is pi*ones(Nr,1) = wF
+%wG is the marginal over column elements sum, that is pi'*ones(Nh,1) = wG
 
 %This function computes the optimal transportation plan
  
-Nh = length(gmh);
-Nr = length(gmr);
+Nh = length(wF);
+Nr = length(wG);
  
-% marginals
-p = [gmh.w]'; %for colums sum
-q = [gmr.w]'; % for row sum
- 
-M = zeros(Nh,Nr);
-for i=1:length(gmh)
-    for j=1:length(gmr)
-        M(i,j) = Wasserstein2Dist(gmh(i),gmr(j));
-    end
-end
-
-f = reshape(M,Nh*Nr,1);
+f = reshape(C,Nh*Nr,1);
 
 
 Aeq = [kron(ones(1,Nr),eye(Nh));kron(eye(Nr),ones(1,Nh))];
-beq = [p;q];
+beq = [wF;wG];
 A = -eye(Nh*Nr);
 b = zeros(Nh*Nr,1);
 

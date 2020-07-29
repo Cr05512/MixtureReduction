@@ -28,7 +28,7 @@ else
     C = Inf(Nh,Nr);
 end
 
-pi_star = computeOTP(gmh,gmr);
+pi_star = computeOTP(C,[gmh.w]',[gmr.w]');
 
 d = trace(pi_star'*C);  %Matrix inner product
 

@@ -34,8 +34,12 @@ else
     C = Inf(Nh,Nr);
 end
 
-
-pi_star = computeEROTP(gmh,gmr,gamma,maxiter);
+if gamma==0
+    disp('Falling back to classic OTP calculation...');
+    pi_star = computeOTP(C,[gmh.w]',[gmr.w]');
+else
+    pi_star = computeEROTP(C,[gmh.w]',[gmr.w]',gamma,maxiter);
+end
 
 d = trace(pi_star'*C);  %Matrix inner product
 
