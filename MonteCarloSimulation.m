@@ -2,8 +2,8 @@ clc
 clear
 close all
 
-Nh = 40;  %Full mixture component number
-Nr = 15;   %Reduced mixture component number
+Nh = 10;  %Full mixture component number
+Nr = 5;   %Reduced mixture component number
 n = 10;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
 alpha = 2.8;  %Mean spreading factor
@@ -62,14 +62,14 @@ for m = 1:NumTests
     WassersteinTime = toc;
     nISEVector(1,m) = nISE(gm,gm_Was);
     timeVector(1,m) = WassersteinTime;
-    W2Vector(1,m) = GMWassersteinDistance(gm,gm_Was);
+    W2Vector(1,m) = CTDW2(gm,gm_Was,'W2');
     
     tic;
     gm_Run = RunnalsMRA(gm,Nr);
     RunnalsTime = toc;
     nISEVector(2,m) = nISE(gm,gm_Run);
     timeVector(2,m) = RunnalsTime;
-    W2Vector(2,m) = GMWassersteinDistance(gm,gm_Run);
+    W2Vector(2,m) = CTDW2(gm,gm_Run,'W2');
     
     
 %     tic;

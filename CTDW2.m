@@ -1,4 +1,11 @@
 function [d,C,pi_star] = CTDW2(gmh,gmr,cost_meas)
+
+if nargin < 2
+    error('Not enough inputs')
+elseif nargin < 3
+    cost_meas = 'W2'; %By default
+    disp('Assuming W2 as cost function...');
+end
 %This function computes the composite transportation distance between two gaussian mixtures 
 Nh = length(gmh);
 Nr = length(gmr);
