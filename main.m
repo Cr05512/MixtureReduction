@@ -18,6 +18,7 @@ sk = 0.005; %Gradient step
 NOptSteps = 50; %Gradient iterations
 NEMiter = 10;
 optWeights = 1; %flag to optimize weights or not
+cost_measure = 'W2';
 
 
 %gm = GMGen(Nh,n,alpha,beta);
@@ -121,37 +122,37 @@ nISE(gm,gm_ARKLD)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_Salm,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_Salm)),' CTDW2: ',num2str(CTDW2(gm,gm_Salm,'W2')),' Time: ',num2str(SalmondTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_Salm)),' CTD',cost_measure,': ',num2str(CTDW2(gm,gm_Salm,cost_measure)),' Time: ',num2str(SalmondTime),'s'),'FontSize',14);
       legend('Original','Salmond','FontSize',11);
       subplot(2,3,2)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_Williams,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_Williams)),' CTDW2: ',num2str(CTDW2(gm,gm_Williams,'W2')),', Time: ',num2str(WilliamsTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_Williams)),' CTD',cost_measure,': ',num2str(CTDW2(gm,gm_Williams,cost_measure)),', Time: ',num2str(WilliamsTime),'s'),'FontSize',14);
       legend('Original','Williams','FontSize',11);
       subplot(2,3,3)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_Run,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_Run)),' CTDW2: ',num2str(CTDW2(gm,gm_Run,'W2')),', Time: ',num2str(RunnalsTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_Run)),' CTD',cost_measure,': ',num2str(CTDW2(gm,gm_Run,cost_measure)),', Time: ',num2str(RunnalsTime),'s'),'FontSize',14);
       legend('Original','Runnals','FontSize',11);
       subplot(2,3,4)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_GMRC,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRC)),' CTDW2: ',num2str(CTDW2(gm,gm_GMRC,'W2')),', Time: ',num2str(GMRCTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRC)),' CTD',cost_measure,': ',num2str(CTDW2(gm,gm_GMRC,cost_measure)),', Time: ',num2str(GMRCTime),'s'),'FontSize',14);
       legend('Original','GMRC','FontSize',11);
       subplot(2,3,5)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_Was,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_Was)),' CTDW2: ',num2str(CTDW2(gm,gm_Was,'W2')),', Time: ',num2str(WassersteinTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_Was)),' CTD',cost_measure,': ',num2str(CTDW2(gm,gm_Was,cost_measure)),', Time: ',num2str(WassersteinTime),'s'),'FontSize',14);
       legend('Original','Wasserstein','FontSize',11);
       subplot(2,3,6)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_GMRCWas,X); hold on
       grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRCWas)),' CTDW2: ',num2str(CTDW2(gm,gm_GMRCWas,'W2')),', Time: ',num2str(GMRCWasTime),'s'),'FontSize',14);
+      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRCWas)),' CTD',cost_measure,': ',num2str(CTDW2(gm,gm_GMRCWas,cost_measure)),', Time: ',num2str(GMRCWasTime),'s'),'FontSize',14);
       legend('Original','GMRCWas','FontSize',11);
 %       subplot(2,3,6)
 %       plotGM1D(gm,X); hold on
@@ -173,7 +174,7 @@ nISE(gm,gm_ARKLD)
 %     title('KI MRA')
      subplot(3,2,2)
      plotGM2D(gm_Run,x1,x2,X);
-     title(strcat('Runnals MRA ',' nISE: ',num2str(nISE(gm,gm_Run)),' CTDW2: ',num2str(CTDW2(gm,gm_Run,'W2')),', Time: ',num2str(RunnalsTime),'s'));
+     title(strcat('Runnals MRA ',' nISE: ',num2str(nISE(gm,gm_Run)),' CTD',cost_measure,': ',num2str(CTDW2(gm,gm_Run,cost_measure)),', Time: ',num2str(RunnalsTime),'s'));
 %     subplot(2,3,4)
 %     plotGM2D(gm_Salm,x1,x2,X);
 %     title('Salmond MRA')
@@ -182,30 +183,30 @@ nISE(gm,gm_ARKLD)
 %     title('Williams MRA');
     subplot(3,2,3)
     plotGM2D(gm_GMRC,x1,x2,X);
-    title(strcat('GMRC MRA ',' nISE: ',num2str(nISE(gm,gm_GMRC)),' CTDW2: ',num2str(CTDW2(gm,gm_GMRC,'W2')),', Time: ',num2str(GMRCTime),'s'));
+    title(strcat('GMRC MRA ',' nISE: ',num2str(nISE(gm,gm_GMRC)),' CTD',cost_measure,': ',num2str(CTDW2(gm,gm_GMRC,cost_measure)),', Time: ',num2str(GMRCTime),'s'));
     
     subplot(3,2,4)
     plotGM2D(gm_Salm,x1,x2,X);
-    title(strcat('Salmond MRA ',' nISE: ',num2str(nISE(gm,gm_Salm)),' CTDW2: ',num2str(CTDW2(gm,gm_Salm,'W2')),', Time: ',num2str(SalmondTime),'s'));
+    title(strcat('Salmond MRA ',' nISE: ',num2str(nISE(gm,gm_Salm)),' CTD',cost_measure,': ',num2str(CTDW2(gm,gm_Salm,cost_measure)),', Time: ',num2str(SalmondTime),'s'));
     
      subplot(3,2,5)
     plotGM2D(gm_Williams,x1,x2,X);
-    title(strcat('Williams MRA ',' nISE: ',num2str(nISE(gm,gm_Williams)),' CTDW2: ',num2str(CTDW2(gm,gm_Williams,'W2')),', Time: ',num2str(WilliamsTime),'s'));
+    title(strcat('Williams MRA ',' nISE: ',num2str(nISE(gm,gm_Williams)),' CTD',cost_measure,': ',num2str(CTDW2(gm,gm_Williams,cost_measure)),', Time: ',num2str(WilliamsTime),'s'));
     
       subplot(3,2,6)
     plotGM2D(gm_Was,x1,x2,X);
-    title(strcat('Wasserstein MRA ',' nISE: ',num2str(nISE(gm,gm_Was)),' CTDW2: ',num2str(CTDW2(gm,gm_Was,'W2')),', Time: ',num2str(WassersteinTime),'s'));
+    title(strcat('Wasserstein MRA ',' nISE: ',num2str(nISE(gm,gm_Was)),' CTD',cost_measure,': ',num2str(CTDW2(gm,gm_Was,cost_measure)),', Time: ',num2str(WassersteinTime),'s'));
 
 %       subplot(3,2,6)
 %     plotGM2D(gm_ARKLD,x1,x2,X);
 %     title(strcat('ARKLD MRA. niSE: ', num2str(nISE(gm,gm_ARKLD)),', Time: ', num2str(ARKLDTime),'s'));
 
  else
-     disp(strcat('Williams MRA ',' nISE: ',num2str(nISE(gm,gm_Williams)),' CTDW2: ',num2str(CTDW2(gm,gm_Williams,'W2')),', Time: ',num2str(WilliamsTime),'s'));
-     disp(strcat('Salmond MRA ',' nISE: ',num2str(nISE(gm,gm_Salm)),' CTDW2: ',num2str(CTDW2(gm,gm_Salm,'W2')),', Time: ',num2str(SalmondTime),'s'));
-     disp(strcat('Runnals MRA ',' nISE: ',num2str(nISE(gm,gm_Run)),' CTDW2: ',num2str(CTDW2(gm,gm_Run,'W2')),', Time: ',num2str(RunnalsTime),'s'));
-     disp(strcat('GMRC MRA ',' nISE: ',num2str(nISE(gm,gm_GMRC)),' CTDW2: ',num2str(CTDW2(gm,gm_GMRC,'W2')),', Time: ',num2str(GMRCTime),'s'));
-     disp(strcat('Wasserstein MRA ',' nISE: ',num2str(nISE(gm,gm_Was)),' CTDW2: ',num2str(CTDW2(gm,gm_Was,'W2')),', Time: ',num2str(WassersteinTime),'s'));
+     disp(strcat('Williams MRA ',' nISE: ',num2str(nISE(gm,gm_Williams)),' CTD',cost_measure,': ',num2str(CTDW2(gm,gm_Williams,cost_measure)),', Time: ',num2str(WilliamsTime),'s'));
+     disp(strcat('Salmond MRA ',' nISE: ',num2str(nISE(gm,gm_Salm)),' CTD',cost_measure,': ',num2str(CTDW2(gm,gm_Salm,cost_measure)),', Time: ',num2str(SalmondTime),'s'));
+     disp(strcat('Runnals MRA ',' nISE: ',num2str(nISE(gm,gm_Run)),' CTD',cost_measure,': ',num2str(CTDW2(gm,gm_Run,cost_measure)),', Time: ',num2str(RunnalsTime),'s'));
+     disp(strcat('GMRC MRA ',' nISE: ',num2str(nISE(gm,gm_GMRC)),' CTD',cost_measure,': ',num2str(CTDW2(gm,gm_GMRC,cost_measure)),', Time: ',num2str(GMRCTime),'s'));
+     disp(strcat('Wasserstein MRA ',' nISE: ',num2str(nISE(gm,gm_Was)),' CTD',cost_measure,': ',num2str(CTDW2(gm,gm_Was,cost_measure)),', Time: ',num2str(WassersteinTime),'s'));
      
     
  end
