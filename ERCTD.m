@@ -1,4 +1,4 @@
-function [d,C,pi_star] = ERCTDW2(gmh,gmr,cost_meas,gamma,maxiter)
+function [d,C,pi_star] = ERCTD(gmh,gmr,cost_meas,gamma,maxiter)
 if nargin < 2
     error('Not enough inputs')
 elseif nargin < 3

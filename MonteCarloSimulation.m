@@ -62,14 +62,14 @@ for m = 1:NumTests
     WassersteinTime = toc;
     nISEVector(1,m) = nISE(gm,gm_Was);
     timeVector(1,m) = WassersteinTime;
-    W2Vector(1,m) = CTDW2(gm,gm_Was,'W2');
+    W2Vector(1,m) = CTD(gm,gm_Was,'W2');
     
     tic;
     gm_Run = RunnalsMRA(gm,Nr);
     RunnalsTime = toc;
     nISEVector(2,m) = nISE(gm,gm_Run);
     timeVector(2,m) = RunnalsTime;
-    W2Vector(2,m) = CTDW2(gm,gm_Run,'W2');
+    W2Vector(2,m) = CTD(gm,gm_Run,'W2');
     
     
 %     tic;
