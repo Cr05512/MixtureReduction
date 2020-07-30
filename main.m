@@ -21,12 +21,12 @@ optWeights = 1; %flag to optimize weights or not
 cost_measure = 'L2'; %cost measure used to compute the cost matrix in the Composite transportation distance
 
 
-gm = GMGen(Nh,n,alpha,beta);
+%gm = GMGen(Nh,n,alpha,beta);
 %gm = test4CompGen(Nh,r);
 %gm = testWilliamsCompGen();
 %gm = testRunnalsCompGen();
 %gm = test5CompGen();
-%gm = testCrouseCompGen();
+gm = testCrouseCompGen();
 %%
 
 if n==1

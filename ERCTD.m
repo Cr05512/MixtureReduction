@@ -17,21 +17,22 @@ Nh = length(gmh);
 Nr = length(gmr);
 C = zeros(Nh,Nr);
 
-if strcmp(cost_meas,'KLD')
-    for i=1:length(gmh)
-        for j=1:length(gmr)
+for i=1:length(gmh)
+    for j=1:length(gmr)
+        if strcmp(cost_meas,'KLD')
             C(i,j) = KLD(gmh(i),gmr(j));
-        end
-    end
-elseif strcmp(cost_meas,'W2')
-    for i=1:length(gmh)
-        for j=1:length(gmr)
+        elseif strcmp(cost_meas,'W2')
             C(i,j) = Wasserstein2Dist(gmh(i),gmr(j));
+        elseif strcmp(cost_meas,'L2')
+            C(i,j) = ISE(gmh(i),gmr(j));
+        else
+            disp('Unknown cost function, aborting...');
+            d = Inf;
+            C = Inf(Nh,Nr);
+            pi_star = Inf(Nh,Nr);
+            return
         end
     end
-else
-    disp('Unknown cost function, aborting...');
-    C = Inf(Nh,Nr);
 end
 
 if gamma==0
