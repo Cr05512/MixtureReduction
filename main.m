@@ -5,20 +5,22 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha
-Nh = 16;  %Full mixture component number
+Nh = 10;  %Full mixture component number
 Nr = 5;   %Reduced mixture component number
 r = 8;
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
-alpha = 2.8;  %Mean spreading factor
+alpha = 2.5;  %Mean spreading factor
 beta = 2; %Covariance tuning parameter
+gamma = 0; %Entropy parameter
+maxiter = 100;
 nSamples = Nr*1500;
 NKMeansSteps = 20;
 sk = 0.005; %Gradient step
 NOptSteps = 50; %Gradient iterations
 NEMiter = 10;
 optWeights = 1; %flag to optimize weights or not
-cost_measure = 'L2'; %cost measure used to compute the cost matrix in the Composite transportation distance
+cost_measure = 'KLD'; %cost measure used to compute the cost matrix in the Composite transportation distance
 
 
 %gm = GMGen(Nh,n,alpha,beta);
@@ -60,7 +62,7 @@ gm_KI = KIDivergenceMRA(gm,Nr);
 KIDTime = toc;
 %%
 tic;
-[gm_GMRC,nISETrajGMRC] = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+gm_GMRC = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
 GMRCTime = toc;
 disp('GMRC MRA nISE: ')
 nISE(gm,gm_GMRC)
@@ -90,6 +92,20 @@ gm_GMRCWas = GMRCWas(gm,Nr,NKMeansSteps);
 GMRCWasTime = toc;
 disp('GMRCWas MRA nISE: ');
 nISE(gm,gm_GMRCWas)
+
+% if strcmp(cost_measure,'W2')
+%     gm_init = gm_Was;
+% elseif strcmp(cost_measure,'KLD')
+%     gm_init = gm_Run;
+% elseif strcmp(cost_measure,'L2')
+%     gm_init = gm_Williams;
+% end
+gm_init = GMGen(Nr,n,alpha,beta);
+tic;
+gm_CTDGMRA = CTDGMRA(gm,gm_init,cost_measure,gamma,maxiter);
+CTDGMRATime = toc;
+disp('CTDGMRA nISE: ');
+nISE(gm,gm_CTDGMRA)
 
 %%
 tic;
@@ -166,6 +182,12 @@ nISE(gm,gm_ARKLD)
       grid minor
       title(strcat('nISE: ',num2str(nISE(gm,gm_KI)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_KI,cost_measure)),', Time: ',num2str(KIDTime),'s'),'FontSize',14);
       legend('Original','KI','FontSize',11);
+      subplot(3,3,9)
+      plotGM1D(gm,X); hold on
+      plotGM1D(gm_CTDGMRA,X); hold on
+      grid minor
+      title(strcat('nISE: ',num2str(nISE(gm,gm_CTDGMRA)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_CTDGMRA,cost_measure)),', Time: ',num2str(CTDGMRATime),'s'),'FontSize',14);
+      legend('Original','CTDGMRA','FontSize',11);
 
       
       
@@ -198,7 +220,11 @@ nISE(gm,gm_ARKLD)
 
     subplot(3,3,7)
     plotGM2D(gm_ARKLD,x1,x2,X);
-    title(strcat('ARKLD MRA. niSE: ', num2str(nISE(gm,gm_ARKLD)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_Was,cost_measure)),', Time: ', num2str(ARKLDTime),'s'));
+    title(strcat('ARKLD MRA. niSE: ', num2str(nISE(gm,gm_ARKLD)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_ARKLD,cost_measure)),', Time: ', num2str(ARKLDTime),'s'));
+    
+    subplot(3,3,8)
+    plotGM2D(gm_CTDGMRA,x1,x2,X);
+    title(strcat('CTDGMRA. niSE: ', num2str(nISE(gm,gm_CTDGMRA)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_CTDGMRA,cost_measure)),', Time: ', num2str(CTDGMRATime),'s'));
 
  else
      disp(strcat('Williams MRA ',' nISE: ',num2str(nISE(gm,gm_Williams)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_Williams,cost_measure)),', Time: ',num2str(WilliamsTime),'s'));
