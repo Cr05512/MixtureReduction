@@ -30,12 +30,12 @@ for k=1:maxiter
 
     end
     
-%     ind_keep = find(wG>0);
-%     gmr = gmr(ind_keep);
+    ind_keep = find(wG>0);
+    gmr = gmr(ind_keep);
     w_temp = [gmr.w]';
     w_norm = num2cell(w_temp./sum(w_temp));
     [gmr.w] = w_norm{:};
-%     Nr = length(gmr);
+    Nr = length(gmr);
     %wG = wG(ind_keep);
     f_val_prev = f_val;
     

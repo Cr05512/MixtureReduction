@@ -4,15 +4,16 @@ close all
 
 
 %Parameters to play with
-global Nh Nr n alpha
-Nh = 10;  %Full mixture component number
-Nr = 5;   %Reduced mixture component number
+global Nh Nr n alpha delta
+Nh = 6;  %Full mixture component number
+Nr = 4;   %Reduced mixture component number
 r = 8;
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
-alpha = 2.5;  %Mean spreading factor
+alpha = 15;  %Mean spreading factor
 beta = 2; %Covariance tuning parameter
 gamma = 0; %Entropy parameter
+delta = 0; %GM Init center offset
 maxiter = 100;
 nSamples = Nr*1500;
 NKMeansSteps = 20;
@@ -23,12 +24,12 @@ optWeights = 1; %flag to optimize weights or not
 cost_measure = 'KLD'; %cost measure used to compute the cost matrix in the Composite transportation distance
 
 
-%gm = GMGen(Nh,n,alpha,beta);
-%gm = test4CompGen(Nh,r);
+gm = GMGen(Nh,n,alpha,beta,delta);
+%gm = test2CompGen(Nh,r);
 %gm = testWilliamsCompGen();
 %gm = testRunnalsCompGen();
 %gm = test5CompGen();
-gm = testCrouseCompGen();
+%gm = testCrouseCompGen();
 %%
 
 if n==1
@@ -39,8 +40,8 @@ if n==1
     
     X = linspace(-(abs(minMu) + 1.5*sqrt(maxSigma) + center), (abs(maxMu) + 1.5*sqrt(maxSigma) + center),nPoints);
 elseif n==2
-    x1 = linspace(-2*alpha^3, 2*alpha^3,nPoints);
-    x2 = linspace(-2*alpha^3, 2*alpha^3,nPoints);
+    x1 = linspace(-2*alpha, 2*alpha,nPoints);
+    x2 = linspace(-2*alpha, 2*alpha,nPoints);
     [X1,X2] = meshgrid(x1,x2);
     X = [X1(:) X2(:)];
 
@@ -100,7 +101,7 @@ nISE(gm,gm_GMRCWas)
 % elseif strcmp(cost_measure,'L2')
 %     gm_init = gm_Williams;
 % end
-gm_init = GMGen(Nr,n,alpha,beta);
+gm_init = GMGen(Nr,n,alpha,max([gm.Sigma]),delta);
 tic;
 gm_CTDGMRA = CTDGMRA(gm,gm_init,cost_measure,gamma,maxiter);
 CTDGMRATime = toc;
@@ -116,7 +117,7 @@ nISE(gm,gm_ARKLD)
 
 
 %%
-%gm_Init = GMGen(Nr,n,alpha,beta);
+%gm_Init = GMGen(Nr,n,alpha,beta,delta);
 % tic;
 % samples = GMSamples(gm,nSamples);
 % gm_EM = EM(gm_Run,samples,NEMiter);
@@ -185,9 +186,10 @@ nISE(gm,gm_ARKLD)
       subplot(3,3,9)
       plotGM1D(gm,X); hold on
       plotGM1D(gm_CTDGMRA,X); hold on
+      plotGM1D(gm_init,X); hold on
       grid minor
       title(strcat('nISE: ',num2str(nISE(gm,gm_CTDGMRA)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_CTDGMRA,cost_measure)),', Time: ',num2str(CTDGMRATime),'s'),'FontSize',14);
-      legend('Original','CTDGMRA','FontSize',11);
+      legend('Original','CTDGMRA','Init','FontSize',11);
 
       
       

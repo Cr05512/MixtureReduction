@@ -1,10 +1,10 @@
-function gm = GMGen(N,n,alpha,beta)
+function gm = GMGen(N,n,alpha,beta,delta)
 
 w = rand(N,1);
 w_bar = w./sum(w);
 
 %Generate means
-mu = -alpha^3*ones(n,N) + alpha^3 *2*rand(n,N);
+mu = -alpha*ones(n,N) + alpha*2*rand(n,N) + delta;
 
 %Generate Symmetric Positive Definite Covariance matrices
 Sigma = zeros(n,n,N);
