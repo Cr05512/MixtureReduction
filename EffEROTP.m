@@ -8,9 +8,11 @@ for i=1:Nh
         [~,Ci] = min(C(i,:));
         pi_star(i,Ci) = gmh(i).w;
     else
-        for j=1:Nr
-            pi_star(i,j) = gmh(i).w*exp(-C(i,j)/gamma)./sum(exp(-C(i,:)./gamma));
+        normFactor = sum(exp(-C(i,:)./gamma));
+        if normFactor>0
+            pi_star(i,:) = gmh(i).w*exp(-C(i,:)/gamma)./normFactor;
         end
+
     end
 end
         

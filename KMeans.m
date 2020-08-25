@@ -31,14 +31,14 @@ for k=1:NKMeansSteps
     clusters = clusters(ind);
     
     for l=1:length(clusters)
-        if strcmp(cost_meas,'KLD') || strcmp(cost_meas,'L2')
+        if strcmp(cost_meas,'KLD')
             clusters{l} = mpMerge(clusters{l});
         elseif strcmp(cost_meas,'W2')
             clusters{l} = WassersteinBarycenter(clusters{l},100);
         end
     end
     
-    newMixture = [clusters{:}]';
+    newMixture = [clusters{:}];
     
     CPrev = C;
 end

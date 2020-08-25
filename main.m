@@ -5,7 +5,7 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 8;  %Full mixture component number
+Nh = 12;  %Full mixture component number
 Nr = 4;   %Reduced mixture component number
 r = 8;
 n = 1;    %Dimension
@@ -98,11 +98,11 @@ nISE(gm,gm_GMRCWas)
 %     gm_init = gm_Was;
 % elseif strcmp(cost_measure,'KLD')
 %     gm_init = gm_Run;
-% elseif strcmp(cost_measure,'L2')
-%     gm_init = gm_Williams;
 % end
-%gm_init = GMGen(Nr,n,alpha,0.1*beta,delta);
-gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
+%gm_init = GMGen(Nr,n,alpha,beta,delta);
+%%
+%gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
+gm_init = gm_Williams;
 tic;
 gm_CTDGMRA = CTDGMRA(gm,gm_init,cost_measure,gamma,maxiter);
 CTDGMRATime = toc;
