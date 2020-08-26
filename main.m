@@ -5,24 +5,49 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 12;  %Full mixture component number
+Nh = 10;  %Full mixture component number
 Nr = 6;   %Reduced mixture component number
-r = 8;
 n = 1;    %Dimension
-nPoints = 300;  %Evaluation points per dimension 
-alpha = 15;  %Mean spreading factor
-beta = 2; %Covariance tuning parameter
-gamma = 0; %Entropy parameter
+
+alpha = 15;  %GM mean spreading factor
+beta = 2; %GM covariance tuning parameter
 delta = 0; %GM Init center offset
+
+gamma = 0.1; %Entropy parameter
 maxiter = 100;
-nSamples = Nr*1500;
-NKMeansSteps = 20;
-sk = 0.005; %Gradient step
-NOptSteps = 50; %Gradient iterations
-NEMiter = 10;
-optWeights = 1; %flag to optimize weights or not
 cost_measure = 'W2'; %cost measure used to compute the cost matrix in the Composite transportation distance
 
+%Expectation Maximization Parameters
+nPoints = 300;  %Evaluation points per dimension 
+nSamples = Nr*1500;
+NEMiter = 10;
+
+%KMeans Parameters
+NKMeansSteps = 20;
+
+%ISE Optimization Parameters
+sk = 0.005; %Gradient step
+NOptSteps = 50; %Gradient iterations
+optWeights = 1; %flag to optimize weights or not
+
+%List of algorithms we want to compare. We can choose between the
+%following:
+% - Williams -> Cost-Function-Based Gaussian Mixture Reduction for Target Tracking, J.L. Williams, P.S. Maybeck
+% - Runnals -> Kullback-Leibler Approach to Gaussian Mixture Reduction, A.R. Runnals
+% - Salmond -> Mixture reduction algorithms for target tracking in clutter, D.J. Salmond
+% - GMRC -> Gaussian Mixture Reduction via Clustering, D. Schieferdecker, M.F. Huber
+% - Wasserstein -> Wasserstein-Distance-Based Gaussian Mixture Reduction, A. Assa, K.N. Plataniotis
+% - GMRCWas -> Wasserstein-Distance-Based Gaussian Mixture Reduction, A. Assa, K.N. Plataniotis
+% - ARKLDMRA -> Gaussian Mixture Reduction Using Reverse Kullback-Leibler Divergence, T. Ardeshiri, U. Orguner, E. Ozkan
+% - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
+% - EMMRA -> Expectation Maximization Refinement Algorithm
+
+algorithms = {'Runnals','Wasserstein','CTDGMRA','EMMRA'};
+numAlgorithms = length(algorithms);
+gmr_vector = {};
+gmr_times = zeros(1,numAlgorithms);
+
+%Initial Gaussian Mixture
 
 gm = GMGen(Nh,n,alpha,beta,delta);
 %gm = test2CompGen(Nh,r);
@@ -47,198 +72,130 @@ elseif n==2
 
 end
 
+if numAlgorithms>0 && n<=2
+    figure(1)
+end
 
+if any(contains(algorithms,'Williams'))
+    tic;
+    gm_Williams = WilliamsMRA(gm,Nr);
+    [gm_Williams, nISETrajWilliams] = ISEOpt(gm,gm_Williams,sk,NOptSteps,optWeights);
+    WilliamsTime = toc;
+    gmr_times(contains(algorithms,'Williams')) = WilliamsTime;
+    gmr_vector(contains(algorithms,'Williams')) = {gm_Williams};
+end
 
-tic;
-gm_Williams = WilliamsMRA(gm,Nr);
-[gm_Williams, nISETrajWilliams] = ISEOpt(gm,gm_Williams,sk,NOptSteps,optWeights);
-WilliamsTime = toc;
-disp('Williams MRA nISE: ')
-nISE(gm,gm_Williams)
+if any(contains(algorithms,'GMRC'))
+    tic;
+    gm_GMRC = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+    GMRCTime = toc;
+    gmr_times(contains(algorithms,'GMRC')) = GMRCTime;
+    gmr_vector(contains(algorithms,'GMRC')) = {gm_GMRC};
+end
 
-tic;
-gm_KI = KIDivergenceMRA(gm,Nr);
-%disp('KI MRA nISE: ')
-%nISE(gm,gm_KI)
-KIDTime = toc;
-%%
-tic;
-gm_GMRC = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
-GMRCTime = toc;
-disp('GMRC MRA nISE: ')
-nISE(gm,gm_GMRC)
-%%
-tic;
-gm_Run = RunnalsMRA(gm,Nr);
-RunnalsTime = toc;
-disp('Runnals MRA nISE: ')
-nISE(gm,gm_Run)
+if any(contains(algorithms,'Runnals'))
+    tic;
+    gm_Runnals = RunnalsMRA(gm,Nr);
+    RunnalsTime = toc;
+    gmr_times(contains(algorithms,'Runnals')) = RunnalsTime;
+    gmr_vector(contains(algorithms,'Runnals')) = {gm_Runnals};
+end
 
-tic;
-gm_Was = WassersteinMRA(gm,Nr);
-WassersteinTime = toc;
-disp('Wasserstein MRA nISE: ')
-nISE(gm,gm_Was)
+if any(contains(algorithms,'Wasserstein'))
+    tic;
+    gm_Wasserstein = WassersteinMRA(gm,Nr);
+    WassersteinTime = toc;
+    gmr_times(contains(algorithms,'Wasserstein')) = WassersteinTime;
+    gmr_vector(contains(algorithms,'Wasserstein')) = {gm_Wasserstein};
+end
 
+if any(contains(algorithms,'Salmond'))
+    tic;
+    gm_Salmond = SalmondMRA(gm,Nr);
+    SalmondTime = toc;
+    gmr_times(contains(algorithms,'Salmond')) = SalmondTime;
+    gmr_vector(contains(algorithms,'Salmond')) = {gm_Salmond};
+end
 
-tic;
-gm_Salm = SalmondMRA(gm,Nr);
-SalmondTime = toc;
-disp('Salmond MRA nISE: ')
-nISE(gm,gm_Salm)
+if any(contains(algorithms,'GMRCWas'))
+    tic;
+    gm_GMRCWas = GMRCWas(gm,Nr,NKMeansSteps);
+    GMRCWasTime = toc;
+    gmr_times(contains(algorithms,'GMRCWas')) = GMRCWasTime;
+    gmr_vector(contains(algorithms,'GMRCWas')) = {gm_GMRCWas};
+end
 
-
-tic;
-gm_GMRCWas = GMRCWas(gm,Nr,NKMeansSteps);
-GMRCWasTime = toc;
-disp('GMRCWas MRA nISE: ');
-nISE(gm,gm_GMRCWas)
-
-% if strcmp(cost_measure,'W2')
-%     gm_init = gm_Was;
-% elseif strcmp(cost_measure,'KLD')
-%     gm_init = gm_Run;
-% end
-%gm_init = GMGen(Nr,n,alpha,beta,delta);
-%%
-%gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
-gm_init = gm_Williams;
-tic;
-
-gm_CTDGMRA = CTDGMRA(gm,gm_init,cost_measure,gamma,maxiter);
-CTDGMRATime = toc;
-disp('CTDGMRA nISE: ');
-nISE(gm,gm_CTDGMRA)
-
-%%
-tic;
-gm_ARKLD = ARKLDMRA(gm,Nr);
-ARKLDTime = toc;
-disp('ARKLD MRA nISE: ')
-nISE(gm,gm_ARKLD)
-
-
-%%
-%gm_Init = GMGen(Nr,n,alpha,beta,delta);
-% tic;
-% samples = GMSamples(gm,nSamples);
-% gm_EM = EM(gm_Run,samples,NEMiter);
-% nISE(gm,gm_EM)
-% %gm_EM = ISEOpt(gm,gm_EM,sk,NOptSteps,1);
-% EMTime = toc;
-% disp('EM MRA nISE: ');
-% nISE(gm,gm_EM)
-
-
-
-%  
-%%
-
-
- if n==1
-      figure(1)
-      subplot(3,3,1)
-      plotGM1D(gm,X); hold on
-      plotGM1D(gm_Salm,X); hold on
-      grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_Salm)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_Salm,cost_measure)),' Time: ',num2str(SalmondTime),'s'),'FontSize',14);
-      legend('Original','Salmond','FontSize',11);
-      subplot(3,3,2)
-      plotGM1D(gm,X); hold on
-      plotGM1D(gm_Williams,X); hold on
-      grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_Williams)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_Williams,cost_measure)),', Time: ',num2str(WilliamsTime),'s'),'FontSize',14);
-      legend('Original','Williams','FontSize',11);
-      subplot(3,3,3)
-      plotGM1D(gm,X); hold on
-      plotGM1D(gm_Run,X); hold on
-      grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_Run)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_Run,cost_measure)),', Time: ',num2str(RunnalsTime),'s'),'FontSize',14);
-      legend('Original','Runnals','FontSize',11);
-      subplot(3,3,4)
-      plotGM1D(gm,X); hold on
-      plotGM1D(gm_GMRC,X); hold on
-      grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRC)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_GMRC,cost_measure)),', Time: ',num2str(GMRCTime),'s'),'FontSize',14);
-      legend('Original','GMRC','FontSize',11);
-      subplot(3,3,5)
-      plotGM1D(gm,X); hold on
-      plotGM1D(gm_Was,X); hold on
-      grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_Was)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_Was,cost_measure)),', Time: ',num2str(WassersteinTime),'s'),'FontSize',14);
-      legend('Original','Wasserstein','FontSize',11);
-      subplot(3,3,6)
-      plotGM1D(gm,X); hold on
-      plotGM1D(gm_GMRCWas,X); hold on
-      grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_GMRCWas)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_GMRCWas,cost_measure)),', Time: ',num2str(GMRCWasTime),'s'),'FontSize',14);
-      legend('Original','GMRCWas','FontSize',11);
-      subplot(3,3,7)
-      plotGM1D(gm,X); hold on
-      plotGM1D(gm_ARKLD,X); hold on
-      grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_ARKLD)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_ARKLD,cost_measure)),', Time: ',num2str(ARKLDTime),'s'),'FontSize',14);
-      legend('Original','ARKLD','FontSize',11);
-      subplot(3,3,8)
-      plotGM1D(gm,X); hold on
-      plotGM1D(gm_KI,X); hold on
-      grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_KI)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_KI,cost_measure)),', Time: ',num2str(KIDTime),'s'),'FontSize',14);
-      legend('Original','KI','FontSize',11);
-      subplot(3,3,9)
-      plotGM1D(gm,X); hold on
-      plotGM1D(gm_CTDGMRA,X); hold on
-      plotGM1D(gm_init,X); hold on
-      grid minor
-      title(strcat('nISE: ',num2str(nISE(gm,gm_CTDGMRA)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_CTDGMRA,cost_measure)),', Time: ',num2str(CTDGMRATime),'s'),'FontSize',14);
-      legend('Original','CTDGMRA','Init','FontSize',11);
-
-      
-      
+if any(contains(algorithms,'CTDGMRA'))
   
- elseif n==2
-%    
-     subplot(3,3,1)
-     plotGM2D(gm,x1,x2,X); hold on
-     title('Original Mixture')
+    gm_init = gm_Wasserstein;
+    %gm_init = gm_Williams;
+    %gm_init = gm_Runnals;
+    %gm_init = GMGen(Nr,n,alpha,beta,delta);
+    %gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
 
-     subplot(3,3,2)
-     plotGM2D(gm_Run,x1,x2,X);
-     title(strcat('Runnals MRA ',' nISE: ',num2str(nISE(gm,gm_Run)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_Run,cost_measure)),', Time: ',num2str(RunnalsTime),'s'));
+    tic;
 
-    subplot(3,3,3)
-    plotGM2D(gm_GMRC,x1,x2,X);
-    title(strcat('GMRC MRA ',' nISE: ',num2str(nISE(gm,gm_GMRC)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_GMRC,cost_measure)),', Time: ',num2str(GMRCTime),'s'));
-    
-    subplot(3,3,4)
-    plotGM2D(gm_Salm,x1,x2,X);
-    title(strcat('Salmond MRA ',' nISE: ',num2str(nISE(gm,gm_Salm)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_Salm,cost_measure)),', Time: ',num2str(SalmondTime),'s'));
-    
-    subplot(3,3,5)
-    plotGM2D(gm_Williams,x1,x2,X);
-    title(strcat('Williams MRA ',' nISE: ',num2str(nISE(gm,gm_Williams)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_Williams,cost_measure)),', Time: ',num2str(WilliamsTime),'s'));
-    
-    subplot(3,3,6)
-    plotGM2D(gm_Was,x1,x2,X);
-    title(strcat('Wasserstein MRA ',' nISE: ',num2str(nISE(gm,gm_Was)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_Was,cost_measure)),', Time: ',num2str(WassersteinTime),'s'));
+    gm_CTDGMRA = CTDGMRA(gm,gm_init,cost_measure,gamma,maxiter);
+    CTDGMRATime = toc;
+    gmr_times(contains(algorithms,'CTDGMRA')) = CTDGMRATime;
+    gmr_vector(contains(algorithms,'CTDGMRA')) = {gm_CTDGMRA};
+end
 
-    subplot(3,3,7)
-    plotGM2D(gm_ARKLD,x1,x2,X);
-    title(strcat('ARKLD MRA. niSE: ', num2str(nISE(gm,gm_ARKLD)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_ARKLD,cost_measure)),', Time: ', num2str(ARKLDTime),'s'));
-    
-    subplot(3,3,8)
-    plotGM2D(gm_CTDGMRA,x1,x2,X);
-    title(strcat('CTDGMRA. niSE: ', num2str(nISE(gm,gm_CTDGMRA)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_CTDGMRA,cost_measure)),', Time: ', num2str(CTDGMRATime),'s'));
+if any(contains(algorithms,'ARKLDMRA'))
+    tic;
+    gm_ARKLDMRA = ARKLDMRA(gm,Nr);
+    ARKLDTime = toc;
+    gmr_times(contains(algorithms,'ARKLDMRA')) = ARKLDTime;
+    gmr_vector(contains(algorithms,'ARKLDMRA')) = {gm_ARKLDMRA};
+end
 
- else
-     disp(strcat('Williams MRA ',' nISE: ',num2str(nISE(gm,gm_Williams)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_Williams,cost_measure)),', Time: ',num2str(WilliamsTime),'s'));
-     disp(strcat('Salmond MRA ',' nISE: ',num2str(nISE(gm,gm_Salm)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_Salm,cost_measure)),', Time: ',num2str(SalmondTime),'s'));
-     disp(strcat('Runnals MRA ',' nISE: ',num2str(nISE(gm,gm_Run)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_Run,cost_measure)),', Time: ',num2str(RunnalsTime),'s'));
-     disp(strcat('GMRC MRA ',' nISE: ',num2str(nISE(gm,gm_GMRC)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_GMRC,cost_measure)),', Time: ',num2str(GMRCTime),'s'));
-     disp(strcat('Wasserstein MRA ',' nISE: ',num2str(nISE(gm,gm_Was)),' CTD',cost_measure,': ',num2str(CTD(gm,gm_Was,cost_measure)),', Time: ',num2str(WassersteinTime),'s'));
-     
-    
- end
+if any(contains(algorithms,'EMMRA'))
+    gm_init_EM = GMGen(Nr,n,alpha,beta,delta);
+    tic;
+    samples = GMSamples(gm,nSamples);
+    gm_EM = EM(gm_init_EM,samples,NEMiter);
+    EMTime = toc;
+    gmr_times(contains(algorithms,'EMMRA')) = EMTime;
+    gmr_vector(contains(algorithms,'EMMRA')) = {gm_EM};
+end
 
- 
-  
+
+
+if n==1
+    numPlotCols = ceil(sqrt(numAlgorithms));
+    numPlotRows = ceil(numAlgorithms/numPlotCols);
+    
+    for i=1:numAlgorithms
+        subplot(numPlotRows,numPlotCols,i)
+        plotGM1D(gm,X); hold on
+        plotGM1D(gmr_vector{i},X); hold on
+        if strcmp(algorithms{i},'CTDGMRA')
+            plotGM1D(gm_init,X); hold on
+        elseif strcmp(algorithms{i},'EMMRA')
+            plotGM1D(gm_init_EM,X); hold on
+        end
+        grid minor
+        title(strcat('nISE: ',num2str(nISE(gm,gmr_vector{i})),' CTD',cost_measure,': ',num2str(CTD(gm,gmr_vector{i},cost_measure)),' Time: ',num2str(gmr_times(i)),'s'),'FontSize',14);
+        if strcmp(algorithms{i},'CTDGMRA') || strcmp(algorithms{i},'EMMRA')
+            legend('Original',algorithms{i},'Init','FontSize',11);
+        else
+            legend('Original',algorithms{i},'FontSize',11);
+        end
+    end
+elseif n==2
+    numPlotCols = ceil(sqrt(numAlgorithms + 1));
+    numPlotRows = ceil((numAlgorithms + 1)/numPlotCols);
+    subplot(numPlotRows,numPlotCols,1)
+    plotGM2D(gm,x1,x2,X); hold on
+    title('Original Mixture')
+    for i=1:numAlgorithms
+        subplot(numPlotRows,numPlotCols,i+1)
+        plotGM2D(gmr_vector{i},x1,x2,X);
+        title(strcat(algorithms{i},' MRA',' nISE: ',num2str(nISE(gm,gmr_vector{i})),' CTD',cost_measure,': ',num2str(CTD(gm,gmr_vector{i},cost_measure)),', Time: ',num2str(gmr_times(i)),'s'));
+
+    end
+else
+    for i=1:numAlgorithms
+        disp(strcat(algorithms{i},' MRA',' nISE: ',num2str(nISE(gm,gmr_vector{i})),' CTD',cost_measure,': ',num2str(CTD(gm,gmr_vector{i},cost_measure)),', Time: ',num2str(gmr_times(i)),'s'));
+    end
+end

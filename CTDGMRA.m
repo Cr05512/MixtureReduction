@@ -40,7 +40,6 @@ for k=1:maxiter
     f_val_prev = f_val;
     
 end
-k
 
 end
 
