@@ -6,7 +6,7 @@ close all
 %Parameters to play with
 global Nh Nr n alpha delta
 Nh = 12;  %Full mixture component number
-Nr = 4;   %Reduced mixture component number
+Nr = 6;   %Reduced mixture component number
 r = 8;
 n = 1;    %Dimension
 nPoints = 300;  %Evaluation points per dimension 
@@ -21,7 +21,7 @@ sk = 0.005; %Gradient step
 NOptSteps = 50; %Gradient iterations
 NEMiter = 10;
 optWeights = 1; %flag to optimize weights or not
-cost_measure = 'KLD'; %cost measure used to compute the cost matrix in the Composite transportation distance
+cost_measure = 'W2'; %cost measure used to compute the cost matrix in the Composite transportation distance
 
 
 gm = GMGen(Nh,n,alpha,beta,delta);
@@ -104,6 +104,7 @@ nISE(gm,gm_GMRCWas)
 %gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
 gm_init = gm_Williams;
 tic;
+
 gm_CTDGMRA = CTDGMRA(gm,gm_init,cost_measure,gamma,maxiter);
 CTDGMRATime = toc;
 disp('CTDGMRA nISE: ');
