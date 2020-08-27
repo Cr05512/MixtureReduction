@@ -5,22 +5,28 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 10;  %Full mixture component number
-Nr = 6;   %Reduced mixture component number
+Nh = 4;  %Full mixture component number
+Nr = 3;   %Reduced mixture component number
 n = 1;    %Dimension
+
+assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
 alpha = 15;  %GM mean spreading factor
 beta = 2; %GM covariance tuning parameter
 delta = 0; %GM Init center offset
 
+%Entropic Regularization Parameters
 gamma = 0.1; %Entropy parameter
+assert(gamma>=0,'The regularization parameter has to be non-negative.');
 maxiter = 100;
-cost_measure = 'W2'; %cost measure used to compute the cost matrix in the Composite transportation distance
+cost_measure = 'KLD'; %cost measure used to compute the cost matrix in the Composite transportation distance
+init_method = 'random'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
 
 %Expectation Maximization Parameters
 nPoints = 300;  %Evaluation points per dimension 
-nSamples = Nr*1500;
+nSamples = Nr*nPoints*n;
 NEMiter = 10;
+init_method_EM = 'greedy';
 
 %KMeans Parameters
 NKMeansSteps = 20;
@@ -38,7 +44,6 @@ optWeights = 1; %flag to optimize weights or not
 % - GMRC -> Gaussian Mixture Reduction via Clustering, D. Schieferdecker, M.F. Huber
 % - Wasserstein -> Wasserstein-Distance-Based Gaussian Mixture Reduction, A. Assa, K.N. Plataniotis
 % - GMRCWas -> Wasserstein-Distance-Based Gaussian Mixture Reduction, A. Assa, K.N. Plataniotis
-% - ARKLDMRA -> Gaussian Mixture Reduction Using Reverse Kullback-Leibler Divergence, T. Ardeshiri, U. Orguner, E. Ozkan
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
 
@@ -127,11 +132,18 @@ end
 
 if any(contains(algorithms,'CTDGMRA'))
   
-    gm_init = gm_Wasserstein;
-    %gm_init = gm_Williams;
-    %gm_init = gm_Runnals;
-    %gm_init = GMGen(Nr,n,alpha,beta,delta);
-    %gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
+    switch lower(init_method)
+        case 'kmeans'
+          gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
+        case 'greedy'
+            if strcmp(cost_measure,'KLD')
+                gm_init = gm_Runnals;
+            elseif strcmp(cost_measure,'W2')
+                gm_init = gm_Wasserstein;
+            end
+        case 'random'
+            gm_init = GMGen(Nr,n,alpha,beta,delta);
+    end
 
     tic;
 
@@ -150,7 +162,19 @@ if any(contains(algorithms,'ARKLDMRA'))
 end
 
 if any(contains(algorithms,'EMMRA'))
-    gm_init_EM = GMGen(Nr,n,alpha,beta,delta);
+    
+    switch lower(init_method_EM)
+        case 'kmeans'
+          gm_init_EM = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
+        case 'greedy'
+            if strcmp(cost_measure,'KLD')
+                gm_init_EM = gm_Runnals;
+            elseif strcmp(cost_measure,'W2')
+                gm_init_EM = gm_Wasserstein;
+            end
+        case 'random'
+            gm_init_EM = GMGen(Nr,n,alpha,beta,delta);
+    end
     tic;
     samples = GMSamples(gm,nSamples);
     gm_EM = EM(gm_init_EM,samples,NEMiter);
