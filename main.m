@@ -153,14 +153,6 @@ if any(contains(algorithms,'CTDGMRA'))
     gmr_vector(contains(algorithms,'CTDGMRA')) = {gm_CTDGMRA};
 end
 
-if any(contains(algorithms,'ARKLDMRA'))
-    tic;
-    gm_ARKLDMRA = ARKLDMRA(gm,Nr);
-    ARKLDTime = toc;
-    gmr_times(contains(algorithms,'ARKLDMRA')) = ARKLDTime;
-    gmr_vector(contains(algorithms,'ARKLDMRA')) = {gm_ARKLDMRA};
-end
-
 if any(contains(algorithms,'EMMRA'))
     
     switch lower(init_method_EM)
@@ -183,6 +175,7 @@ if any(contains(algorithms,'EMMRA'))
     gmr_vector(contains(algorithms,'EMMRA')) = {gm_EM};
 end
 
+%%
 
 
 if n==1
