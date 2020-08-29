@@ -5,7 +5,7 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 20;  %Full mixture component number
+Nh = 100;  %Full mixture component number
 Nr = 5;   %Reduced mixture component number
 n = 1;    %Dimension
 
@@ -26,7 +26,7 @@ init_method = 'kmeans'; %We can choose between kmeans, greedy (Runnals or Wasser
 nPoints = 1000;  %Evaluation points per dimension 
 nSamples = Nr*nPoints*n;
 NEMiter = 10;
-init_method_EM = 'greedy';
+init_method_EM = 'kmeans';
 
 %KMeans Parameters
 NKMeansSteps = 20;
@@ -47,7 +47,7 @@ optWeights = 1; %flag to optimize weights or not
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
 
-algorithms = {'Runnals','Wasserstein','CTDGMRA'};
+algorithms = {'Runnals','CTDGMRA'};
 numAlgorithms = length(algorithms);
 gmr_vector = {};
 gmr_times = zeros(1,numAlgorithms);
@@ -139,9 +139,9 @@ if any(contains(algorithms,'CTDGMRA'))
           %gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
         case 'greedy'
             if strcmp(cost_measure,'KLD')
-                gm_init = gm_Runnals;
+                gm_init = RunnalsMRA(gm,Nr);
             elseif strcmp(cost_measure,'W2')
-                gm_init = gm_Wasserstein;
+                gm_init = WassersteinMRA(gm,Nr);
             end
         case 'random'
             %gm_init = GMGen(Nr,n,alpha,beta,delta);
@@ -163,12 +163,13 @@ if any(contains(algorithms,'EMMRA'))
           gm_init_EM = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
         case 'greedy'
             if strcmp(cost_measure,'KLD')
-                gm_init_EM = gm_Runnals;
+                gm_init = RunnalsMRA(gm,Nr);
             elseif strcmp(cost_measure,'W2')
-                gm_init_EM = gm_Wasserstein;
+                gm_init = WassersteinMRA(gm,Nr);
             end
         case 'random'
-            gm_init_EM = GMGen(Nr,n,alpha,beta,delta);
+            %gm_init_EM = GMGen(Nr,n,alpha,beta,delta);
+            gm_init_EM = GMRGen(gm,Nr);
     end
     tic;
     samples = GMSamples(gm,nSamples);
