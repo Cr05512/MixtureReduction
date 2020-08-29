@@ -6,7 +6,7 @@ sweepAngle = 2*pi/numComp;
 
 global Nh Nr n
 Nh = numComp;
-Nr = Nh-1;
+Nr = 8;
 n = 2;
 
 xcoords = zeros(numComp,1);
@@ -19,7 +19,7 @@ Sigma = zeros(2,2,numComp);
 gm = struct('w',0,'mu',[],'Sigma',[]);
 
 P = rand(2,2);
-P = P*P' + 2*eye(2);
+P = P*P' + 2*[15 0;0 1];
 covMatrixRotAngle = pi/(numComp/2);
 
 syms phi;

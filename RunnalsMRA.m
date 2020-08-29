@@ -24,5 +24,7 @@ function gmr = RunnalsMRA(gm, Nr)
         
     end
     
+    
+    
 end
 

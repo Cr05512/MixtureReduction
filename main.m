@@ -5,14 +5,14 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 4;  %Full mixture component number
-Nr = 3;   %Reduced mixture component number
+Nh = 20;  %Full mixture component number
+Nr = 5;   %Reduced mixture component number
 n = 1;    %Dimension
 
 assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
-alpha = 15;  %GM mean spreading factor
-beta = 2; %GM covariance tuning parameter
+alpha = 18;  %GM mean spreading factor
+beta = 1; %GM covariance tuning parameter
 delta = 0; %GM Init center offset
 
 %Entropic Regularization Parameters
@@ -20,10 +20,10 @@ gamma = 0.1; %Entropy parameter
 assert(gamma>=0,'The regularization parameter has to be non-negative.');
 maxiter = 100;
 cost_measure = 'KLD'; %cost measure used to compute the cost matrix in the Composite transportation distance
-init_method = 'random'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
+init_method = 'kmeans'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
 
 %Expectation Maximization Parameters
-nPoints = 300;  %Evaluation points per dimension 
+nPoints = 1000;  %Evaluation points per dimension 
 nSamples = Nr*nPoints*n;
 NEMiter = 10;
 init_method_EM = 'greedy';
@@ -47,7 +47,7 @@ optWeights = 1; %flag to optimize weights or not
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
 
-algorithms = {'Runnals','Wasserstein','CTDGMRA','EMMRA'};
+algorithms = {'Runnals','Wasserstein','CTDGMRA'};
 numAlgorithms = length(algorithms);
 gmr_vector = {};
 gmr_times = zeros(1,numAlgorithms);
@@ -55,7 +55,7 @@ gmr_times = zeros(1,numAlgorithms);
 %Initial Gaussian Mixture
 
 gm = GMGen(Nh,n,alpha,beta,delta);
-%gm = test2CompGen(Nh,r);
+%gm = test3CompGen(Nh,20);
 %gm = testWilliamsCompGen();
 %gm = testRunnalsCompGen();
 %gm = test5CompGen();
@@ -79,6 +79,7 @@ end
 
 if numAlgorithms>0 && n<=2
     figure(1)
+    set(gcf,'units','pixels','position',[300,1200,1280,720]);
 end
 
 if any(contains(algorithms,'Williams'))
@@ -129,12 +130,13 @@ if any(contains(algorithms,'GMRCWas'))
     gmr_times(contains(algorithms,'GMRCWas')) = GMRCWasTime;
     gmr_vector(contains(algorithms,'GMRCWas')) = {gm_GMRCWas};
 end
-
+%%
 if any(contains(algorithms,'CTDGMRA'))
-  
+    tic;
     switch lower(init_method)
         case 'kmeans'
-          gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
+          gm_init = KMeans(gm,GMRGen(gm,Nr),cost_measure,NKMeansSteps);
+          %gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
         case 'greedy'
             if strcmp(cost_measure,'KLD')
                 gm_init = gm_Runnals;
@@ -142,10 +144,11 @@ if any(contains(algorithms,'CTDGMRA'))
                 gm_init = gm_Wasserstein;
             end
         case 'random'
-            gm_init = GMGen(Nr,n,alpha,beta,delta);
+            %gm_init = GMGen(Nr,n,alpha,beta,delta);
+            gm_init = GMRGen(gm,Nr);
     end
 
-    tic;
+    
 
     gm_CTDGMRA = CTDGMRA(gm,gm_init,cost_measure,gamma,maxiter);
     CTDGMRATime = toc;
