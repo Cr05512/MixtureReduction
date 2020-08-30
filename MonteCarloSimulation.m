@@ -4,8 +4,8 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 100;  %Full mixture component number
-Nr = 10;   %Reduced mixture component number
+Nh = 50;  %Full mixture component number
+Nr = 5;   %Reduced mixture component number
 n = 1;    %Dimension
 NumTests = 100;
 
@@ -20,7 +20,7 @@ gamma = 0.1; %Entropy parameter
 assert(gamma>=0,'The regularization parameter has to be non-negative.');
 maxiter = 100;
 cost_measure = 'KLD'; %cost measure used to compute the cost matrix in the Composite transportation distance
-init_method = 'kmeans'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
+init_method = 'greedy'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
 
 %Expectation Maximization Parameters
 nPoints = 1000;  %Evaluation points per dimension 
@@ -47,7 +47,7 @@ optWeights = 1; %flag to optimize weights or not
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
 
-algorithms = {'Runnals','Wasserstein','CTDGMRA'};
+algorithms = {'Runnals','CTDGMRA'};
 numAlgorithms = length(algorithms);
 gmr_vector = {};
 % gmr_times = zeros(1,numAlgorithms);
@@ -126,9 +126,9 @@ for m = 1:NumTests
               %gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
             case 'greedy'
                 if strcmp(cost_measure,'KLD')
-                    gm_init = gm_Runnals;
+                    gm_init = RunnalsMRA(gm,Nr);
                 elseif strcmp(cost_measure,'W2')
-                    gm_init = gm_Wasserstein;
+                    gm_init = WassersteinMRA(gm,Nr);
                 end
             case 'random'
                 gm_init = GMGen(Nr,n,alpha,beta,delta);
@@ -151,9 +151,9 @@ for m = 1:NumTests
               gm_init_EM = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
             case 'greedy'
                 if strcmp(cost_measure,'KLD')
-                    gm_init_EM = gm_Runnals;
+                    gm_init = RunnalsMRA(gm,Nr);
                 elseif strcmp(cost_measure,'W2')
-                    gm_init_EM = gm_Wasserstein;
+                    gm_init = WassersteinMRA(gm,Nr);
                 end
             case 'random'
                 gm_init_EM = GMGen(Nr,n,alpha,beta,delta);

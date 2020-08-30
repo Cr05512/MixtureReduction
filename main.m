@@ -5,7 +5,7 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 100;  %Full mixture component number
+Nh = 20;  %Full mixture component number
 Nr = 5;   %Reduced mixture component number
 n = 1;    %Dimension
 
