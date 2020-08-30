@@ -10,7 +10,7 @@ for i=1:Nh
     else
         normFactor = sum(exp(-C(i,:)./gamma));
         if normFactor>0
-            pi_star(i,:) = gmh(i).w*exp(-C(i,:)/gamma)./normFactor;
+            pi_star(i,:) = gmh(i).w*exp(-C(i,:)./gamma)./normFactor;
         end
 
     end

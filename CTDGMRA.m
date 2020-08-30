@@ -4,6 +4,7 @@ gmh_temp = gmh;
 f_val = Inf;
 f_val_prev = f_val;
 
+
 for k=1:maxiter
 
     C = CostMatrix(gmh,gmr,cost_meas);

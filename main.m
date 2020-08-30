@@ -12,15 +12,18 @@ n = 1;    %Dimension
 assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
 alpha = 18;  %GM mean spreading factor
-beta = 1; %GM covariance tuning parameter
+beta = 2; %GM covariance tuning parameter
 delta = 0; %GM Init center offset
 
 %Entropic Regularization Parameters
-gamma = 0.1; %Entropy parameter
+gamma = 0; %Entropy parameter
 assert(gamma>=0,'The regularization parameter has to be non-negative.');
 maxiter = 100;
 cost_measure = 'KLD'; %cost measure used to compute the cost matrix in the Composite transportation distance
-init_method = 'kmeans'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
+init_method = 'random'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
+
+assert(strcmp(cost_measure,'KLD') || strcmp(cost_measure,'W2'), 'Unknown cost measure. Aborting...');
+assert(strcmpi(init_method,'random') || strcmpi(init_method,'kmeans') || strcmpi(init_method,'greedy'),'Unknown init method. Aborting...');
 
 %Expectation Maximization Parameters
 nPoints = 1000;  %Evaluation points per dimension 
@@ -47,7 +50,7 @@ optWeights = 1; %flag to optimize weights or not
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
 
-algorithms = {'Runnals','CTDGMRA'};
+algorithms = {'Runnals','CTDGMRA','GMRC'};
 numAlgorithms = length(algorithms);
 gmr_vector = {};
 gmr_times = zeros(1,numAlgorithms);

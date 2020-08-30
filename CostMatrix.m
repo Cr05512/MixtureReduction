@@ -12,9 +12,6 @@ for i=1:length(gmh)
             C(i,j) = KLD(gmh(i),gmr(j));
         elseif strcmp(cost_meas,'W2')
             C(i,j) = Wasserstein2Dist(gmh(i),gmr(j));
-        else
-            C = Inf(Nh,Nr);
-            return
         end
     end
 end

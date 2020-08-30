@@ -1,17 +1,17 @@
-clc
+
 clear
 close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 50;  %Full mixture component number
+Nh = 20;  %Full mixture component number
 Nr = 5;   %Reduced mixture component number
 n = 1;    %Dimension
 NumTests = 100;
 
 assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
-alpha = 25;  %GM mean spreading factor
+alpha = 18;  %GM mean spreading factor
 beta = 1; %GM covariance tuning parameter
 delta = 0; %GM Init center offset
 
@@ -131,8 +131,8 @@ for m = 1:NumTests
                     gm_init = WassersteinMRA(gm,Nr);
                 end
             case 'random'
-                gm_init = GMGen(Nr,n,alpha,beta,delta);
-%                 gm_init = GMRGen(gm,Nr);
+                %gm_init = GMGen(Nr,n,alpha,beta,delta);
+                gm_init = GMRGen(gm,Nr);
         end
 
 
