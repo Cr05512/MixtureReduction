@@ -1,4 +1,4 @@
-function pi = computeEROTP(C,wF,wG,gamma,maxiter)
+function pi = computeEROTP(C,wF,wG,lambda,maxiter)
 %Sinkhorn algorithm to compute the entropic regularized optimal
 %transportation plan in the case of Gaussian mixtures
 %C is the cost function
@@ -7,7 +7,7 @@ function pi = computeEROTP(C,wF,wG,gamma,maxiter)
 Nh = length(wF);
 Nr = length(wG);
  
-M = exp(-C./gamma);
+M = exp(-C./lambda);
 
 
 pi = Inf(Nh,Nr);

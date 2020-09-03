@@ -5,22 +5,26 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 20;  %Full mixture component number
-Nr = 5;   %Reduced mixture component number
+Nh = 100;  %Full mixture component number
+Nr = 10;   %Reduced mixture component number
 n = 1;    %Dimension
 
 assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
-alpha = 18;  %GM mean spreading factor
+alpha = 30;  %GM mean spreading factor
 beta = 2; %GM covariance tuning parameter
 delta = 0; %GM Init center offset
 
 %Entropic Regularization Parameters
-gamma = 0; %Entropy parameter
-assert(gamma>=0,'The regularization parameter has to be non-negative.');
+lambda = 0.0; %Entropy parameter
+assert(lambda>=0,'The regularization parameter has to be non-negative.');
+
+%CTDGMRA & MRICTDGMRA
 maxiter = 100;
 cost_measure = 'KLD'; %cost measure used to compute the cost matrix in the Composite transportation distance
-init_method = 'random'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
+init_method = 'greedy'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
+kRandomInit = 15;
+
 
 assert(strcmp(cost_measure,'KLD') || strcmp(cost_measure,'W2'), 'Unknown cost measure. Aborting...');
 assert(strcmpi(init_method,'random') || strcmpi(init_method,'kmeans') || strcmpi(init_method,'greedy'),'Unknown init method. Aborting...');
@@ -50,7 +54,7 @@ optWeights = 1; %flag to optimize weights or not
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
 
-algorithms = {'Runnals','CTDGMRA','GMRC'};
+algorithms = {'Runnals','CTDGMRA','MRICTDGMRA'};
 numAlgorithms = length(algorithms);
 gmr_vector = {};
 gmr_times = zeros(1,numAlgorithms);
@@ -85,56 +89,56 @@ if numAlgorithms>0 && n<=2
     set(gcf,'units','pixels','position',[300,1200,1280,720]);
 end
 
-if any(contains(algorithms,'Williams'))
+if any(contains(lower(algorithms),'williams'))
     tic;
     gm_Williams = WilliamsMRA(gm,Nr);
     [gm_Williams, nISETrajWilliams] = ISEOpt(gm,gm_Williams,sk,NOptSteps,optWeights);
     WilliamsTime = toc;
-    gmr_times(contains(algorithms,'Williams')) = WilliamsTime;
-    gmr_vector(contains(algorithms,'Williams')) = {gm_Williams};
+    gmr_times(contains(lower(algorithms),'williams')) = WilliamsTime;
+    gmr_vector(contains(lower(algorithms),'williams')) = {gm_Williams};
 end
 
-if any(contains(algorithms,'GMRC'))
+if any(contains(lower(algorithms),'gmrc'))
     tic;
     gm_GMRC = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
     GMRCTime = toc;
-    gmr_times(contains(algorithms,'GMRC')) = GMRCTime;
-    gmr_vector(contains(algorithms,'GMRC')) = {gm_GMRC};
+    gmr_times(contains(lower(algorithms),'gmrc')) = GMRCTime;
+    gmr_vector(contains(lower(algorithms),'gmrc')) = {gm_GMRC};
 end
 
-if any(contains(algorithms,'Runnals'))
+if any(contains(lower(algorithms),'runnals'))
     tic;
     gm_Runnals = RunnalsMRA(gm,Nr);
     RunnalsTime = toc;
-    gmr_times(contains(algorithms,'Runnals')) = RunnalsTime;
-    gmr_vector(contains(algorithms,'Runnals')) = {gm_Runnals};
+    gmr_times(contains(lower(algorithms),'runnals')) = RunnalsTime;
+    gmr_vector(contains(lower(algorithms),'runnals')) = {gm_Runnals};
 end
 
-if any(contains(algorithms,'Wasserstein'))
+if any(contains(lower(algorithms),'wasserstein'))
     tic;
     gm_Wasserstein = WassersteinMRA(gm,Nr);
     WassersteinTime = toc;
-    gmr_times(contains(algorithms,'Wasserstein')) = WassersteinTime;
-    gmr_vector(contains(algorithms,'Wasserstein')) = {gm_Wasserstein};
+    gmr_times(contains(lower(algorithms),'wasserstein')) = WassersteinTime;
+    gmr_vector(contains(lower(algorithms),'wasserstein')) = {gm_Wasserstein};
 end
 
-if any(contains(algorithms,'Salmond'))
+if any(contains(lower(algorithms),'salmond'))
     tic;
     gm_Salmond = SalmondMRA(gm,Nr);
     SalmondTime = toc;
-    gmr_times(contains(algorithms,'Salmond')) = SalmondTime;
-    gmr_vector(contains(algorithms,'Salmond')) = {gm_Salmond};
+    gmr_times(contains(lower(algorithms),'salmond')) = SalmondTime;
+    gmr_vector(contains(lower(algorithms),'salmond')) = {gm_Salmond};
 end
 
-if any(contains(algorithms,'GMRCWas'))
+if any(contains(lower(algorithms),'gmrcwas'))
     tic;
     gm_GMRCWas = GMRCWas(gm,Nr,NKMeansSteps);
     GMRCWasTime = toc;
-    gmr_times(contains(algorithms,'GMRCWas')) = GMRCWasTime;
-    gmr_vector(contains(algorithms,'GMRCWas')) = {gm_GMRCWas};
+    gmr_times(contains(lower(algorithms),'gmrcwas')) = GMRCWasTime;
+    gmr_vector(contains(lower(algorithms),'gmrcwas')) = {gm_GMRCWas};
 end
 %%
-if any(contains(algorithms,'CTDGMRA'))
+if any(contains(lower(algorithms),'ctdgmra'))
     tic;
     switch lower(init_method)
         case 'kmeans'
@@ -152,14 +156,24 @@ if any(contains(algorithms,'CTDGMRA'))
     end
 
     
-
-    gm_CTDGMRA = CTDGMRA(gm,gm_init,cost_measure,gamma,maxiter);
+    gm_CTDGMRA = CTDGMRA(gm,gm_init,cost_measure,lambda,maxiter);
+    
     CTDGMRATime = toc;
-    gmr_times(contains(algorithms,'CTDGMRA')) = CTDGMRATime;
-    gmr_vector(contains(algorithms,'CTDGMRA')) = {gm_CTDGMRA};
+    gmr_times(contains(lower(algorithms),'ctdgmra')) = CTDGMRATime;
+    gmr_vector(contains(lower(algorithms),'ctdgmra')) = {gm_CTDGMRA};
 end
 
-if any(contains(algorithms,'EMMRA'))
+if any(contains(lower(algorithms),'mrictdgmra'))
+    tic;
+    [gm_MRICTDGMRA,gm_init_MRI] = MRICTDGMRA(gm,Nr,cost_measure,lambda,maxiter,kRandomInit);
+    
+    MRICTDGMRATime = toc;
+    gmr_times(contains(lower(algorithms),'mrictdgmra')) = MRICTDGMRATime;
+    gmr_vector(contains(lower(algorithms),'mrictdgmra')) = {gm_MRICTDGMRA};
+end
+
+
+if any(contains(lower(algorithms),'emmra'))
     
     switch lower(init_method_EM)
         case 'kmeans'
@@ -178,13 +192,12 @@ if any(contains(algorithms,'EMMRA'))
     samples = GMSamples(gm,nSamples);
     gm_EM = EM(gm_init_EM,samples,NEMiter);
     EMTime = toc;
-    gmr_times(contains(algorithms,'EMMRA')) = EMTime;
-    gmr_vector(contains(algorithms,'EMMRA')) = {gm_EM};
+    gmr_times(contains(lower(algorithms),'emmra')) = EMTime;
+    gmr_vector(contains(lower(algorithms),'emmra')) = {gm_EM};
 end
 
+
 %%
-
-
 if n==1
     numPlotCols = ceil(sqrt(numAlgorithms));
     numPlotRows = ceil(numAlgorithms/numPlotCols);
@@ -197,10 +210,12 @@ if n==1
             plotGM1D(gm_init,X); hold on
         elseif strcmp(algorithms{i},'EMMRA')
             plotGM1D(gm_init_EM,X); hold on
+        elseif strcmp(algorithms{i},'MRICTDGMRA')
+            plotGM1D(gm_init_MRI,X); hold on
         end
         grid minor
-        title(strcat('nISE: ',num2str(nISE(gm,gmr_vector{i})),' CTD',cost_measure,': ',num2str(CTD(gm,gmr_vector{i},cost_measure)),' Time: ',num2str(gmr_times(i)),'s'),'FontSize',14);
-        if strcmp(algorithms{i},'CTDGMRA') || strcmp(algorithms{i},'EMMRA')
+        title(strcat('nISE: ',num2str(nISE(gm,gmr_vector{i})),' ERCTD',cost_measure,': ',num2str(ERCTD(gm,gmr_vector{i},cost_measure,lambda,maxiter)),' Time: ',num2str(gmr_times(i)),'s'),'FontSize',14);
+        if strcmp(algorithms{i},'CTDGMRA') || strcmp(algorithms{i},'EMMRA') || strcmp(algorithms{i},'MRICTDGMRA')
             legend('Original',algorithms{i},'Init','FontSize',11);
         else
             legend('Original',algorithms{i},'FontSize',11);
@@ -215,11 +230,11 @@ elseif n==2
     for i=1:numAlgorithms
         subplot(numPlotRows,numPlotCols,i+1)
         plotGM2D(gmr_vector{i},x1,x2,X);
-        title(strcat(algorithms{i},' MRA',' nISE: ',num2str(nISE(gm,gmr_vector{i})),' CTD',cost_measure,': ',num2str(CTD(gm,gmr_vector{i},cost_measure)),', Time: ',num2str(gmr_times(i)),'s'));
+        title(strcat(algorithms{i},' MRA',' nISE: ',num2str(nISE(gm,gmr_vector{i})),' ERCTD',cost_measure,': ',num2str(ERCTD(gm,gmr_vector{i},cost_measure,lambda,maxiter)),', Time: ',num2str(gmr_times(i)),'s'));
 
     end
 else
     for i=1:numAlgorithms
-        disp(strcat(algorithms{i},' MRA',' nISE: ',num2str(nISE(gm,gmr_vector{i})),' CTD',cost_measure,': ',num2str(CTD(gm,gmr_vector{i},cost_measure)),', Time: ',num2str(gmr_times(i)),'s'));
+        disp(strcat(algorithms{i},' MRA',' nISE: ',num2str(nISE(gm,gmr_vector{i})),' ERCTD',cost_measure,': ',num2str(ERCTD(gm,gmr_vector{i},cost_measure,lambda,maxiter)),', Time: ',num2str(gmr_times(i)),'s'));
     end
 end

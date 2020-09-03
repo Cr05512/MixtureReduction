@@ -1,37 +1,37 @@
-function [d,C,pi_star] = ERCTD(gmh,gmr,cost_meas,gamma,maxiter)
+function [d,C,pi_star] = ERCTD(gmh,gmr,cost_meas,lambda,maxiter)
 if nargin < 2
     error('Not enough inputs')
 elseif nargin < 3
     cost_meas = 'W2'; %By default
     disp('Assuming W2 as cost function...');
-    gamma = 6;
+    lambda = 6;
     maxiter = 100;
 elseif nargin < 4
-    gamma = 6;
+    lambda = 0.1;
     maxiter = 100;
 elseif nargin < 5
     maxiter = 100;
 end
-%This function computes the entropic regularized composite transportation distance between two gaussian mixtures 
-Nh = length(gmh);
-Nr = length(gmr);
 
-C = CostMatrix(gmh,gmr,cost_meas);
-if isinf(C)
-    disp('Unknown cost function, aborting...');
-    d = Inf;
-    pi_star = Inf(Nh,Nr);
-    return
-end
-
-if gamma==0
-    disp('Falling back to classic OTP calculation...');
-    pi_star = computeOTP(C,[gmh.w]',[gmr.w]');
+if lambda==0
+    [d,C,pi_star] = CTD(gmh,gmr,cost_meas);
 else
-    pi_star = computeEROTP(C,[gmh.w]',[gmr.w]',gamma,maxiter);
-end
+    %This function computes the entropic regularized composite transportation distance between two gaussian mixtures 
+    Nh = length(gmh);
+    Nr = length(gmr);
 
-d = trace(pi_star'*C);  %Matrix inner product
+    C = CostMatrix(gmh,gmr,cost_meas);
+    if isinf(C)
+        disp('Unknown cost function, aborting...');
+        d = Inf;
+        pi_star = Inf(Nh,Nr);
+        return
+    end
+
+    pi_star = computeEROTP(C,[gmh.w]',[gmr.w]',lambda,maxiter);
+
+    d = trace(pi_star'*C);  %Matrix inner product
+end
 
 
 

@@ -17,7 +17,7 @@ for i=1:N
     Sigma(:,:,i) = sigma;
 end
 
-gm(size(mu,2)) = struct('w',[],'mu',[],'Sigma',[]);
+gm(size(mu,2),1) = struct('w',[],'mu',[],'Sigma',[]);
 for i=1:size(mu,2)
     gm(i).w = w_bar(i);
     gm(i).mu = mu(:,i);
