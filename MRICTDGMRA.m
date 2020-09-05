@@ -8,6 +8,7 @@ for k=1:kRandomInit
     w_temp = [gmr_init{k}.w]';
     w_norm = num2cell(w_temp./sum(w_temp));
     [gmr_init{k}.w] = w_norm{:};
+    gmr_init{k} = KMeans(gmh,gmr_init{k},cost_meas,maxiter);
 end
 
 gmh_temp = gmh;
@@ -59,6 +60,7 @@ end
 [~,ind] = min(score);
 gmr = gmr_out{ind};
 init = gmr_init{ind};
+
 
 end
 

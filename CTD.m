@@ -3,8 +3,8 @@ function [d,C,pi_star] = CTD(gmh,gmr,cost_meas)
 if nargin < 2
     error('Not enough inputs')
 elseif nargin < 3
-    cost_meas = 'W2'; %By default
-    disp('Assuming W2 as cost function...');
+    cost_meas = 'KLD'; %By default
+    disp('Assuming KLD as cost function...');
 end
 %This function computes the composite transportation distance between two gaussian mixtures 
 Nh = length(gmh);

@@ -4,10 +4,10 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 100;  %Full mixture component number
+Nh = 40;  %Full mixture component number
 Nr = 10;   %Reduced mixture component number
 n = 1;    %Dimension
-NumTests = 10;
+NumTests = 100;
 
 assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
@@ -16,7 +16,7 @@ beta = 2; %GM covariance tuning parameter
 delta = 0; %GM Init center offset
 
 %Entropic Regularization Parameters
-lambda = 0.0; %Entropy parameter
+lambda = 0.1; %Entropy parameter
 assert(lambda>=0,'The regularization parameter has to be non-negative.');
 
 %CTDGMRA & MRICTDGMRA
@@ -26,8 +26,8 @@ init_method = 'greedy'; %We can choose between kmeans, greedy (Runnals or Wasser
 kRandomInit = 10;
 
 %Expectation Maximization Parameters
-nPoints = 1000;  %Evaluation points per dimension 
-nSamples = Nr*nPoints*n;
+nPoints = 300;  %Evaluation points per dimension 
+nSamples = Nh*nPoints*n;
 NEMiter = 10;
 init_method_EM = 'greedy';
 
@@ -50,7 +50,7 @@ optWeights = 1; %flag to optimize weights or not
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
 
-algorithms = {'Runnals','CTDGMRA','MRICTDGMRA'};
+algorithms = {'Runnals','CTDGMRA','Salmond'};
 numAlgorithms = length(algorithms);
 gmr_vector = {};
 % gmr_times = zeros(1,numAlgorithms);
@@ -129,11 +129,11 @@ for m = 1:NumTests
               gm_init = KMeans(gm,GMRGen(gm,Nr),cost_measure,NKMeansSteps);
               %gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
             case 'greedy'
-                if strcmp(cost_measure,'KLD')
-                    gm_init = RunnalsMRA(gm,Nr);
-                elseif strcmp(cost_measure,'W2')
-                    gm_init = WassersteinMRA(gm,Nr);
-                end
+               if strcmp(cost_measure,'KLD')
+                   gm_init = KMeans(gm,SalmondMRA(gm,Nr),cost_measure,NKMeansSteps);
+               elseif strcmp(cost_measure,'W2')
+                   gm_init = WassersteinMRA(gm,Nr);
+               end
             case 'random'
                 %gm_init = GMGen(Nr,n,alpha,beta,delta);
                 gm_init = GMRGen(gm,Nr);
@@ -191,6 +191,11 @@ end
 
 close(h);
 %%
-avgnISE = sum(nISEVector,2)./NumTests
-avgTime = sum(gmr_times,2)./NumTests
-avgCTD = sum(ERCTDVector,2)./NumTests
+avgnISE = sum(nISEVector,2)./NumTests;
+avgTime = sum(gmr_times,2)./NumTests;
+avgCTD = sum(ERCTDVector,2)./NumTests;
+
+T=table(avgnISE,avgTime,avgCTD);
+T.Properties.RowNames = algorithms;
+T.Properties.VariableUnits = {'NISE','s','ERCTD'};
+disp(T)
