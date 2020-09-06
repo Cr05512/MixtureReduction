@@ -11,18 +11,18 @@ n = 1;    %Dimension
 
 assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
-alpha = 25;  %GM mean spreading factor
+alpha = 30;  %GM mean spreading factor
 beta = 2; %GM covariance tuning parameter
 delta = 0; %GM Init center offset
 
 %Entropic Regularization Parameters
-lambda = 0.05; %Entropy parameter
+lambda = 0.1; %Entropy parameter
 assert(lambda>=0,'The regularization parameter has to be non-negative.');
 
 %CTDGMRA & MRICTDGMRA
 maxiter = 100;
 cost_measure = 'KLD'; %cost measure used to compute the cost matrix in the Composite transportation distance
-init_method = 'greedy'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
+init_method = 'kmeans'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
 kRandomInit = 10;
 
 
@@ -54,10 +54,10 @@ optWeights = 1; %flag to optimize weights or not
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
 
-algorithms = {'Runnals','GMRC','CTDGMRA','Salmond'};
+algorithms = {'Runnals','CTDGMRA','Salmond'};
 numAlgorithms = length(algorithms);
-gmr_vector = {};
-gmr_times = zeros(1,numAlgorithms);
+gmr_vector = cell(numAlgorithms,1);
+gmr_times = zeros(numAlgorithms,1);
 
 %Initial Gaussian Mixture
 
@@ -89,111 +89,97 @@ if numAlgorithms>0 && n<=2
     set(gcf,'units','pixels','position',[300,1200,1280,720]);
 end
 
-if any(contains(lower(algorithms),'williams'))
-    tic;
-    gm_Williams = WilliamsMRA(gm,Nr);
-    [gm_Williams, nISETrajWilliams] = ISEOpt(gm,gm_Williams,sk,NOptSteps,optWeights);
-    WilliamsTime = toc;
-    gmr_times(contains(lower(algorithms),'williams')) = WilliamsTime;
-    gmr_vector(contains(lower(algorithms),'williams')) = {gm_Williams};
-end
-
-if any(contains(lower(algorithms),'gmrc'))
-    tic;
-    gm_GMRC = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
-    GMRCTime = toc;
-    gmr_times(contains(lower(algorithms),'gmrc')) = GMRCTime;
-    gmr_vector(contains(lower(algorithms),'gmrc')) = {gm_GMRC};
-end
-%%
-if any(contains(lower(algorithms),'runnals'))
-    tic;
-    gm_Runnals = RunnalsMRA(gm,Nr);
-    RunnalsTime = toc;
-    gmr_times(contains(lower(algorithms),'runnals')) = RunnalsTime;
-    gmr_vector(contains(lower(algorithms),'runnals')) = {gm_Runnals};
-end
-%%
-if any(contains(lower(algorithms),'wasserstein'))
-    tic;
-    gm_Wasserstein = WassersteinMRA(gm,Nr);
-    WassersteinTime = toc;
-    gmr_times(contains(lower(algorithms),'wasserstein')) = WassersteinTime;
-    gmr_vector(contains(lower(algorithms),'wasserstein')) = {gm_Wasserstein};
-end
-
-if any(contains(lower(algorithms),'salmond'))
-    tic;
-    gm_Salmond = SalmondMRA(gm,Nr);
-    SalmondTime = toc;
-    gmr_times(contains(lower(algorithms),'salmond')) = SalmondTime;
-    gmr_vector(contains(lower(algorithms),'salmond')) = {gm_Salmond};
-end
-
-if any(contains(lower(algorithms),'gmrcwas'))
-    tic;
-    gm_GMRCWas = GMRCWas(gm,Nr,NKMeansSteps);
-    GMRCWasTime = toc;
-    gmr_times(contains(lower(algorithms),'gmrcwas')) = GMRCWasTime;
-    gmr_vector(contains(lower(algorithms),'gmrcwas')) = {gm_GMRCWas};
-end
-%%
-if any(contains(lower(algorithms),'ctdgmra'))
-    tic;
-    switch lower(init_method)
-        case 'kmeans'
-          gm_init = KMeans(gm,GMRGen(gm,Nr),cost_measure,NKMeansSteps);
-          %gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
-        case 'greedy'
-            if strcmp(cost_measure,'KLD')
-                gm_init = KMeans(gm,SalmondMRA(gm,Nr),cost_measure,NKMeansSteps);
-            elseif strcmp(cost_measure,'W2')
-                gm_init = WassersteinMRA(gm,Nr);
+for i=1:numAlgorithms
+    switch lower(algorithms{i})
+        case 'williams'
+            tic;
+            gmr = WilliamsMRA(gm,Nr);
+            [gmr, nISETrajWilliams] = ISEOpt(gm,gmr,sk,NOptSteps,optWeights);
+            time = toc;
+            gmr_times(contains(lower(algorithms),'williams')) = time;
+            gmr_vector(contains(lower(algorithms),'williams')) = {gmr};
+        case 'gmrc'
+            tic;
+            gmr = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+            time = toc;
+            gmr_times(contains(lower(algorithms),'gmrc')) = time;
+            gmr_vector(contains(lower(algorithms),'gmrc')) = {gmr};
+        case 'runnals'
+            tic;
+            gmr = RunnalsMRA(gm,Nr);
+            time = toc;
+            gmr_times(contains(lower(algorithms),'runnals')) = time;
+            gmr_vector(contains(lower(algorithms),'runnals')) = {gmr};
+        case 'wasserstein'
+            tic;
+            gmr = WassersteinMRA(gm,Nr);
+            time = toc;
+            gmr_times(contains(lower(algorithms),'wasserstein')) = time;
+            gmr_vector(contains(lower(algorithms),'wasserstein')) = {gmr};
+        case 'salmond'
+            tic;
+            gmr = SalmondMRA(gm,Nr);
+            time = toc;
+            gmr_times(contains(lower(algorithms),'salmond')) = time;
+            gmr_vector(contains(lower(algorithms),'salmond')) = {gmr};
+        case 'gmrcwas'
+            tic;
+            gmr = GMRCWas(gm,Nr,NKMeansSteps);
+            time = toc;
+            gmr_times(contains(lower(algorithms),'gmrcwas')) = time;
+            gmr_vector(contains(lower(algorithms),'gmrcwas')) = {gmr};
+        case 'ctdgmra'
+            tic;
+            switch lower(init_method)
+                case 'kmeans'
+                  gm_init = KMeans(gm,SalmondMRA(gm,Nr),cost_measure,NKMeansSteps);
+                  %gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
+                case 'greedy'
+                    if strcmp(cost_measure,'KLD')
+                        gm_init = SalmondMRA(gm,Nr);
+                    elseif strcmp(cost_measure,'W2')
+                        gm_init = WassersteinMRA(gm,Nr);
+                    end
+                case 'random'
+                    %gm_init = GMGen(Nr,n,alpha,beta,delta);
+                    gm_init = GMRGen(gm,Nr);
             end
-        case 'random'
-            %gm_init = GMGen(Nr,n,alpha,beta,delta);
-            gm_init = GMRGen(gm,Nr);
+
+
+            gmr = CTDGMRA(gm,gm_init,cost_measure,lambda,maxiter);
+
+            time = toc;
+            gmr_times(contains(lower(algorithms),'ctdgmra')) = time;
+            gmr_vector(contains(lower(algorithms),'ctdgmra')) = {gmr};
+        case 'mrictdgmra'
+            tic;
+            [gmr,gm_init_MRI] = MRICTDGMRA(gm,Nr,cost_measure,lambda,maxiter,kRandomInit);
+
+            time = toc;
+            gmr_times(contains(lower(algorithms),'mrictdgmra')) = time;
+            gmr_vector(contains(lower(algorithms),'mrictdgmra')) = {gmr'};
+        case 'emmra'
+            switch lower(init_method_EM)
+                case 'kmeans'
+                  gm_init_EM = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
+                case 'greedy'
+                    if strcmp(cost_measure,'KLD')
+                        gm_init = RunnalsMRA(gm,Nr);
+                    elseif strcmp(cost_measure,'W2')
+                        gm_init = WassersteinMRA(gm,Nr);
+                    end
+                case 'random'
+                    %gm_init_EM = GMGen(Nr,n,alpha,beta,delta);
+                    gm_init_EM = GMRGen(gm,Nr);
+            end
+            tic;
+            samples = GMSamples(gm,nSamples);
+            gmr = EM(gm_init_EM,samples,NEMiter);
+            time = toc;
+            gmr_times(contains(lower(algorithms),'emmra')) = time;
+            gmr_vector(contains(lower(algorithms),'emmra')) = {gmr};
     end
 
-    
-    gm_CTDGMRA = CTDGMRA(gm,gm_init,cost_measure,lambda,maxiter);
-    
-    CTDGMRATime = toc;
-    gmr_times(contains(lower(algorithms),'ctdgmra')) = CTDGMRATime;
-    gmr_vector(contains(lower(algorithms),'ctdgmra')) = {gm_CTDGMRA};
-end
-
-if any(contains(lower(algorithms),'mrictdgmra'))
-    tic;
-    [gm_MRICTDGMRA,gm_init_MRI] = MRICTDGMRA(gm,Nr,cost_measure,lambda,maxiter,kRandomInit);
-    
-    MRICTDGMRATime = toc;
-    gmr_times(contains(lower(algorithms),'mrictdgmra')) = MRICTDGMRATime;
-    gmr_vector(contains(lower(algorithms),'mrictdgmra')) = {gm_MRICTDGMRA'};
-end
-
-
-if any(contains(lower(algorithms),'emmra'))
-    
-    switch lower(init_method_EM)
-        case 'kmeans'
-          gm_init_EM = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
-        case 'greedy'
-            if strcmp(cost_measure,'KLD')
-                gm_init = RunnalsMRA(gm,Nr);
-            elseif strcmp(cost_measure,'W2')
-                gm_init = WassersteinMRA(gm,Nr);
-            end
-        case 'random'
-            %gm_init_EM = GMGen(Nr,n,alpha,beta,delta);
-            gm_init_EM = GMRGen(gm,Nr);
-    end
-    tic;
-    samples = GMSamples(gm,nSamples);
-    gm_EM = EM(gm_init_EM,samples,NEMiter);
-    EMTime = toc;
-    gmr_times(contains(lower(algorithms),'emmra')) = EMTime;
-    gmr_vector(contains(lower(algorithms),'emmra')) = {gm_EM};
 end
 
 
