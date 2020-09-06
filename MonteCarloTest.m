@@ -4,16 +4,16 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 20;  %Full mixture component number
-Nr = 4;   %Reduced mixture component number
+Nh = 40;  %Full mixture component number
+Nr = 5;   %Reduced mixture component number
 n = 1;    %Dimension
 NumTests = 50;
 
 assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
-alpha = 20;  %GM mean spreading factor
-beta = 2; %GM covariance tuning parameter
-delta = 0; %GM Init center offset
+alpha = 3;  %GM mean spreading factor
+beta = 0.09; %GM covariance tuning parameter
+delta = 3; %GM Init center offset
 
 %Entropic Regularization Parameters
 lambda = 0.1; %Entropy parameter
@@ -35,6 +35,7 @@ init_method_EM = 'greedy';
 NKMeansSteps = 20;
 
 %ISE Optimization Parameters
+opt = 0;
 sk = 0.005; %Gradient step
 NOptSteps = 50; %Gradient iterations
 optWeights = 1; %flag to optimize weights or not
@@ -50,7 +51,7 @@ optWeights = 1; %flag to optimize weights or not
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
 
-algorithms = {'Wasserstein','CTDGMRA'};
+algorithms = {'GMRC','GMRCWas'};
 numAlgorithms = length(algorithms);
 gmr_vector = {};
 % gmr_times = zeros(1,numAlgorithms);
@@ -58,7 +59,7 @@ gmr_vector = {};
 
 nISEVector = zeros(numAlgorithms,NumTests);
 gmr_times = zeros(numAlgorithms,NumTests);
-ERCTDVector = zeros(numAlgorithms,NumTests);
+CTDVector = zeros(numAlgorithms,NumTests);
 h = waitbar(0,'Processing...');
 
 
@@ -75,42 +76,42 @@ for m = 1:NumTests
                 [gmr, nISETrajWilliams] = ISEOpt(gm,gmr,sk,NOptSteps,optWeights);
                 time = toc;
                 gmr_times(contains(lower(algorithms),'williams'),m) = time;
-                ERCTDVector(contains(lower(algorithms),'williams'),m) = ERCTD(gm,gmr,cost_measure,lambda,maxiter);
+                CTDVector(contains(lower(algorithms),'williams'),m) = CTD(gm,gmr,cost_measure);
                 nISEVector(contains(lower(algorithms),'williams'),m) = nISE(gm,gmr);
             case 'gmrc'
                 tic;
-                gmr = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+                gmr = GMRC(gm,Nr,NKMeansSteps,opt,sk,NOptSteps,optWeights);
                 time = toc;
                 gmr_times(contains(lower(algorithms),'gmrc'),m) = time;
-                ERCTDVector(contains(lower(algorithms),'gmrc'),m) = ERCTD(gm,gmr,cost_measure,lambda,maxiter);
+                CTDVector(contains(lower(algorithms),'gmrc'),m) = CTD(gm,gmr,cost_measure);
                 nISEVector(contains(lower(algorithms),'gmrc'),m) = nISE(gm,gmr);
             case 'runnals'
                 tic;
                 gmr = RunnalsMRA(gm,Nr);
                 time = toc;
                 gmr_times(contains(lower(algorithms),'runnals'),m) = time;
-                ERCTDVector(contains(lower(algorithms),'runnals'),m) = ERCTD(gm,gmr,cost_measure,lambda,maxiter);
+                CTDVector(contains(lower(algorithms),'runnals'),m) = CTD(gm,gmr,cost_measure);
                 nISEVector(contains(lower(algorithms),'runnals'),m) = nISE(gm,gmr);
             case 'wasserstein'
                 tic;
                 gmr = WassersteinMRA(gm,Nr);
                 time = toc;
                 gmr_times(contains(lower(algorithms),'wasserstein'),m) = time;
-                ERCTDVector(contains(lower(algorithms),'wasserstein'),m) = ERCTD(gm,gmr,cost_measure,lambda,maxiter);
+                CTDVector(contains(lower(algorithms),'wasserstein'),m) = CTD(gm,gmr,cost_measure);
                 nISEVector(contains(lower(algorithms),'wasserstein'),m) = nISE(gm,gmr);
             case 'salmond'
                 tic;
                 gmr = SalmondMRA(gm,Nr);
                 time = toc;
                 gmr_times(contains(lower(algorithms),'salmond'),m) = time;
-                ERCTDVector(contains(lower(algorithms),'salmond'),m) = ERCTD(gm,gmr,cost_measure,lambda,maxiter);
+                CTDVector(contains(lower(algorithms),'salmond'),m) = CTD(gm,gmr,cost_measure);
                 nISEVector(contains(lower(algorithms),'salmond'),m) = nISE(gm,gmr);
             case 'gmrcwas'
                 tic;
                 gmr = GMRCWas(gm,Nr,NKMeansSteps);
                 time = toc;
                 gmr_times(contains(lower(algorithms),'gmrcwas'),m) = time;
-                ERCTDVector(contains(lower(algorithms),'gmrcwas'),m) = ERCTD(gm,gmr,cost_measure,lambda,maxiter);
+                CTDVector(contains(lower(algorithms),'gmrcwas'),m) = CTD(gm,gmr,cost_measure);
                 nISEVector(contains(lower(algorithms),'gmrcwas'),m) = nISE(gm,gmr);
             case 'ctdgmra'
                 tic;
@@ -134,7 +135,7 @@ for m = 1:NumTests
 
                 time = toc;
                 gmr_times(contains(lower(algorithms),'ctdgmra'),m) = time;
-                ERCTDVector(contains(lower(algorithms),'ctdgmra'),m) = ERCTD(gm,gmr,cost_measure,lambda,maxiter);
+                CTDVector(contains(lower(algorithms),'ctdgmra'),m) = CTD(gm,gmr,cost_measure);
                 nISEVector(contains(lower(algorithms),'ctdgmra'),m) = nISE(gm,gmr);
             case 'mrictdgmra'
                 tic;
@@ -142,7 +143,7 @@ for m = 1:NumTests
 
                 time = toc;
                 gmr_times(contains(lower(algorithms),'mrictdgmra'),m) = time;
-                ERCTDVector(contains(lower(algorithms),'mrictdgmra'),m) = ERCTD(gm,gmr,cost_measure,lambda,maxiter);
+                CTDVector(contains(lower(algorithms),'mrictdgmra'),m) = CTD(gm,gmr,cost_measure);
                 nISEVector(contains(lower(algorithms),'mrictdgmra'),m) = nISE(gm,gmr);
             case 'emmra'
                 switch lower(init_method_EM)
@@ -163,7 +164,7 @@ for m = 1:NumTests
                 gmr = EM(gm_init_EM,samples,NEMiter);
                 time = toc;
                 gmr_times(contains(lower(algorithms),'emmra'),m) = time;
-                ERCTDVector(contains(lower(algorithms),'emmra'),m) = ERCTD(gm,gmr,cost_measure,lambda,maxiter);
+                CTDVector(contains(lower(algorithms),'emmra'),m) = CTD(gm,gmr,cost_measure);
                 nISEVector(contains(lower(algorithms),'emmra'),m) = nISE(gm,gmr);
         end
 
@@ -177,9 +178,9 @@ close(h);
 %%
 avgnISE = sum(nISEVector,2)./NumTests;
 avgTime = sum(gmr_times,2)./NumTests;
-avgCTD = sum(ERCTDVector,2)./NumTests;
+avgCTD = sum(CTDVector,2)./NumTests;
 
 T=table(avgnISE,avgTime,avgCTD);
 T.Properties.RowNames = algorithms;
-T.Properties.VariableUnits = {'NISE','s','ERCTD'};
+T.Properties.VariableUnits = {'NISE','s','CTD'};
 disp(T)

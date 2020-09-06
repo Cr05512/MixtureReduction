@@ -5,14 +5,14 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 20;  %Full mixture component number
-Nr = 8;   %Reduced mixture component number
+Nh = 10;  %Full mixture component number
+Nr = 4;   %Reduced mixture component number
 n = 1;    %Dimension
 
 assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
-alpha = 20;  %GM mean spreading factor
-beta = 2; %GM covariance tuning parameter
+alpha = 3;  %GM mean spreading factor
+beta = 0.09; %GM covariance tuning parameter
 delta = 0; %GM Init center offset
 
 %Entropic Regularization Parameters
@@ -39,6 +39,7 @@ init_method_EM = 'kmeans';
 NKMeansSteps = 20;
 
 %ISE Optimization Parameters
+opt = 1;
 sk = 0.005; %Gradient step
 NOptSteps = 50; %Gradient iterations
 optWeights = 1; %flag to optimize weights or not
@@ -54,19 +55,19 @@ optWeights = 1; %flag to optimize weights or not
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
 
-algorithms = {'Wasserstein','CTDGMRA','Salmond'};
+algorithms = {'GMRC','GMRCWas'};
 numAlgorithms = length(algorithms);
 gmr_vector = cell(numAlgorithms,1);
 gmr_times = zeros(numAlgorithms,1);
 
 %Initial Gaussian Mixture
 
-gm = GMGen(Nh,n,alpha,beta,delta);
+%gm = GMGen(Nh,n,alpha,beta,delta);
 %gm = test3CompGen(Nh,20);
 %gm = testWilliamsCompGen();
 %gm = testRunnalsCompGen();
 %gm = test5CompGen();
-%gm = testCrouseCompGen();
+gm = testCrouseCompGen();
 %%
 
 if n==1
@@ -100,7 +101,7 @@ for i=1:numAlgorithms
             gmr_vector(contains(lower(algorithms),'williams')) = {gmr};
         case 'gmrc'
             tic;
-            gmr = GMRC(gm,Nr,NKMeansSteps,sk,NOptSteps,optWeights);
+            gmr = GMRC(gm,Nr,NKMeansSteps,opt,sk,NOptSteps,optWeights);
             time = toc;
             gmr_times(contains(lower(algorithms),'gmrc')) = time;
             gmr_vector(contains(lower(algorithms),'gmrc')) = {gmr};
@@ -128,6 +129,7 @@ for i=1:numAlgorithms
             time = toc;
             gmr_times(contains(lower(algorithms),'gmrcwas')) = time;
             gmr_vector(contains(lower(algorithms),'gmrcwas')) = {gmr};
+            %%
         case 'ctdgmra'
             tic;
             switch lower(init_method)

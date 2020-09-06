@@ -1,9 +1,11 @@
-function [gmr,nISETrajGMRC] = GMRC(gmh,Nr,NKMeansSteps,sk,NOptSteps,optWeights)
+function [gmr,nISETrajGMRC] = GMRC(gmh,Nr,NKMeansSteps,opt,sk,NOptSteps,optWeights)
 %This function implements the Gaussian Mixture Reduction via Clustering
 %Algorithm
-gmr = SalmondMRA(gmh,Nr);
-gm_KM = KMeans(gmh,gmr,'KLD',NKMeansSteps);
-[gmr,nISETrajGMRC] = ISEOpt(gmh,gm_KM,sk,NOptSteps,optWeights);
+gmr = RunnalsMRA(gmh,Nr);
+gmr = KMeans(gmh,gmr,'KLD',NKMeansSteps);
+if opt==1
+    [gmr,nISETrajGMRC] = ISEOpt(gmh,gmr,sk,NOptSteps,optWeights);
+end
 
 end
 

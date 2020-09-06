@@ -3,7 +3,6 @@ function gmr = GMRCWas(gmh,Nr,NKMeansSteps)
 %Algorithm
 gmr = WassersteinMRA(gmh,Nr);
 gmr = KMeans(gmh,gmr,'W2',NKMeansSteps);
-%[gmr, nISETrajGMRC] = ISEOpt(gmh,gm_KM,sk,NOptSteps,optWeights);
 
 end
 
