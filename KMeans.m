@@ -38,7 +38,7 @@ for k=1:NKMeansSteps
         end
     end
     
-    newMixture = [clusters{:}];
+    newMixture = [clusters{:}]';
     
     CPrev = C;
 end

@@ -5,23 +5,23 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 60;  %Full mixture component number
+Nh = 20;  %Full mixture component number
 Nr = 8;   %Reduced mixture component number
 n = 1;    %Dimension
 
 assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
-alpha = 30;  %GM mean spreading factor
+alpha = 20;  %GM mean spreading factor
 beta = 2; %GM covariance tuning parameter
 delta = 0; %GM Init center offset
 
 %Entropic Regularization Parameters
-lambda = 0.1; %Entropy parameter
+lambda = 0.0; %Entropy parameter
 assert(lambda>=0,'The regularization parameter has to be non-negative.');
 
 %CTDGMRA & MRICTDGMRA
 maxiter = 100;
-cost_measure = 'KLD'; %cost measure used to compute the cost matrix in the Composite transportation distance
+cost_measure = 'W2'; %cost measure used to compute the cost matrix in the Composite transportation distance
 init_method = 'kmeans'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
 kRandomInit = 10;
 
@@ -54,7 +54,7 @@ optWeights = 1; %flag to optimize weights or not
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
 
-algorithms = {'Runnals','CTDGMRA','Salmond'};
+algorithms = {'Wasserstein','CTDGMRA','Salmond'};
 numAlgorithms = length(algorithms);
 gmr_vector = cell(numAlgorithms,1);
 gmr_times = zeros(numAlgorithms,1);

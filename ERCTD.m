@@ -27,8 +27,8 @@ else
         pi_star = Inf(Nh,Nr);
         return
     end
-
-    pi_star = computeEROTP(C,[gmh.w]',[gmr.w]',lambda,maxiter);
+    
+    pi_star = EffEROTP(gmh,Nr,C,lambda);
 
     d = trace(pi_star'*C);  %Matrix inner product
 end
