@@ -4,16 +4,16 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 40;  %Full mixture component number
-Nr = 5;   %Reduced mixture component number
-n = 1;    %Dimension
+Nh = 100;  %Full mixture component number
+Nr = 10;   %Reduced mixture component number
+n = 5;    %Dimension
 NumTests = 50;
 
 assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
-alpha = 3;  %GM mean spreading factor
-beta = 0.09; %GM covariance tuning parameter
-delta = 3; %GM Init center offset
+alpha = Nh/4;  %GM mean spreading factor
+beta = 0.1; %GM covariance tuning parameter
+delta = 0; %GM Init center offset
 
 %Entropic Regularization Parameters
 lambda = 0.1; %Entropy parameter
@@ -32,7 +32,7 @@ NEMiter = 10;
 init_method_EM = 'greedy';
 
 %KMeans Parameters
-NKMeansSteps = 20;
+NKMeansSteps = 100;
 
 %ISE Optimization Parameters
 opt = 0;
@@ -51,7 +51,7 @@ optWeights = 1; %flag to optimize weights or not
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
 
-algorithms = {'GMRC','GMRCWas'};
+algorithms = {'Salmond','CTDGMRA','GMRCWas'};
 numAlgorithms = length(algorithms);
 gmr_vector = {};
 % gmr_times = zeros(1,numAlgorithms);

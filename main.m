@@ -5,18 +5,19 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 10;  %Full mixture component number
-Nr = 4;   %Reduced mixture component number
+Nh = 90;  %Full mixture component number
+Nr = 10;   %Reduced mixture component number
 n = 1;    %Dimension
 
 assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
-alpha = 3;  %GM mean spreading factor
+alpha = Nh/3;  %GM mean spreading factor
 beta = 0.09; %GM covariance tuning parameter
 delta = 0; %GM Init center offset
+nPoints = 300;  %Evaluation points in plots
 
 %Entropic Regularization Parameters
-lambda = 0.0; %Entropy parameter
+lambda = 0.1; %Entropy parameter
 assert(lambda>=0,'The regularization parameter has to be non-negative.');
 
 %CTDGMRA & MRICTDGMRA
@@ -30,16 +31,15 @@ assert(strcmp(cost_measure,'KLD') || strcmp(cost_measure,'W2'), 'Unknown cost me
 assert(strcmpi(init_method,'random') || strcmpi(init_method,'kmeans') || strcmpi(init_method,'greedy'),'Unknown init method. Aborting...');
 
 %Expectation Maximization Parameters
-nPoints = 300;  %Evaluation points per dimension 
-nSamples = Nh*nPoints*n;
-NEMiter = 10;
+nSamples = 15*Nh*n;
+NEMiter = 1000;
 init_method_EM = 'kmeans';
 
 %KMeans Parameters
-NKMeansSteps = 20;
+NKMeansSteps = 100;
 
 %ISE Optimization Parameters
-opt = 1;
+opt = 0;
 sk = 0.005; %Gradient step
 NOptSteps = 50; %Gradient iterations
 optWeights = 1; %flag to optimize weights or not
@@ -55,19 +55,19 @@ optWeights = 1; %flag to optimize weights or not
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
 
-algorithms = {'GMRC','GMRCWas'};
+algorithms = {'CTDGMRA','GMRCWas','Salmond'};
 numAlgorithms = length(algorithms);
 gmr_vector = cell(numAlgorithms,1);
 gmr_times = zeros(numAlgorithms,1);
 
 %Initial Gaussian Mixture
 
-%gm = GMGen(Nh,n,alpha,beta,delta);
+gm = GMGen(Nh,n,alpha,beta,delta);
 %gm = test3CompGen(Nh,20);
 %gm = testWilliamsCompGen();
 %gm = testRunnalsCompGen();
 %gm = test5CompGen();
-gm = testCrouseCompGen();
+%gm = testCrouseCompGen();
 %%
 
 if n==1
@@ -138,7 +138,7 @@ for i=1:numAlgorithms
                   %gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
                 case 'greedy'
                     if strcmp(cost_measure,'KLD')
-                        gm_init = SalmondMRA(gm,Nr);
+                        gm_init = RunnalsMRA(gm,Nr);
                     elseif strcmp(cost_measure,'W2')
                         gm_init = WassersteinMRA(gm,Nr);
                     end
@@ -161,9 +161,10 @@ for i=1:numAlgorithms
             gmr_times(contains(lower(algorithms),'mrictdgmra')) = time;
             gmr_vector(contains(lower(algorithms),'mrictdgmra')) = {gmr'};
         case 'emmra'
+            tic;
             switch lower(init_method_EM)
                 case 'kmeans'
-                  gm_init_EM = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
+                  gm_init_EM = KMeans(gm,SalmondMRA(gm,Nr),cost_measure,NKMeansSteps);
                 case 'greedy'
                     if strcmp(cost_measure,'KLD')
                         gm_init = RunnalsMRA(gm,Nr);
@@ -174,7 +175,7 @@ for i=1:numAlgorithms
                     %gm_init_EM = GMGen(Nr,n,alpha,beta,delta);
                     gm_init_EM = GMRGen(gm,Nr);
             end
-            tic;
+            
             samples = GMSamples(gm,nSamples);
             gmr = EM(gm_init_EM,samples,NEMiter);
             time = toc;
