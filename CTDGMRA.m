@@ -1,8 +1,8 @@
 function gmr = CTDGMRA(gmh,gmr,cost_meas,lambda,maxiter)
 Nr = length(gmr);
 gmh_temp = gmh;
-f_val = Inf;
-f_val_prev = f_val;
+J = Inf;
+J_prev = J;
 
 
 for k=1:maxiter
@@ -10,9 +10,9 @@ for k=1:maxiter
     C = CostMatrix(gmh,gmr,cost_meas);
     pi_star = EffEROTP(gmh,Nr,C,lambda);
     
-    f_val = trace(pi_star'*C) - lambda*MatrixEntropy(pi_star);
+    J = trace(pi_star'*C) - lambda*MatrixEntropy(pi_star);
 
-    if norm(f_val-f_val_prev) < 1e-15
+    if abs(J-J_prev) < 1e-09
         break;
     end
 
@@ -37,7 +37,7 @@ for k=1:maxiter
     [gmr.w] = w_norm{:};
     Nr = length(gmr);
     %wG = wG(ind_keep);
-    f_val_prev = f_val;
+    J_prev = J;
     
 end
 

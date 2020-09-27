@@ -9,10 +9,10 @@ w_bar = 0;
 for i=1:N
     w_bar = w_bar + gm(i).w;
     mu_bar = mu_bar + gm(i).w*gm(i).mu;
-    S_prev = S_prev + gm(i).Sigma;
+    S_prev = S_prev + gm(i).w*gm(i).Sigma;
 end
 mu_bar = mu_bar./w_bar;
-S_prev = S_prev./N;
+S_prev = S_prev./w_bar;
 
 for k=1:maxIter
     S = zeros(d,d);
@@ -28,7 +28,6 @@ for k=1:maxIter
         S_prev = S;
     end
 end
-
 bc = struct('w',w_bar,'mu',mu_bar,'Sigma',S);
     
 end

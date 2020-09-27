@@ -2,13 +2,19 @@ function [gmr,init] = MRICTDGMRA(gmh,Nr,cost_meas,lambda,maxiter,kRandomInit)
 
 gmr_init = cell(kRandomInit,1);
 gmr_out = cell(kRandomInit,1);
+Nh = length(gmh);
 for k=1:kRandomInit
-    ind = randperm(length(gmh),Nr);
-    gmr_init{k} = gmh(ind);
-    w_temp = [gmr_init{k}.w]';
-    w_norm = num2cell(w_temp./sum(w_temp));
-    [gmr_init{k}.w] = w_norm{:};
-    gmr_init{k} = KMeans(gmh,gmr_init{k},cost_meas,maxiter);
+    %rng(randi(100));
+    gmr_init{k} = gmh;
+    for i=1:(Nh-Nr)
+        ind = randperm(length(gmr_init{k}),2);
+        if strcmp(cost_meas,'KLD')
+            gmr_init{k}(ind(1)) = mpMerge([gmr_init{k}(ind(1)),gmr_init{k}(ind(2))]);
+        elseif strcmp(cost_meas,'W2')
+            gmr_init{k}(ind(1)) = WassersteinBarycenter([gmr_init{k}(ind(1)),gmr_init{k}(ind(2))],maxiter);
+        end
+        gmr_init{k}(ind(2)) = [];
+    end
 end
 
 gmh_temp = gmh;

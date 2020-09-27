@@ -23,16 +23,13 @@ for k=1:NKMeansSteps
     
     if abs(J-JPrev)<1e-12
         break;
-    else
-        JPrev = J;
-        Rnk = zeros(size(C));
     end
 
     
     ind = [];
     
     for l=1:length(gmr)
-        clusters{l} = gmh(find(assignVector==l));
+        clusters{l} = gmh(logical(Rnk(:,l)));
         if ~isempty(clusters{l})
             ind = [ind;l];
         end
@@ -49,11 +46,13 @@ for k=1:NKMeansSteps
     end
     
     gmr = [clusters{:}]';
+    JPrev = J;
+    Rnk = zeros(size(C));
 end
-if k<NKMeansSteps
-    disp(horzcat('KMeans converged after ',num2str(k),' steps'));
-else
-    disp('KMeans did not converge in the maximum given steps');
-end
+% if k<NKMeansSteps
+%     disp(horzcat('KMeans converged after ',num2str(k),' steps'));
+% else
+%     disp('KMeans did not converge in the maximum given steps');
+% end
 
 end

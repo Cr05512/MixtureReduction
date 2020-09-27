@@ -1,6 +1,6 @@
 function gm = GMGen(N,n,alpha,beta,delta)
 
-w = rand(N,1);
+w = 0.5*rand(N,1);
 w_bar = w./sum(w);
 
 %Generate means

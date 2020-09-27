@@ -6,8 +6,8 @@ close all
 global Nh Nr n alpha delta
 Nh = 100;  %Full mixture component number
 Nr = 10;   %Reduced mixture component number
-n = 5;    %Dimension
-NumTests = 50;
+n = 1;    %Dimension
+NumTests = 100;
 
 assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
@@ -16,14 +16,14 @@ beta = 0.1; %GM covariance tuning parameter
 delta = 0; %GM Init center offset
 
 %Entropic Regularization Parameters
-lambda = 0.1; %Entropy parameter
+lambda = 0.3; %Entropy parameter
 assert(lambda>=0,'The regularization parameter has to be non-negative.');
 
 %CTDGMRA & MRICTDGMRA
 maxiter = 100;
-cost_measure = 'W2'; %cost measure used to compute the cost matrix in the Composite transportation distance
-init_method = 'kmeans'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
-kRandomInit = 10;
+cost_measure = 'KLD'; %cost measure used to compute the cost matrix in the Composite transportation distance
+init_method = 'greedy'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
+kRandomInit = Nh;
 
 %Expectation Maximization Parameters
 nPoints = 300;  %Evaluation points per dimension 
@@ -51,9 +51,8 @@ optWeights = 1; %flag to optimize weights or not
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
 
-algorithms = {'Salmond','CTDGMRA','GMRCWas'};
+algorithms = {'Runnals','CTDGMRA','Salmond'};
 numAlgorithms = length(algorithms);
-gmr_vector = {};
 % gmr_times = zeros(1,numAlgorithms);
 
 
@@ -123,11 +122,11 @@ for m = 1:NumTests
                         if strcmp(cost_measure,'KLD')
                             gm_init = SalmondMRA(gm,Nr);
                         elseif strcmp(cost_measure,'W2')
-                            gm_init = WassersteinMRA(gm,Nr);
+                            gm_init = SalmondMRA(gm,Nr);
                         end
                     case 'random'
                         %gm_init = GMGen(Nr,n,alpha,beta,delta);
-                        gm_init = GMRGen(gm,Nr);
+                        gm_init = GMRGen2(gm,Nr);
                 end
 
 
