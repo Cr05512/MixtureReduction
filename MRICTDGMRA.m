@@ -59,7 +59,7 @@ for l=1:kRandomInit
         f_val_prev = f_val;
 
     end
-    score(l) = ERCTD(gmh,gmr,cost_meas,lambda,maxiter);
+    score(l) = CTD(gmh,gmr,cost_meas);
     gmr_out{l} = gmr;
 end
 

@@ -4,26 +4,26 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 100;  %Full mixture component number
-Nr = 10;   %Reduced mixture component number
-n = 1;    %Dimension
-NumTests = 100;
+Nh = 30;  %Full mixture component number
+Nr = 5;   %Reduced mixture component number
+n = 13;    %Dimension
+NumTests = 200;
 
 assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
 alpha = Nh/4;  %GM mean spreading factor
-beta = 0.1; %GM covariance tuning parameter
+beta = 0.09; %GM covariance tuning parameter
 delta = 0; %GM Init center offset
 
 %Entropic Regularization Parameters
-lambda = 0.3; %Entropy parameter
+lambda = 0.1; %Entropy parameter
 assert(lambda>=0,'The regularization parameter has to be non-negative.');
 
 %CTDGMRA & MRICTDGMRA
 maxiter = 100;
 cost_measure = 'KLD'; %cost measure used to compute the cost matrix in the Composite transportation distance
 init_method = 'greedy'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
-kRandomInit = Nh;
+kRandomInit = Nh/4;
 
 %Expectation Maximization Parameters
 nPoints = 300;  %Evaluation points per dimension 
@@ -36,8 +36,8 @@ NKMeansSteps = 100;
 
 %ISE Optimization Parameters
 opt = 0;
-sk = 0.005; %Gradient step
-NOptSteps = 50; %Gradient iterations
+sk = 0.01; %Gradient step
+NOptSteps = 20; %Gradient iterations
 optWeights = 1; %flag to optimize weights or not
 
 %List of algorithms we want to compare. We can choose between the
@@ -51,7 +51,7 @@ optWeights = 1; %flag to optimize weights or not
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
 
-algorithms = {'Runnals','CTDGMRA','Salmond'};
+algorithms = {'Runnals','CTDGMRA','GMRC'};
 numAlgorithms = length(algorithms);
 % gmr_times = zeros(1,numAlgorithms);
 
@@ -120,7 +120,7 @@ for m = 1:NumTests
                       %gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
                     case 'greedy'
                         if strcmp(cost_measure,'KLD')
-                            gm_init = SalmondMRA(gm,Nr);
+                            gm_init = RunnalsMRA(AWCPruning(gm),Nr);
                         elseif strcmp(cost_measure,'W2')
                             gm_init = SalmondMRA(gm,Nr);
                         end
@@ -131,6 +131,9 @@ for m = 1:NumTests
 
 
                 gmr = CTDGMRA(gm,gm_init,cost_measure,lambda,maxiter);
+%                 if strcmp(cost_measure,'KLD')
+%                     gmr = ISEOpt(gm,gmr,sk,NOptSteps,optWeights);
+%                 end
 
                 time = toc;
                 gmr_times(contains(lower(algorithms),'ctdgmra'),m) = time;
@@ -138,7 +141,7 @@ for m = 1:NumTests
                 nISEVector(contains(lower(algorithms),'ctdgmra'),m) = nISE(gm,gmr);
             case 'mrictdgmra'
                 tic;
-                [gmr,gm_init_MRI] = MRICTDGMRA(gm,Nr,cost_measure,lambda,maxiter,kRandomInit);
+                [gmr,gm_init_MRI] = MRICTDGMRA(AWCPruning(gm),Nr,cost_measure,lambda,maxiter,kRandomInit);
 
                 time = toc;
                 gmr_times(contains(lower(algorithms),'mrictdgmra'),m) = time;

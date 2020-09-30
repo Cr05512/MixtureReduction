@@ -3,7 +3,7 @@ function C = CorrMeasure(gmh,gmr)
 %mixtures.  D. J. Petrucci.  Gaussian mixture reduction for bayesian
 %target tracking inclutter.Master’s thesis, Air Force Institute of Technology, 2005.
 
-C = crossLikeness(gmh,gmr)/(selfLikeness(gmh)*selfLikeness(gmr));
+C = crossLikeness(gmh,gmr)/sqrt(selfLikeness(gmh)*selfLikeness(gmr));
 
 end
 
