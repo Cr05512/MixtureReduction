@@ -8,7 +8,8 @@ J_prev = J;
 for k=1:maxiter
     
     C = CostMatrix(gmh,gmr,cost_meas);
-    pi_star = EffEROTP(gmh,Nr,C,lambda);
+    %pi_star = computeEROTP(C,[gmh.w]',[gmr.w]',lambda,maxiter);
+    pi_star = EffEROTP(gmh,Nr,C,lambda); %It works only in this context, we are solving the opt problem by considering only one constraint
     
     J = trace(pi_star'*C) - lambda*MatrixEntropy(pi_star);
 
@@ -23,7 +24,7 @@ for k=1:maxiter
             [gmh_temp.w] = w_temp{:,j};
             if strcmp(cost_meas,'W2')
                 gmr(j) = WassersteinBarycenter(gmh_temp,maxiter);
-            elseif strcmp(cost_meas,'KLD')
+            elseif strcmp(cost_meas,'KLD') || strcmp(cost_meas,'ISE')
                 gmr(j) = mpMerge(gmh_temp);
             end
         end

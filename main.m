@@ -20,14 +20,18 @@ nPoints = 300;  %Evaluation points in plots
 lambda = 0.1; %Entropy parameter
 assert(lambda>=0,'The regularization parameter has to be non-negative.');
 
+%West/eWest algorithms parameters
+algo = 1;
+gamma = Inf;
+
 %CTDGMRA & MRICTDGMRA
 maxiter = 100;
-cost_measure = 'KLD'; %cost measure used to compute the cost matrix in the Composite transportation distance
+cost_measure = 'KLD'; %cost measure used to compute the cost matrix in the Composite transportation distance - KLD / MKL / W2 / ISE
 init_method = 'greedy'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
 kRandomInit = 5;
 
 
-assert(strcmp(cost_measure,'KLD') || strcmp(cost_measure,'W2'), 'Unknown cost measure. Aborting...');
+assert(strcmp(cost_measure,'KLD') || strcmp(cost_measure,'W2') || strcmp(cost_measure,'ISE'), 'Unknown cost measure. Aborting...');
 assert(strcmpi(init_method,'random') || strcmpi(init_method,'kmeans') || strcmpi(init_method,'greedy'),'Unknown init method. Aborting...');
 
 %Expectation Maximization Parameters
@@ -40,8 +44,8 @@ NKMeansSteps = 100;
 
 %ISE Optimization Parameters
 opt = 1;
-sk = 0.005; %Gradient step
-NOptSteps = 30; %Gradient iterations
+sk = 0.001; %Gradient step
+NOptSteps = 50; %Gradient iterations
 optWeights = 1; %flag to optimize weights or not
 
 %List of algorithms we want to compare. We can choose between the
@@ -49,25 +53,28 @@ optWeights = 1; %flag to optimize weights or not
 % - Williams -> Cost-Function-Based Gaussian Mixture Reduction for Target Tracking, J.L. Williams, P.S. Maybeck
 % - Runnals -> Kullback-Leibler Approach to Gaussian Mixture Reduction, A.R. Runnals
 % - Salmond -> Mixture reduction algorithms for target tracking in clutter, D.J. Salmond
+% - West -> Approximating Posterior Distributions by Mixture, M. West - Pass 0 for West algorithm and 1 for Enhanced West in the third parameter
+% - COWA -> Constrained optimized weight adaption for Gaussian mixture reduction, H.Chen, K. C. Chang, C. Smith
 % - GMRC -> Gaussian Mixture Reduction via Clustering, D. Schieferdecker, M.F. Huber
 % - Wasserstein -> Wasserstein-Distance-Based Gaussian Mixture Reduction, A. Assa, K.N. Plataniotis
 % - GMRCWas -> Wasserstein-Distance-Based Gaussian Mixture Reduction, A. Assa, K.N. Plataniotis
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
+% - BF -> A Look at Gaussian Mixture Reduction Algorithms, D. F. Crouse, P.Willett, K. Pattipati, L. Svensson
 
-algorithms = {'Runnals','CTDGMRA'};
+algorithms = {'Runnals','COWA','CTDGMRA'};
 numAlgorithms = length(algorithms);
 gmr_vector = cell(numAlgorithms,1);
 gmr_times = zeros(numAlgorithms,1);
 
 %Initial Gaussian Mixture
 
-gm = GMGen(Nh,n,alpha,beta,delta);
+%gm = GMGen(Nh,n,alpha,beta,delta);
 %gm = test3CompGen(Nh,20);
 %gm = testWilliamsCompGen();
 %gm = testRunnalsCompGen();
 %gm = test5CompGen();
-%gm = testCrouseCompGen();
+gm = testCrouseCompGen();
 %%
 
 if n==1
@@ -83,11 +90,6 @@ elseif n==2
     [X1,X2] = meshgrid(x1,x2);
     X = [X1(:) X2(:)];
 
-end
-
-if numAlgorithms>0 && n<=2
-    figure(1)
-    set(gcf,'units','pixels','position',[300,1200,1280,720]);
 end
 
 for i=1:numAlgorithms
@@ -126,6 +128,25 @@ for i=1:numAlgorithms
             time = toc;
             gmr_times(contains(lower(algorithms),'salmond')) = time;
             gmr_vector(contains(lower(algorithms),'salmond')) = {gmr};
+        case 'west'
+            tic;
+            gmr = WestMRA(gm,Nr,algo,gamma);
+            time = toc;
+            gmr_times(contains(lower(algorithms),'west')) = time;
+            gmr_vector(contains(lower(algorithms),'west')) = {gmr};
+        case 'cowa'
+            tic;
+            gmr = COWAMRA(gm,Nr,algo,gamma);
+            time = toc;
+            gmr_times(contains(lower(algorithms),'cowa')) = time;
+            gmr_vector(contains(lower(algorithms),'cowa')) = {gmr};
+        case 'bf'
+            tic;
+            gmr = bruteForceGaussMixRed(gm,Nr,true);
+            gmr = ISEOpt(gm,gmr,sk,NOptSteps,optWeights);
+            time = toc;
+            gmr_times(contains(lower(algorithms),'bf')) = time;
+            gmr_vector(contains(lower(algorithms),'bf')) = {gmr};
         case 'gmrcwas'
             tic;
             gmr = GMRCWas(gm,Nr,NKMeansSteps);
@@ -139,7 +160,7 @@ for i=1:numAlgorithms
                   gm_init = KMeans(gm,SalmondMRA(gm,Nr),cost_measure,NKMeansSteps);
                   %gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
                 case 'greedy'
-                    if strcmp(cost_measure,'KLD')
+                    if strcmp(cost_measure,'KLD') || strcmp(cost_measure,'ISE')
                         gm_init = SalmondMRA(AWCPruning(gm),Nr);
                     elseif strcmp(cost_measure,'W2')
                         gm_init = SalmondMRA(gm,Nr);
@@ -149,7 +170,7 @@ for i=1:numAlgorithms
                     gm_init = GMRGen2(AWCPruning(gm),Nr);
             end
 
-            gmr = CTDGMRA(gmr,gm_init,cost_measure,lambda,maxiter);
+            gmr = CTDGMRA(gm,gm_init,cost_measure,lambda,maxiter);
 %             if strcmp(cost_measure,'KLD')
 %                 gmr = ISEOpt(gm,gmr,sk,NOptSteps,optWeights);
 %             end
@@ -187,6 +208,11 @@ for i=1:numAlgorithms
             gmr_vector(contains(lower(algorithms),'emmra')) = {gmr};
     end
 
+end
+
+if numAlgorithms>0 && n<=2
+    figure(1)
+    set(gcf,'units','pixels','position',[300,1200,1280,720]);
 end
 
 

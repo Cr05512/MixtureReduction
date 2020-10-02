@@ -4,10 +4,10 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 30;  %Full mixture component number
+Nh = 20;  %Full mixture component number
 Nr = 5;   %Reduced mixture component number
-n = 13;    %Dimension
-NumTests = 200;
+n = 1;    %Dimension
+NumTests = 100;
 
 assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
@@ -51,7 +51,7 @@ optWeights = 1; %flag to optimize weights or not
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
 
-algorithms = {'Runnals','CTDGMRA','GMRC'};
+algorithms = {'Runnals','CTDGMRA','COWA'};
 numAlgorithms = length(algorithms);
 % gmr_times = zeros(1,numAlgorithms);
 
@@ -105,6 +105,13 @@ for m = 1:NumTests
                 gmr_times(contains(lower(algorithms),'salmond'),m) = time;
                 CTDVector(contains(lower(algorithms),'salmond'),m) = CTD(gm,gmr,cost_measure);
                 nISEVector(contains(lower(algorithms),'salmond'),m) = nISE(gm,gmr);
+            case 'cowa'
+                tic;
+                gmr = COWAMRA(gm,Nr);
+                time = toc;
+                gmr_times(contains(lower(algorithms),'cowa'),m) = time;
+                CTDVector(contains(lower(algorithms),'cowa'),m) = CTD(gm,gmr,cost_measure);
+                nISEVector(contains(lower(algorithms),'cowa'),m) = nISE(gm,gmr);
             case 'gmrcwas'
                 tic;
                 gmr = GMRCWas(gm,Nr,NKMeansSteps);
@@ -120,7 +127,7 @@ for m = 1:NumTests
                       %gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
                     case 'greedy'
                         if strcmp(cost_measure,'KLD')
-                            gm_init = RunnalsMRA(AWCPruning(gm),Nr);
+                            gm_init = SalmondMRA(AWCPruning(gm),Nr);
                         elseif strcmp(cost_measure,'W2')
                             gm_init = SalmondMRA(gm,Nr);
                         end

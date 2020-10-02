@@ -12,6 +12,8 @@ for i=1:length(gmh)
             C(i,j) = KLD(gmh(i),gmr(j));
         elseif strcmp(cost_meas,'W2')
             C(i,j) = Wasserstein2Dist(gmh(i),gmr(j));
+        elseif strcmp(cost_meas,'ISE')
+            C(i,j) = ISE(gmh(i),gmr(j));
         end
     end
 end

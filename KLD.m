@@ -9,7 +9,7 @@ Pjinv = inv(Pj);
 d = size(mui,1);
 
 %dKLij = 0.5*(trace(Pjinv*Pi) + log(det(2*pi*Pj))-d)-log(mvnpdf(mui,muj,Pj));
-dKLij = 0.5*(trace(Pjinv*Pi) + (muj-mui)'*Pjinv*(muj-mui)-d+log(det(Pj)/det(Pi))) + 4*eps;
+dKLij = 0.5*(trace(Pjinv*Pi) + (muj-mui)'*Pjinv*(muj-mui)-d+log(det(Pj)/det(Pi)));
 
 end
 

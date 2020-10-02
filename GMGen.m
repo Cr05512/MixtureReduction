@@ -13,7 +13,7 @@ for i=1:N
     % construct a symmetric matrix using either
     %sigma = 0.5*(sigma+sigma');
     sigma = sigma*sigma';
-    sigma = sigma + beta*n*eye(n);
+    sigma = sigma + beta*eye(n);
     %sigma = wishrnd(beta*eye(n),n+2);
     Sigma(:,:,i) = sigma;
 end
