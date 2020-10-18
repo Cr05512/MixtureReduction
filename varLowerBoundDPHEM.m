@@ -1,4 +1,4 @@
-function L = varLowerBound(gmh,gmr,E,Z,I)
+function L = varLowerBoundDPHEM(gmh,gmr,E,Z,I)
 %Variational Lower Bound for the DPHEM algorithm
 L = 0;
 for i=1:length(gmh)

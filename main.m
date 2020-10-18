@@ -17,16 +17,16 @@ delta = 0; %GM Init center offset
 nPoints = 300;  %Evaluation points in plots
 
 %Entropic Regularization Parameters
-lambda = 1; %Entropy parameter
+lambda = 0.1; %Entropy parameter
 assert(lambda>=0,'The regularization parameter has to be non-negative.');
 
 %West/eWest algorithms parameters
 algo = 1;
 gamma = Inf;
 
-%CTDGMRA & MRICTDGMRA
+%CTDGMRA
 maxiter = 100;
-cost_measure = 'MKLD'; %cost measure used to compute the cost matrix in the Composite transportation distance - KLD / W2 / GJSD / MKLD
+cost_measure = 'KLD'; %cost measure used to compute the cost matrix in the Composite transportation distance - KLD / W2 / GJSD / MKLD
 init_method = 'greedy'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
 
 
@@ -35,7 +35,7 @@ assert(strcmpi(init_method,'random') || strcmpi(init_method,'kmeans') || strcmpi
 
 %EM/DPHEM Parameters
 EMSamples = 15*Nh*n;
-I = Nh; %DPHEM Samples
+I = Nh; %DPHEM Samples. Use this parameter carefully. By setting it too high the DPHEM algorithm incurs in numerical problems
 NEMiter = 30;
 init_method_EM = 'greedy';
 
@@ -58,6 +58,7 @@ optWeights = 1; %flag to optimize weights or not
 % - GMRC -> Gaussian Mixture Reduction via Clustering, D. Schieferdecker, M.F. Huber
 % - Wasserstein -> Wasserstein-Distance-Based Gaussian Mixture Reduction, A. Assa, K.N. Plataniotis
 % - GMRCWas -> Wasserstein-Distance-Based Gaussian Mixture Reduction, A. Assa, K.N. Plataniotis
+% - EM -> Maximum Likelihood from Incomplete Data via the EM Algorithm,  A. P. Dempster, N. M. Laird, D. B. Rubin
 % - DPHEM -> Density-Preserving Hierarchical EM Algorithm: Simplifying GMMs for Approximate Inference, L. Yu, T. Yang, A. B. Chan
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
@@ -172,9 +173,6 @@ for i=1:numAlgorithms
             end
 
             gmr = CTDGMRA(gm,gm_init,cost_measure,lambda,maxiter,I);
-%             if strcmp(cost_measure,'KLD')
-%                 gmr = ISEOpt(gm,gmr,sk,NOptSteps,optWeights);
-%             end
 
             time = toc;
             gmr_times(contains(lower(algorithms),'ctdgmra')) = time;
@@ -183,7 +181,7 @@ for i=1:numAlgorithms
             tic;
             switch lower(init_method_EM)
                 case 'kmeans'
-                  gm_init_EM = KMeans(gm,GMRGen(gm,Nr),cost_measure,NKMeansSteps);
+                  gm_init_EM = KMeans(gm,GMRGen2(gm,Nr),cost_measure,NKMeansSteps);
                 case 'greedy'
                     if strcmp(cost_measure,'KLD') || strcmp(cost_measure,'GJSD') || strcmp(cost_measure,'MKLD')
                         gm_init = RunnalsMRA(gm,Nr);
@@ -192,7 +190,7 @@ for i=1:numAlgorithms
                     end
                 case 'random'
                     %gm_init_EM = GMGen(Nr,n,alpha,beta,delta);
-                    gm_init_EM = GMRGen(gm,Nr);
+                    gm_init_EM = GMRGen2(gm,Nr);
             end
             
             samples = GMSamples(gm,nSamples);
