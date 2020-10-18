@@ -7,7 +7,7 @@ global Nh Nr n alpha delta
 Nh = 20;  %Full mixture component number
 Nr = 5;   %Reduced mixture component number
 n = 1;    %Dimension
-NumTests = 100;
+NumTests = 50;
 
 assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
@@ -19,10 +19,15 @@ delta = 0; %GM Init center offset
 lambda = 0.1; %Entropy parameter
 assert(lambda>=0,'The regularization parameter has to be non-negative.');
 
+%West/eWest algorithms parameters
+algo = 0;
+gamma = Inf;
+
+
 %CTDGMRA & MRICTDGMRA
 maxiter = 100;
 cost_measure = 'KLD'; %cost measure used to compute the cost matrix in the Composite transportation distance
-init_method = 'greedy'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
+init_method = 'random'; %We can choose between kmeans, greedy (Runnals or Wasserstein) and random
 kRandomInit = Nh/4;
 
 %Expectation Maximization Parameters
@@ -45,13 +50,16 @@ optWeights = 1; %flag to optimize weights or not
 % - Williams -> Cost-Function-Based Gaussian Mixture Reduction for Target Tracking, J.L. Williams, P.S. Maybeck
 % - Runnals -> Kullback-Leibler Approach to Gaussian Mixture Reduction, A.R. Runnals
 % - Salmond -> Mixture reduction algorithms for target tracking in clutter, D.J. Salmond
+% - West -> Approximating Posterior Distributions by Mixture, M. West - Pass 0 for West algorithm and 1 for Enhanced West in the third parameter
+% - COWA -> Constrained optimized weight adaption for Gaussian mixture reduction, H.Chen, K. C. Chang, C. Smith
 % - GMRC -> Gaussian Mixture Reduction via Clustering, D. Schieferdecker, M.F. Huber
 % - Wasserstein -> Wasserstein-Distance-Based Gaussian Mixture Reduction, A. Assa, K.N. Plataniotis
 % - GMRCWas -> Wasserstein-Distance-Based Gaussian Mixture Reduction, A. Assa, K.N. Plataniotis
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - EMMRA -> Expectation Maximization Refinement Algorithm
+% - BF -> A Look at Gaussian Mixture Reduction Algorithms, D. F. Crouse, P.Willett, K. Pattipati, L. Svensson
 
-algorithms = {'Runnals','CTDGMRA','COWA'};
+algorithms = {'Runnals','CTDGMRA'};
 numAlgorithms = length(algorithms);
 % gmr_times = zeros(1,numAlgorithms);
 
@@ -98,6 +106,13 @@ for m = 1:NumTests
                 gmr_times(contains(lower(algorithms),'wasserstein'),m) = time;
                 CTDVector(contains(lower(algorithms),'wasserstein'),m) = CTD(gm,gmr,cost_measure);
                 nISEVector(contains(lower(algorithms),'wasserstein'),m) = nISE(gm,gmr);
+            case 'west'
+                tic;
+                gmr = WestMRA(gm,Nr,algo,gamma);
+                time = toc;
+                gmr_times(contains(lower(algorithms),'west'),m) = time;
+                CTDVector(contains(lower(algorithms),'west'),m) = CTD(gm,gmr,cost_measure);
+                nISEVector(contains(lower(algorithms),'west'),m) = nISE(gm,gmr);
             case 'salmond'
                 tic;
                 gmr = SalmondMRA(gm,Nr);
@@ -127,7 +142,7 @@ for m = 1:NumTests
                       %gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
                     case 'greedy'
                         if strcmp(cost_measure,'KLD')
-                            gm_init = SalmondMRA(AWCPruning(gm),Nr);
+                            gm_init = RunnalsMRA(gm,Nr);
                         elseif strcmp(cost_measure,'W2')
                             gm_init = SalmondMRA(gm,Nr);
                         end

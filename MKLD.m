@@ -1,4 +1,4 @@
-function MKL = MKLD(pdfi,pdfj,gamma,I)
-MKL = -(1/gamma)*log(pdfj.w) + (I/gamma)*KLD(pdfi,pdfj);
+function MKL = MKLD(pdfi,pdfj,lambda,I)
+MKL = -(1/lambda)*log(pdfj.w) + (I/lambda)*KLD(pdfi,pdfj);
 end
 

@@ -1,5 +1,5 @@
 function gmr = KMeans(gmh,gmr,cost_meas,NKMeansSteps)
-%This function operates a K-Means refinement over the reduced mixture in
+%This function operates a K-Means (medoids) refinement over the reduced mixture in
 %order to improve the corresponding means. As distance measure the provided cost measure is
 %used.
 
@@ -38,7 +38,7 @@ for k=1:NKMeansSteps
     clusters = clusters(ind);
     
     for l=1:length(clusters)
-        if strcmp(cost_meas,'KLD')
+        if strcmp(cost_meas,'KLD') || strcmp(cost_meas,'MKLD')
             clusters{l} = mpMerge(clusters{l});
         elseif strcmp(cost_meas,'W2')
             clusters{l} = WassersteinBarycenter(clusters{l},100);

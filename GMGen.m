@@ -9,12 +9,12 @@ mu = -alpha*ones(n,N) + alpha*2*rand(n,N) + delta;
 %Generate Symmetric Positive Definite Covariance matrices
 Sigma = zeros(n,n,N);
 for i=1:N
-    sigma = rand(n,n); % generate a random nxn matrix
+    %sigma = rand(n,n); % generate a random nxn matrix
     % construct a symmetric matrix using either
     %sigma = 0.5*(sigma+sigma');
-    sigma = sigma*sigma';
-    sigma = sigma + beta*eye(n);
-    %sigma = wishrnd(beta*eye(n),n+2);
+    %sigma = sigma*sigma';
+    %sigma = sigma + beta*eye(n);
+    sigma = wishrnd(beta*eye(n),n+5);
     Sigma(:,:,i) = sigma;
 end
 

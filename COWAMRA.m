@@ -14,7 +14,6 @@ for i=1:Nr
         a(i) = a(i) + gmh(j).w*mvnpdf(gmr(i).mu,gmh(j).mu,gmr(i).Sigma + gmh(j).Sigma);
     end
 end
-b = [gmr.w]';
 c = ones(Nr,1);
 H = Inf(Nr,Nr);
 for i=1:Nr

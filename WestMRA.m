@@ -27,14 +27,20 @@ while length(gmr)-Nr>0
         w = w./detVec;
     end
 
-    Jrr = 1/sqrt((2*pi)^n * detVec);
+    %Jrr = 1/sqrt((2*pi)^n * detVec);
     
     
     [~,i] = min(w);
     
     for j=1:length(gmr)
         if j~=i
-            dist(j) = -2*mvnpdf(gmr(j).mu,gmr(i).mu,gmr(j).Sigma+gmr(i).Sigma) + Jrr(i) + Jrr(j);
+           % if algo==0
+                pdf_merged = mpMerge([gmr(i);gmr(j)]);
+                dist(j) = gmr(i).w*gmr(j).w/(gmr(i).w+gmr(j).w)*mahalSquaredDist(gmr(i).mu,gmr(j).mu,pdf_merged.Sigma);
+            %else
+                %dist(j) = -2*mvnpdf(gmr(j).mu,gmr(i).mu,gmr(j).Sigma+gmr(i).Sigma) + Jrr(i) + Jrr(j);
+            %    dist(j) = ISE(gmr(i),gmr(j));
+            %end
         else
             dist(j) = Inf;
         end
