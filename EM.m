@@ -6,8 +6,8 @@ M = size(samples,2);
 priors = [gm.w]';
 responsibilities = zeros(M,N);
 gmNew = gm;
-gmOld = gmNew;
-nISEPrev = Inf;
+llh = -Inf;
+llh_prev = llh;
 for k=1:numIter
     
     % (Expectation)
@@ -33,17 +33,16 @@ for k=1:numIter
         gmNew(i).Sigma = newCov/Nk(i);
     end
     
-    nISENew = nISE(gmNew,gmOld);
-    if abs(nISE(gmNew,gmOld) - nISEPrev) < 1e-10
-        k
-        break;
-    else
-        nISEPrev = nISENew;
-        gmOld = gmNew;
+    if ~mod(k,20)
+        llh = llhEM(gmNew,samples);
+        if abs(llh-llh_prev)<log(1.105)
+            break;
+        end
+        llh_prev = llh;
     end
 
 end
-%gm = initGM;
+k
 
 end
 

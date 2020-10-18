@@ -5,7 +5,7 @@ close all
 
 %Parameters to play with
 global Nh Nr n alpha delta
-Nh = 30;  %Full mixture component number
+Nh = 80;  %Full mixture component number
 Nr = 5;   %Reduced mixture component number
 n = 1;    %Dimension
 
@@ -34,9 +34,9 @@ assert(strcmp(cost_measure,'KLD') || strcmp(cost_measure,'W2') || strcmp(cost_me
 assert(strcmpi(init_method,'random') || strcmpi(init_method,'kmeans') || strcmpi(init_method,'greedy'),'Unknown init method. Aborting...');
 
 %EM/DPHEM Parameters
-EMSamples = 15*Nh*n;
+EMSamples = 300*Nh*n;
 I = Nh; %DPHEM Samples. Use this parameter carefully. By setting it too high the DPHEM algorithm incurs in numerical problems
-NEMiter = 30;
+NEMiter = 10000;
 init_method_EM = 'greedy';
 
 %KMeans Parameters
@@ -64,7 +64,7 @@ optWeights = 1; %flag to optimize weights or not
 % - EMMRA -> Expectation Maximization Refinement Algorithm
 % - BF -> A Look at Gaussian Mixture Reduction Algorithms, D. F. Crouse, P.Willett, K. Pattipati, L. Svensson
 
-algorithms = {'Runnals','Salmond','CTDGMRA','DPHEM'};
+algorithms = {'Runnals','EM'};
 numAlgorithms = length(algorithms);
 gmr_vector = cell(numAlgorithms,1);
 gmr_times = zeros(numAlgorithms,1);
@@ -177,27 +177,27 @@ for i=1:numAlgorithms
             time = toc;
             gmr_times(contains(lower(algorithms),'ctdgmra')) = time;
             gmr_vector(contains(lower(algorithms),'ctdgmra')) = {gmr};
-        case 'emmra'
+        case 'em'
             tic;
             switch lower(init_method_EM)
                 case 'kmeans'
                   gm_init_EM = KMeans(gm,GMRGen2(gm,Nr),cost_measure,NKMeansSteps);
                 case 'greedy'
                     if strcmp(cost_measure,'KLD') || strcmp(cost_measure,'GJSD') || strcmp(cost_measure,'MKLD')
-                        gm_init = RunnalsMRA(gm,Nr);
+                        gm_init_EM = RunnalsMRA(gm,Nr);
                     elseif strcmp(cost_measure,'W2')
-                        gm_init = WassersteinMRA(gm,Nr);
+                        gm_init_EM = WassersteinMRA(gm,Nr);
                     end
                 case 'random'
                     %gm_init_EM = GMGen(Nr,n,alpha,beta,delta);
                     gm_init_EM = GMRGen2(gm,Nr);
             end
             
-            samples = GMSamples(gm,nSamples);
+            samples = GMSamples(gm,EMSamples);
             gmr = EM(gm_init_EM,samples,NEMiter);
             time = toc;
-            gmr_times(contains(lower(algorithms),'emmra')) = time;
-            gmr_vector(contains(lower(algorithms),'emmra')) = {gmr};
+            gmr_times(contains(lower(algorithms),'em')) = time;
+            gmr_vector(contains(lower(algorithms),'em')) = {gmr};
             
         case 'dphem'
             tic;
@@ -240,7 +240,7 @@ if n==1
         plotGM1D(gmr_vector{i},X); hold on
         if strcmp(algorithms{i},'CTDGMRA')
             plotGM1D(gm_init,X); hold on
-        elseif strcmp(algorithms{i},'EMMRA') || strcmp(algorithms{i},'DPHEM')
+        elseif strcmp(algorithms{i},'EM') || strcmp(algorithms{i},'DPHEM')
             plotGM1D(gm_init_EM,X); hold on
         end
         grid minor
