@@ -1,9 +1,17 @@
 function B = KLDBound(pdf1, pdf2)
-    pdf_merge = mpMerge([pdf1, pdf2]);
+% B = KLDBound(pdf1, pdf2):
+% INPUTS:
+% - pdf1, pdf2, two Gaussian densities.
+% OUTPUTS:
+% - B, the Runnals' upper bound on the divergence gain between the full and reduced mixture after the component 1
+%   and 2 are merged.
+% This function computes the upper bound proposed by Runnals.
+
+pdf_merge = mpMerge([pdf1, pdf2]);
     
-    B = 0.5*(pdf_merge.w*log(det(pdf_merge.Sigma))...
-        - pdf1.w*log(det(pdf1.Sigma))...
-        - pdf2.w*log(det(pdf2.Sigma)));
+B = 0.5*(pdf_merge.w*log(det(pdf_merge.Sigma))...
+    - pdf1.w*log(det(pdf1.Sigma))...
+    - pdf2.w*log(det(pdf2.Sigma)));
 
 end
 

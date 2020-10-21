@@ -1,7 +1,22 @@
 function gmr = KMeans(gmh,gmr,cost_meas,NKMeansSteps)
-%This function operates a K-Means (medoids) refinement over the reduced mixture in
-%order to improve the corresponding means. As distance measure the provided cost measure is
-%used.
+% gmr = KMeans(gmh,gmr,cost_meas,NKMeansSteps):
+% INPUTS:
+% - gmh, gmr, two Gaussian mixtures,
+% - cost_meas, the cost functio used to compute the distance between components,
+% - NKMeansSteps, maximum number of allowed iterations for the KMeans algorithm.
+% OUTPUTS:
+% - gmr, the refined mixture.
+% This function operates a K-Means refinement over the reduced mixture in
+% order to improve the corresponding parameters.
+if nargin < 3
+    cost_meas = 'KLD';
+    NKMeansSteps = 100;
+elseif nargin < 4
+    NKMeansSteps = 100;
+end
+assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element.');
+assert(strcmp(cost_meas,'KLD') || strcmp(cost_meas,'W2') || strcmp(cost_meas,'GJSD') || strcmp(cost_meas,'MKLD'),...
+            'The allowed cost functions are (1) KLD, (2) MKLD, (3) W2 and (4) GJSD.');
 
 
 C = Inf(length(gmh),length(gmr));
@@ -38,7 +53,7 @@ for k=1:NKMeansSteps
     clusters = clusters(ind);
     
     for l=1:length(clusters)
-        if strcmp(cost_meas,'KLD') || strcmp(cost_meas,'MKLD')
+        if strcmp(cost_meas,'KLD') || strcmp(cost_meas,'MKLD') || strcmp(cost_meas,'GJSD')
             clusters{l} = mpMerge(clusters{l});
         elseif strcmp(cost_meas,'W2')
             clusters{l} = WassersteinBarycenter(clusters{l},100);

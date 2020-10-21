@@ -1,4 +1,18 @@
 function bc = WassersteinBarycenter(gm,maxIter)
+% bc = WassersteinBarycenter(gm,maxIter):
+% INPUTS:
+% - gm, a Gaussian mixture,
+% - maxIter, maximum number of allowed iterations in the covariance computation.
+% OUTPUTS:
+% - bc, Wasserstein barycenter.
+% This function computes the Wasserstein barycenter of several Gaussian
+% components.
+if nargin < 2
+    maxIter = 100;
+end
+assert(~isempty(gm),'The mixture has to contain at least one element.');
+assert(maxIter>0,'The number of iterations has to be greater than zero.');
+
 N = length(gm);
 
 d = size(gm(1).Sigma,1);

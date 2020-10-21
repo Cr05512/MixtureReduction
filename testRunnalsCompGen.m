@@ -1,8 +1,9 @@
 function gm = testRunnalsCompGen()
-%This script generates a gaussian mixture with parameters taken from
-%Williams' Master thesis example at page 1 of section 4. It has been
-%reported in order to compare the computation of ISE and the action taken,
-%which seem to match well 
+% gm = testRunnalsCompGen():
+% OUTPUTS:
+% - gm, a Gaussian mixture.
+% This script generates a one dimensional Gaussian mixture as shown in the
+% paper of Runnals "Kullback-Leibler Approach to Gaussian Mixture Reduction".
 global Nh Nr n
 n = 12;
 Nh = 4;

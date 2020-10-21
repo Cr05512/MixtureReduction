@@ -1,4 +1,13 @@
 function gmr = WassersteinMRA(gm, Nr)
+% gmr = WassersteinMRA(gm, Nr):
+% INPUTS:
+% - gm, a Gaussian mixture,
+% - Nr, desired number of components for the reduced mixture.
+% OUTPUTS:
+% - gmr, the reduced Gaussian mixture.
+% This function implements a greedy reduction algorithm based on the W2 distance as proposed by Assa, Plataniotis.
+assert(~isempty(gm),'The mixture has to contain at least one element.');
+assert(Nr>0 && length(gm)>=Nr,'The reduced mixture must have a positive number of components lower or equal to the starting mixture.');
 
     gmr = gm;
     WMatrix = Inf(length(gmr),length(gmr));

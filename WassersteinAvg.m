@@ -1,6 +1,13 @@
 function  pdf_avg = WassersteinAvg(cluster)
+% pdf_avg = WassersteinAvg(cluster):
+% INPUTS:
+% - cluster, vector of Gaussian components.
+% OUTPUTS:
+% - pdf_avg, Wasserstein barycenter of the input components.
+% This function computes the Wasserstein average of several Gaussian
+% components. It is equivalent to compute the Wasserstein barycenter.
 
-%This is equivalent to computing Wasserstein Barycenters
+assert(~isempty(cluster),'The cluster has to contain at least one element.');
 
 n = size(cluster(1).mu,1);
 Ki = length(cluster);

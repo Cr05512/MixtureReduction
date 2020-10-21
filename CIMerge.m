@@ -1,4 +1,12 @@
 function pdf_merged = CIMerge(gm)
+% pdf_merged = CIMerge(gm):
+% INPUTS:
+% - gm, a Gaussian mixture.
+% OUTPUTS:
+% pdf_merged, the result of the covariance intersection merging.
+% This function operates a weighted covariance intersection.
+
+assert(length(gm)>=1,'The mixture has to contain at least one element.');
 
 q = zeros(size(gm(1).mu));
 Omega = zeros(size(gm(1).Sigma));

@@ -1,8 +1,18 @@
 function dij = GJSD(pdfi,pdfj,alpha)
-%Dual Skew Generalized Jensen-Shannon Divergence
+% dij = GJSD(pdfi,pdfj,alpha):
+% INPUTS:
+% - pdfi, pdfj, two Gaussian densities,
+% - alpha, tuning parameter.
+% OUTPUTS:
+% - dij, the dual skew generalized Jensen-Shannon divergence.
+% This function computes the dual skew Generalized Jensen-Shannon Divergence
+% which is a bounded symmetrization of the Kullback-Leibler Divergence. For more
+% informations check "On a generalization of the Jensen-Shannon divergence and the
+% JS-symmetrization of distances relying on abstract means", F. Nielsen.
 if nargin < 3
     alpha = 0.5;
 end
+assert(alpha>=0 && alpha <=1,'The parameter alpha is is bounded between 0 and 1.');
 
 mu1 = pdfi.mu;
 mu2 = pdfj.mu;

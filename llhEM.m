@@ -1,5 +1,14 @@
 function L = llhEM(gmr,samples)
-%log-likelihood function for the EM algorithm
+% L = llhEM(gmr,samples):
+% INPUTS:
+% - gmr, a Gaussian mixture,
+% - samples, samples used in the EM.
+% OUTPUTS:
+% - L, the log-likelihood.
+% This function computes the log-likelihood of the EM algorithm.
+assert(~isempty(gmr),'The mixture has to contain at least one element.');
+assert(~isempty(samples),'The sample set has to contain at least one element.');
+
 L = 0;
 for i=1:size(samples,2)
     tmp = 0;

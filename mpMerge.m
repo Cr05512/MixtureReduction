@@ -1,10 +1,13 @@
 function pdfMerge = mpMerge(pdfs)
-%This function takes as input an array of gaussian components and returns
-%the gaussian component resulting from their merge
+% pdfMerge = mpMerge(pdfs):
+% INPUTS:
+% - pdfs, a vector of Gaussian components.
+% OUTPUTS:
+% - pdfMerge, the moment preserving merge of the input components.
+% This function takes as input a vecot of Gaussian components and returns
+% their moment-preseving merge (KLD-barycenter).
 
-if isempty(pdfs)
-    disp('The array is empty');
-end
+assert(~isempty(pdfs),'The number of components in the merge has to be greater than zero.');
 
 pdfMerge = struct('w',0,'mu',zeros(size(pdfs(1).mu)),'Sigma',size(pdfs(1).Sigma));
 

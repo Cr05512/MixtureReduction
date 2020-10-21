@@ -1,6 +1,13 @@
 function samples = SigmaPointsGM(gm)
+% samples = SigmaPointsGM(gm):
+% INPUTS:
+% - gm, a Gaussian mixture.
+% OUTPUTS:
+% - samples, sigma points generated from each component of the mixture.
+% This function generate the sigma points from each component of the
+% mixture.
 
-%Labelled Sigma points
+assert(~isempty(gm),'The mixture has to contain at least one element.');
 
 n = size(gm(1).mu,1);
 N = length(gm);

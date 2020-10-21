@@ -1,7 +1,19 @@
 function gmr = AWCPruning(gm,rho)
+% gmr = AWCPruning(gm, rho):
+% INPUTS:
+% - gm, a Gaussian Mixture,
+% - rho, percentile threshold.
+% OUTPUTS:
+% - gmr, the pruned mixture.
+% This function performs an Adaptive Weight-Censoring Pruning. It basically
+% prunes all the components which are not "enough informative". Rho is a
+% threshold usually set to 1,2 or 3 sigmas.
 if nargin < 2
     rho = 0.9544;
 end
+assert(length(gm)>=1,'The mixture has to contain at least one element.');
+assert(rho>0 && rho<=1,'The threshold has to be between 0 and 1.');
+
 %Adaptive weight-censored pruning
 N = length(gm);
 [w_sort,perm] = sort([gm.w]');

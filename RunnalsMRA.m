@@ -1,4 +1,13 @@
 function gmr = RunnalsMRA(gm, Nr)
+% gmr = RunnalsMRA(gm, Nr):
+% INPUTS:
+% - gm, a Gaussian mixture to be reduced,
+% - Nr, the desired number of components for the reduced mixture.
+% OUTPUTS:
+% - gmr, the reduced mixture.
+% This function implements the Runnals' algorithm.
+assert(~isempty(gm),'The mixture has to contain at least one element.');
+assert(Nr>0 && length(gm)>=Nr,'The reduced mixture must have a positive number of components lower or equal to the starting mixture.');
 
     gmr = gm;
     BMatrix = Inf(length(gmr),length(gmr));

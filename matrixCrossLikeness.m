@@ -1,4 +1,13 @@
 function matrixcl = matrixCrossLikeness(gmh,gmr)
+% matrixcl = matrixCrossLikeness(gmh,gmr):
+% INPUTS:
+% - gmh, gmr, two Gaussian mixtures.
+% OUTPUTS:
+% - matrixcl, the matrix cross likeness.
+% This function computes the cross likenesses of each pair of components,
+% returning a matrix. Summing up over all the elements of such matrix
+% returns the scalar cross likeness between the mixtures.
+assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element.');
 
 N = length(gmh);
 R = length(gmr);

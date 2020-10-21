@@ -1,4 +1,10 @@
 function H = MatrixEntropy(Pi)
+% H = MatrixEntropy(Pi):
+% INPUTS:
+% - Pi, a matrix.
+% OUTPUTS:
+% H, matrix entropy.
+% This function computes the entropy of a matrix.
 
 H = 0;
 for i=1:size(Pi,1)

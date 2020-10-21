@@ -1,11 +1,24 @@
-function gmNew = EM(gm, samples, numIter)
+function gmNew = EM(gm_init, samples, numIter)
+% gmNew = EM(gm_init, samples, numIter):
+% INPUTS:
+% - gm_init, initial Gaussian mixture,
+% - samples, data obtained by sampling the Gaussian mixture, check GMSamples(gm,nSamples) for further info,
+% - numIter, maximum number of allowed iterations.
+% OUTPUTS:
+% - gmNew, the refined mixture according to the EM algorithm.
+% This function performs an EM refinement over the gm_init mixture by using samples from the full mixture.
+if nargin < 3
+    numIter = 100;
+end
+assert(~isempty(gm_init) && ~isempty(samples),'Check input parameters, either the gm or samples are empty.');
+assert(numIter>0,'The number of iterations has to be non-negative.');
 
-n = size(gm(1).mu,1);
-N = length(gm);
+n = size(gm_init(1).mu,1);
+N = length(gm_init);
 M = size(samples,2);
-priors = [gm.w]';
+priors = [gm_init.w]';
 responsibilities = zeros(M,N);
-gmNew = gm;
+gmNew = gm_init;
 llh = -Inf;
 llh_prev = llh;
 for k=1:numIter

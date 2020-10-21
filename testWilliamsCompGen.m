@@ -1,8 +1,10 @@
 function gm = testWilliamsCompGen()
-%This script generates a gaussian mixture with parameters taken from
-%Williams' Master thesis example at page 1 of section 4. It has been
-%reported in order to compare the computation of ISE and the action taken,
-%which seem to match well 
+% gm = testWilliamsCompGen():
+% OUTPUTS:
+% - gm, a Gaussian mixture.
+% This script generates a Gaussian mixture with parameters taken from
+% Williams' Master thesis example at page 1 of section 4.
+
 global Nh Nr n delta
 n = 1;
 Nh = 5;

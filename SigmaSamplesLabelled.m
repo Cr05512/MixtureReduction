@@ -1,6 +1,13 @@
 function labSamples = SigmaSamplesLabelled(gm)
-
-%Labelled Sigma points
+% labSamples = SigmaSamplesLabelled(gm):
+% INPUTS:
+% - gm, a Gaussian mixture.
+% OUTPUTS:
+% - labSamples, a struct containing the labelled sigma points.
+% This function computes the sigma points of each component in the mixture
+% and assigns to them the corresponding label indicating from which element
+% they have been generated.
+assert(~isempty(gm),'The mixture has to contain at least one element.');
 
 n = size(gm(1).mu,1);
 N = length(gm);

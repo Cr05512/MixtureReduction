@@ -1,4 +1,18 @@
 function gm_pruned = prune(gm, threshold)
+% gm_pruned = prune(gm, threshold):
+% INPUTS:
+% - gm, a Gaussian mixture to be pruned,
+% - threshold, a threshold over the weights.
+% OUTPUTS:
+% - gm_pruned, the resulting mixture.
+% This function prunes out all the mixture components whose weights fall
+% belowe a given threshold.
+
+if nargin < 2
+    threshold = 0.05;
+end
+assert(~isempty(gm),'The mixture has to contain at least one element.');
+assert(threshold>0 && threshold<1,'The threshold is bounded between 0 and 1.');
 
 w = [gm.w]';
 

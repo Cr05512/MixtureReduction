@@ -1,6 +1,12 @@
 function dKLij = KLD(pdfi,pdfj)
-%This function computes the KLD between two multivariate gaussians. It is
-%not suitable for other kind of distributions
+% dKLij = KLD(pdfi,pdfj):
+% INPUTS:
+% - pdfi, pdfj, two Gaussian densities.
+% OUTPUTS:
+% - dKLij, resulting Kullback-Leibler divergence.
+% This function computes the KLD between two multivariate Gaussians. It is
+% not suitable for other kind of distributions.
+
 mui = pdfi.mu;
 muj = pdfj.mu;
 Pi = pdfi.Sigma;

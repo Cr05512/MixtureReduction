@@ -1,20 +1,36 @@
-function gm = GMGen(N,n,alpha,beta,delta)
+function gm = GMGen(N,d,alpha,beta,delta)
+% gm = GMGen(N,n,alpha,beta,delta):
+% INPUTS:
+% - N, number of desired components in the mixture,
+% - d, state dimension,
+% - alpha, tuning parameter which accounts for the spread of the means.
+%   This parameter tunes the boundaries of the uniform distribution used to
+%   generate the means randomly,
+% - beta, tuning parameter which accounts for the average covariance of the
+%   components. The covariance matrices are generated according to a Wishart
+%   distribution with average covariance beta*eye(d) and d+5 degrees of
+%   freedom,
+% - delta, tuning parameter which accounts for the mean value of the means.
+% OUTPUTS:
+% - gm, the newly generated Gaussian mixture.
+% This function generates a Gaussian mixture with N d-dimensional
+% components.
 
 w = 0.5*rand(N,1);
 w_bar = w./sum(w);
 
 %Generate means
-mu = -alpha*ones(n,N) + alpha*2*rand(n,N) + delta;
+mu = -alpha*ones(d,N) + alpha*2*rand(d,N) + delta;
 
 %Generate Symmetric Positive Definite Covariance matrices
-Sigma = zeros(n,n,N);
+Sigma = zeros(d,d,N);
 for i=1:N
-    %sigma = rand(n,n); % generate a random nxn matrix
+    %sigma = rand(d,d); % generate a random nxn matrix
     % construct a symmetric matrix using either
     %sigma = 0.5*(sigma+sigma');
     %sigma = sigma*sigma';
     %sigma = sigma + beta*eye(n);
-    sigma = wishrnd(beta*eye(n),n+5);
+    sigma = wishrnd(beta*eye(d),d+5);
     Sigma(:,:,i) = sigma;
 end
 

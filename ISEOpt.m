@@ -1,9 +1,30 @@
 function [gmr_Opt, nISETraj] = ISEOpt(gmh,gmr,sk,Nsteps,optWeights)
-%This function operates an iterative optimization over the reduced mixture
-%parameters in order to approximate better the original one
+% [gmr_Opt, nISETraj] = ISEOpt(gmh,gmr,sk,Nsteps,optWeights):
+% INPUTS:
+% - gmh, gmr, two Gaussian mixtures,
+% - sk, gradient step size,
+% - Nsteps, number of optimization iterations,
+% - optWeights, binary parameter which accounts for the weight optimization. If
+%   set to 1 the weights will be optimized, viceversa.
+% OUTPUTS:
+% - gmr_Opt, optimized mixture,
+% - nISETraj, this argument contains the normalized ISE values over the optimization phase.
+% This function operates an iterative optimization over the reduced mixture
+% parameters in order to get a better approximation.
+if nargin < 3
+    sk = 0.01;
+    Nsteps = 30;
+    optWeights = 1;
+elseif nargin < 4
+    Nsteps = 30;
+    optWeights = 1;
+elseif nargin < 5
+    optWeights = 1;
+end
+assert(sk>0,'The gradient step has to be greater than zero.');
+assert(Nsteps>=0,'The number of optimization steps has to be non-negative.');
+assert(optWeights==0 || optWeights==1,'The optWeights parameter can take values either 0 or 1.');
 
-%First of all we apply some transformations to the parameters in order to
-%simplify the optimization process
 
 n = size(gmr(1).mu,1);
 m = length(gmr);
