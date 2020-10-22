@@ -2,7 +2,7 @@ function dij = GJSD(pdfi,pdfj,alpha)
 % dij = GJSD(pdfi,pdfj,alpha):
 % INPUTS:
 % - pdfi, pdfj, two Gaussian densities,
-% - alpha, tuning parameter.
+% - alpha, tuning parameter for the abstract means.
 % OUTPUTS:
 % - dij, the dual skew generalized Jensen-Shannon divergence.
 % This function computes the dual skew Generalized Jensen-Shannon Divergence

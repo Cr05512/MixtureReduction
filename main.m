@@ -4,10 +4,10 @@ close all
 
 
 %Parameters to play with
-global Nh Nr n alpha delta
-Nh = 40;  %Full mixture component number
-Nr = 10;   %Reduced mixture component number
-n = 2;    %Dimension
+global Nh Nr d alpha delta
+Nh = 30;  %Full mixture component number
+Nr = 5;   %Reduced mixture component number
+d = 1;    %State dimension
 
 assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
@@ -36,8 +36,8 @@ assert(strcmp(cost_measure,'KLD') || strcmp(cost_measure,'W2') || strcmp(cost_me
 assert(strcmpi(init_method,'random') || strcmpi(init_method,'kmeans') || strcmpi(init_method,'greedy'),'Unknown init method. Aborting...');
 
 %EM/DPHEM Parameters
-EMSamples = 300*Nh*n;
-I = Nh; %DPHEM Samples. Use this parameter carefully. By setting it too high the DPHEM algorithm incurs in numerical problems
+EMSamples = 300*Nh*d;
+I = Nh; %DPHEM Samples. Use this parameter carefully. By setting it too high the DPHEM algorithm incurs in numerical problems.
 NEMiter = 10000;
 init_method_EM = 'greedy';
 
@@ -45,9 +45,9 @@ init_method_EM = 'greedy';
 NKMeansSteps = 100;
 
 %ISE Optimization Parameters
-opt = 1;
+opt = 0;
 sk = 0.005; %Gradient step
-NOptSteps = 50; %Gradient iterations
+NOptSteps = 1000; %Gradient iterations
 optWeights = 1; %flag to optimize weights or not
 
 %List of algorithms we want to compare. We can choose between the
@@ -71,7 +71,7 @@ gmr_vector = cell(numAlgorithms,1);
 gmr_times = zeros(numAlgorithms,1);
 
 %Initial Gaussian Mixture
-gm = GMGen(Nh,n,alpha,beta,delta);
+gm = GMGen(Nh,d,alpha,beta,delta);
 %gm = test3CompGen(Nh,20);
 %gm = testWilliamsCompGen();
 %gm = testRunnalsCompGen();
@@ -79,14 +79,14 @@ gm = GMGen(Nh,n,alpha,beta,delta);
 %gm = testCrouseCompGen();
 %%
 
-if n==1
+if d==1
     [maxMu,indMax] = max([gm.mu]);
     [minMu,indMin] = min([gm.mu]);
     maxSigma = max([gm.Sigma]);
     center = (maxMu - minMu)/2;
     
-    X = linspace(-(abs(minMu) + 1.5*sqrt(maxSigma) + center), (abs(maxMu) + 1.5*sqrt(maxSigma) + center),nPoints);
-elseif n==2
+    X = linspace(-(abs(minMu) + 2*sqrt(maxSigma) + center), (abs(maxMu) + 2*sqrt(maxSigma) + center),nPoints);
+elseif d==2
     x1 = linspace(-2*alpha, 2*alpha,nPoints);
     x2 = linspace(-2*alpha, 2*alpha,nPoints);
     [X1,X2] = meshgrid(x1,x2);
@@ -161,7 +161,7 @@ for i=1:numAlgorithms
         switch lower(init_method)
             case 'kmeans'
               gm_init = KMeans(gm,GMRGen2(gm,Nr),cost_measure,NKMeansSteps);
-              %gm_init = KMeans(gm,GMGen(Nr,n,alpha,beta,delta),cost_measure,NKMeansSteps);
+              %gm_init = KMeans(gm,GMGen(Nr,d,alpha,beta,delta),cost_measure,NKMeansSteps);
             case 'greedy'
                 if strcmp(cost_measure,'W2')
                     gm_init = WassersteinMRA(gm,Nr);
@@ -171,7 +171,7 @@ for i=1:numAlgorithms
                     gm_init = RunnalsMRA(gm,Nr);
                 end
             case 'random'
-                %gm_init = GMGen(Nr,n,alpha,beta,delta);
+                %gm_init = GMGen(Nr,d,alpha,beta,delta);
                 gm_init = GMRGen2(gm,Nr);
         end
 
@@ -194,7 +194,7 @@ for i=1:numAlgorithms
                     gm_init_EM = RunnalsMRA(gm,Nr);
                 end
             case 'random'
-                %gm_init_EM = GMGen(Nr,n,alpha,beta,delta);
+                %gm_init_EM = GMGen(Nr,d,alpha,beta,delta);
                 gm_init_EM = GMRGen2(gm,Nr);
         end
 
@@ -216,7 +216,7 @@ for i=1:numAlgorithms
                     gm_init_EM = RunnalsMRA(gm,Nr);
                 end
             case 'random'
-                %gm_init_EM = GMGen(Nr,n,alpha,beta,delta);
+                %gm_init_EM = GMGen(Nr,d,alpha,beta,delta);
                 gm_init_EM = GMRGen(gm,Nr);
         end
 
@@ -228,14 +228,14 @@ for i=1:numAlgorithms
 
 end
 
-if numAlgorithms>0 && n<=2
+if numAlgorithms>0 && d<=2
     figure(1)
     set(gcf,'units','pixels','position',[300,1200,1280,720]);
 end
 
 
 %%
-if n==1
+if d==1
     numPlotCols = ceil(sqrt(numAlgorithms));
     numPlotRows = ceil(numAlgorithms/numPlotCols);
     
@@ -256,7 +256,7 @@ if n==1
             legend('Original',algorithms{i},'FontSize',11);
         end
     end
-elseif n==2
+elseif d==2
     numPlotCols = ceil(sqrt(numAlgorithms + 1));
     numPlotRows = ceil((numAlgorithms + 1)/numPlotCols);
     subplot(numPlotRows,numPlotCols,1)

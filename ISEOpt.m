@@ -43,6 +43,9 @@ end
 
 nISETraj = zeros(1,Nsteps);
 
+J = Inf;
+J_prev = J;
+
 %The gradient formula is xk+1 = xk - sk*gf(xk)/||gf(xk)||, with sk the step
 %and gf is the gradient of the cost function
 
@@ -157,6 +160,12 @@ for k=1:Nsteps
         gmr_Opt(i).mu = mu(:,i);
         gmr_Opt(i).Sigma = L(:,:,i)'*L(:,:,i);
     end
+    
+    J = ISE(gmh,gmr_Opt);
+    if abs(J-J_prev)<1e-06
+        break
+    end
+    J_prev = J;
     
     nISETraj(k) = nISE(gmh,gmr_Opt);
     

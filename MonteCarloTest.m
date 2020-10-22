@@ -5,7 +5,7 @@ close all
 %Parameters to play with
 global Nh Nr n alpha delta
 Nh = 40;  %Full mixture component number
-Nr = 10;   %Reduced mixture component number
+Nr = 5;   %Reduced mixture component number
 n = 2;    %Dimension
 NumTests = 100;
 
@@ -63,7 +63,7 @@ optWeights = 1; %flag to optimize weights or not
 % - CTDMRA -> A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
 % - BF -> A Look at Gaussian Mixture Reduction Algorithms, D. F. Crouse, P.Willett, K. Pattipati, L. Svensson
 
-algorithms = {'Runnals','CTDGMRA'};
+algorithms = {'Runnals','CTDGMRA','GMRC'};
 numAlgorithms = length(algorithms);
 % gmr_times = zeros(1,numAlgorithms);
 
