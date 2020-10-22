@@ -16,7 +16,10 @@ end
 gmTot = reshape(gmTot,length(x1),length(x2));
 %mesh(x1,x2,gmTot,'LineWidth',1.5);
 imagesc(x1,x2,gmTot);
-axis([min(x1) max(x1) min(x2) max(x2)])
+cb = colorbar();
+cb.Ruler.Exponent = 0;
+axis([min(x1) max(x1) min(x2) max(x2)]);
+
 
 end
 
