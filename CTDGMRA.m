@@ -19,8 +19,8 @@ elseif nargin < 5
 elseif nargin < 6
     I = length(gmh);
 end
-assert(strcmp(cost_meas,'KLD') || strcmp(cost_meas,'W2') || strcmp(cost_meas,'GJSD') || strcmp(cost_meas,'MKLD') || strcmp(cost_meas,'L2'),...
-            'The allowed cost functions are (1) KLD, (2) MKLD, (3) W2, (4) GJSD and (5) L2.');
+availableMeasVec = {'KLD','W2','GJSD','MKLD','L2'}; %Vector of available dissimilarity measures
+assert(any(strcmpi(availableMeasVec,cost_meas)), strcat(['Unknown cost measure. The available measures are:',' ',strjoin(availableMeasVec,', '),'.']));
 assert(lambda>=0,'The regularization parameter has to be non-negative.');
 assert(maxiter>=0,'The number of iterations has to be non-negative.');
 assert(I>0,'The number of virtual samples has to be greater than 0.');
@@ -48,7 +48,7 @@ for k=1:maxiter
     for j=1:Nr
         if wG(j)>0
             [gmh_temp.w] = w_temp{:,j};
-            if strcmp(cost_meas,'W2')
+            if strcmpi(cost_meas,'W2')
                 gmr(j) = WassersteinBarycenter(gmh_temp,maxiter);
             else
                 gmr(j) = mpMerge(gmh_temp);

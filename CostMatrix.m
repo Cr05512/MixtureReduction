@@ -21,10 +21,9 @@ if nargin < 4
 elseif nargin < 5
     I = 10*length(gmh);
 end
-
+availableMeasVec = {'KLD','W2','GJSD','MKLD','L2'}; %Vector of available dissimilarity measures
+assert(any(strcmpi(availableMeasVec,cost_meas)), strcat(['Unknown cost measure. The available measures are:',' ',strjoin(availableMeasVec,', '),'.']));
 assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element.');
-assert(strcmp(cost_meas,'KLD') || strcmp(cost_meas,'W2') || strcmp(cost_meas,'GJSD') || strcmp(cost_meas,'MKLD') || strcmp(cost_meas,'L2'),...
-            'The allowed cost functions are (1) KLD, (2) MKLD, (3) W2, (4) GJSD and (5) L2.');
 assert(lambda>=0,'The lambda parameter has to be non-negative.');
 assert(I>0,'The number of samples has to be greater than zero.');
 
@@ -37,15 +36,15 @@ C = zeros(Nh,Nr);
 
 for i=1:length(gmh)
     for j=1:length(gmr)
-        if strcmp(cost_meas,'KLD')
+        if strcmpi(cost_meas,'KLD')
             C(i,j) = KLD(gmh(i),gmr(j));
-        elseif strcmp(cost_meas,'W2')
+        elseif strcmpi(cost_meas,'W2')
             C(i,j) = Wasserstein2Dist(gmh(i),gmr(j));
-        elseif strcmp(cost_meas,'GJSD')
+        elseif strcmpi(cost_meas,'GJSD')
             C(i,j) = GJSD(gmh(i),gmr(j));
-        elseif strcmp(cost_meas,'MKLD')
+        elseif strcmpi(cost_meas,'MKLD')
             C(i,j) = MKLD(gmh(i),gmr(j),lambda,I);
-        elseif strcmp(cost_meas,'L2');
+        elseif strcmpi(cost_meas,'L2');
             C(i,j) = L2Gauss(gmh(i),gmr(j));
         end
     end

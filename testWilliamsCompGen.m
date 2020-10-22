@@ -5,8 +5,8 @@ function gm = testWilliamsCompGen()
 % This script generates a Gaussian mixture with parameters taken from
 % Williams' Master thesis example at page 1 of section 4.
 
-global Nh Nr n delta
-n = 1;
+global Nh Nr d delta
+d = 1;
 Nh = 5;
 Nr = 2;
 %w = [0.34 0.32 0.34]';

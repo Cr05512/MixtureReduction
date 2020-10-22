@@ -4,8 +4,8 @@ function gm = testRunnalsCompGen()
 % - gm, a Gaussian mixture.
 % This script generates a one dimensional Gaussian mixture as shown in the
 % paper of Runnals "Kullback-Leibler Approach to Gaussian Mixture Reduction".
-global Nh Nr n
-n = 12;
+global Nh Nr d
+d = 12;
 Nh = 4;
 Nr = 3;
 %w = [0.34 0.32 0.34]';

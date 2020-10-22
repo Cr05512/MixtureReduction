@@ -55,7 +55,6 @@ for k=1:numIter
     end
 
 end
-k
 
 end
 

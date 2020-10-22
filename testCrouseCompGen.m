@@ -4,10 +4,10 @@ function gm = testCrouseCompGen()
 % - gm, a Gaussian mixture.
 % This script generates a one dimensional Gaussian mixture as shown in the
 % paper of Crouse et al. "A look at Gaussian Mixture Reduction Algorithms".
-global Nh Nr n delta
+global Nh Nr d delta
 Nh = 10;
 Nr = 5;
-n = 1;
+d = 1;
 
 
 w = [0.03, 0.18, 0.12, 0.19, 0.02, 0.16, 0.06, 0.1, 0.08, 0.06]';

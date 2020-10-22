@@ -1,8 +1,8 @@
 function gm = test5CompGen()
 %This script generates 3 components in one dimension with one of them
 %having a smaller weight
-global Nh Nr n
-n = 1;
+global Nh Nr d
+d = 1;
 Nh = 2;
 Nr = 1;
 %w = [0.34 0.32 0.34]';

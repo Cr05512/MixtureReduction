@@ -14,10 +14,13 @@ function gm = GMGen(N,d,alpha,beta,delta)
 % OUTPUTS:
 % - gm, the newly generated Gaussian mixture.
 % This function generates a Gaussian mixture with N d-dimensional
-% components. The weights are sampled from a uniform distribution in the range [0.05,0.5],
+% components. The weights are sampled from a uniform distribution in the
+% range [0.05,0.5] before renormalization (necessary to satisfy the weight
+% unitary sum constraint),
 % the means are sampled from a uniform distribution in the range [-alpha + delta, delta + alpha],
 % the covariance matrices are sampled from the Wishart distribution with the "average" covariance equal
 % to P_bar = beta*eye(d)*(d+5).
+
 
 w = 0.05 + 0.45*rand(N,1);
 w_bar = w./sum(w);

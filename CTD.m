@@ -15,25 +15,17 @@ elseif nargin < 3
     cost_meas = 'KLD'; %By default
     disp('Assuming KLD as cost function...');
 end
-assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element.');
-assert(strcmp(cost_meas,'KLD') || strcmp(cost_meas,'W2') || strcmp(cost_meas,'GJSD') || strcmp(cost_meas,'MKLD') || strcmp(cost_meas,'L2'),...
-            'The allowed cost functions are (1) KLD, (2) MKLD, (3) W2, (4) GJSD and (5) L2.');
+availableMeasVec = {'KLD','W2','GJSD','MKLD','L2'}; %Vector of available dissimilarity measures
 
-Nh = length(gmh);
-Nr = length(gmr);
+assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element.');
+assert(any(strcmpi(availableMeasVec,cost_meas)), strcat(['Unknown cost measure. The available measures are:',' ',strjoin(availableMeasVec,', '),'.']));
+
 C = CostMatrix(gmh,gmr,cost_meas);
-if isinf(C)
-    disp('Unknown cost function, aborting...');
-    d = Inf;
-    pi_star = Inf(Nh,Nr);
-    return
-end
 
 %assert(norm(sum([gmh.w])-1)<1e-12 && norm(sum([gmr.w])-1)<1e-12,'Weights are not normalized.');
 pi_star = EffEROTP(gmh,C,0);
 
 d = trace(pi_star'*C);  %Matrix inner product
-
 
 
 end
