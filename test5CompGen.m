@@ -1,6 +1,10 @@
 function gm = test5CompGen()
-%This script generates 3 components in one dimension with one of them
-%having a smaller weight
+% test5CompGen():
+% OUTPUTS:
+% - gm, a Gaussian mixture.
+% This script generates 3 components in one dimension with one of them
+% having a smaller weight.
+
 global Nh Nr d
 d = 1;
 Nh = 2;

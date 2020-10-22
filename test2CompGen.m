@@ -1,12 +1,29 @@
 function gm = test2CompGen(numComp,r)
-%This script generates numComp components on a polygon vertices having
-%symmetric covariances (pairwise) and the same weights
+% test2CompGen(numComp,r):
+% INPUTS:
+% - numComp, number of desired components for the full mixture,
+% - r, distance from the origin of the component means.
+% OUTPUTS:
+% - gm, a Gaussian mixture.
+% This script generates numComp components on a 2D polygon vertices having
+% symmetric covariances (pairwise) and the same weights.
+
+if nargin < 1
+    numComp = 8;
+    r = 10;
+elseif nargin < 2
+    r = 10;
+end
+assert(numComp>0,'The number of components in the full mixture has to be greater than zero.');
+assert(r>=0,'The distance of the component means from the origin has to be non-negative.');
+
 sweepAngle = 2*pi/numComp;
 
-global Nh Nr d
+global Nh Nr d alpha
 Nh = numComp;
-Nr = Nh-1;
+%Nr = Nh-1;
 d = 2;
+alpha = 2*r;
 
 xcoords = zeros(numComp,1);
 ycoords = zeros(numComp,1);

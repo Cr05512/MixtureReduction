@@ -4,12 +4,30 @@ close all
 
 
 global Nh Nr d alpha delta
-Nh = 40;  %Full mixture component number
-Nr = 5;   %Reduced mixture component number
+Nh = 8;  %Full mixture component number
+Nr = 4;   %Reduced mixture component number
 d = 1;    %State dimension
+
+assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
 
 availableMeasVec = {'KLD','W2','GJSD','MKLD','L2'}; %Vector of available dissimilarity measures
 availableInitMethodVec = {'KMeans','Greedy','Random'}; %Vector of available initialization methods
+availableTests = {'Random','Test2','Test3','Test4','Test5','Williams','Runnals','Crouse'};
+availableAlgorithms = {'Williams','Runnals','Salmond','West','COWA','GMRC','Wasserstein','GMRCWas','EM','DPHEM','CTDGMRA','BF','Custom'};
+
+%Available Tests description:
+% - Random, the full mixture is generated randomly according to the GMGen function,
+% - Test2, Test3, Test4, the full mixture is bivariate. Check documentation for more details.
+% - Williams, the full mixture is generated according to the example
+%   proposed in the Williams' Master's thesis. Check doc for more details.
+% - Runnals, the full mixture is generated according to the example
+%   proposed in the Runnals' paper. Check doc for more details.
+% - Crouse, the full mixture is generated according to the example proposed
+%   in the Crouse's paper. Check doc for more details.
+
+test = 'test4';
+assert(any(strcmpi(availableTests,test)), strcat(['Unknown test. The available tests are:',' ',strjoin(availableTests,', '),'.']));
+
 
 %List of algorithms we want to compare. We can choose between the
 %following:
@@ -27,11 +45,15 @@ availableInitMethodVec = {'KMeans','Greedy','Random'}; %Vector of available init
 % - BF -> A Look at Gaussian Mixture Reduction Algorithms, D. F. Crouse, P.Willett, K. Pattipati, L. Svensson
 % - Custom -> Write your own algorithm and fill in the custom case in the loop below
 
+
+
 %Type in the following list the algorithms you want to compare, with the
 %name written as in the above list.
-algorithms = {'Runnals','CTDGMRA'}; %Algorithms to compare
+algorithms = {'Runnals'}; %Algorithms to compare
 
-assert(Nh>=Nr,'The number of reduced components can not be higher than the original ones.');
+assert(all(ismember(lower(algorithms),lower(availableAlgorithms))), strcat(['Unknown algorithm(s). The available algorithms are:',' ',strjoin(availableAlgorithms,', '),'.']));
+
+
 
 %Full mixture generation parameters
 alpha = Nh/4;  %GM component means spreading factor
@@ -50,7 +72,7 @@ assert(pruningMethod==0 || pruningMethod==1,'Pruning methods can be either stand
 nPoints = 300;  %Evaluation points in plots (300 points are used to represent the mixture supports)
 
 %Entropic Regularization Parameters
-lambda = 0.5; %Entropy parameter (set to 0 (using either KLD, W2 or L2 as measures)
+lambda = 0.0; %Entropy parameter (set to 0 (using either KLD, W2 or L2 as measures)
             %if you want to emulate the corresponding hard clustering algorithms,
             %set to 1 using MKLD to emulate the DPHEM)
 maxiter = 100;
@@ -89,12 +111,26 @@ gmr_vector = cell(numAlgorithms,1);
 gmr_times = zeros(numAlgorithms,1);
 
 %Initial Gaussian Mixture
-gm = GMGen(Nh,d,alpha,beta,delta);
-%gm = test3CompGen(Nh,20);
-%gm = testWilliamsCompGen();
-%gm = testRunnalsCompGen();
-%gm = test5CompGen();
-%gm = testCrouseCompGen();
+switch lower(test)
+    case 'random'
+        gm = GMGen(Nh,d,alpha,beta,delta);
+    case 'test2'
+        gm = test2CompGen(Nh,5);
+    case 'test3'
+        gm = test3CompGen(Nh,5);
+    case 'test4'
+        gm = test4CompGen(Nh,5);
+    case 'test5'
+        gm = test5CompGen();
+    case 'williams'
+        gm = testWilliamsCompGen();
+    case 'runnals'
+        gm = testRunnalsCompGen();
+    case 'crouse'
+        gm = testCrouseCompGen();
+    otherwise
+        disp('Unknown test.');
+end
 %%
 fullMixture = gm;
 if pruneGMComps==1
