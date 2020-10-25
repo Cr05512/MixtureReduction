@@ -5,7 +5,8 @@ function gmr = RunnalsMRA(gm, Nr)
 % - Nr, the desired number of components for the reduced mixture.
 % OUTPUTS:
 % - gmr, the reduced mixture.
-% This function implements the Runnals' algorithm.
+% This function implements the algorithm presented in
+% Kullback-Leibler Approach to Gaussian Mixture Reduction, A.R. Runnals
 assert(~isempty(gm),'The mixture has to contain at least one element.');
 assert(Nr>0 && length(gm)>=Nr,'The reduced mixture must have a positive number of components lower or equal to the starting mixture.');
 

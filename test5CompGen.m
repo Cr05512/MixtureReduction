@@ -1,11 +1,10 @@
-function gm = test5CompGen()
+function [gm,Nh,Nr,d] = test5CompGen()
 % test5CompGen():
 % OUTPUTS:
 % - gm, a Gaussian mixture.
 % This script generates 3 components in one dimension with one of them
 % having a smaller weight.
 
-global Nh Nr d
 d = 1;
 Nh = 2;
 Nr = 1;

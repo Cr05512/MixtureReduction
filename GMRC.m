@@ -13,7 +13,8 @@ function [gmr,nISETrajGMRC] = GMRC(gmh,Nr,NKMeansSteps,opt,sk,NOptSteps,optWeigh
 % - gmr, the reduced Gaussian mixture,
 % - nISETrajGMRC, this argument contains the normalized ISE values over the optimization phase.
 % This function implements the Gaussian Mixture Reduction via Clustering
-% Algorithm
+% Algorithm presented in:
+% Gaussian Mixture Reduction via Clustering, D. Schieferdecker, M.F. Huber
 if nargin < 3
     NKMeansSteps = 100;
     opt = 1;

@@ -1,10 +1,12 @@
-function gm = testRunnalsCompGen()
+function [gm,Nh,Nr,d] = testRunnalsCompGen()
 % gm = testRunnalsCompGen():
 % OUTPUTS:
-% - gm, a Gaussian mixture.
+% - gm, a Gaussian mixture,
+% - Nh, new number of original components,
+% - Nr, new number of desired components,
+% - d, new state dimension.
 % This script generates a one dimensional Gaussian mixture as shown in the
 % paper of Runnals "Kullback-Leibler Approach to Gaussian Mixture Reduction".
-global Nh Nr d
 d = 12;
 Nh = 4;
 Nr = 3;

@@ -1,10 +1,13 @@
-function gm = testCrouseCompGen()
+function [gm,Nh,Nr,d,delta] = testCrouseCompGen()
 % gm = testCrouseCompGen():
 % OUTPUTS:
-% - gm, a Gaussian mixture.
+% - gm, a Gaussian mixture,
+% - Nh, new number of original components,
+% - Nr, new number of reduced components,
+% - d, new state dimension,
+% - delta, new component center.
 % This script generates a one dimensional Gaussian mixture as shown in the
 % paper of Crouse et al. "A look at Gaussian Mixture Reduction Algorithms".
-global Nh Nr d delta
 Nh = 10;
 Nr = 5;
 d = 1;

@@ -8,7 +8,8 @@ function gmr = DPHEM(gmh,gm_init,I,numIter)
 % OUTPUTS:
 % - gmr, the refined mixture according to the DPHEM algorithm.
 % This function implements the Density-Preserving Hierarchical Expectation
-% Maximization algoirthm.
+% Maximization algoirthm presented in:
+% Density-Preserving Hierarchical EM Algorithm: Simplifying GMMs for Approximate Inference, L. Yu, T. Yang, A. B. Chan
 if nargin < 3
     I = length(gmh);
     numIter = 100;

@@ -7,7 +7,8 @@ function gmr = GMRCWas(gmh,Nr,NKMeansSteps)
 % OUTPUTS:
 % - gmr, the reduced Gaussian mixture.
 % This function implements the Gaussian Mixture Reduction via Clustering
-% Algorithm based on the Squared 2-Wasserstein measure.
+% Algorithm based on the Squared 2-Wasserstein measure presented in:
+% Wasserstein-Distance-Based Gaussian Mixture Reduction, A. Assa, K.N. Plataniotis
 assert(~isempty(gmh),'The mixture has to contain at least one element.');
 assert(Nr>0,'The reduced mixture has to contain at least one element.');
 assert(NKMeansSteps>=0,'The number of Kmeans iterations has to be non-negative.');

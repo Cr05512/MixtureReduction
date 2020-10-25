@@ -5,8 +5,9 @@ function gmr = WilliamsMRA(gm, Nr)
 % - Nr, desired number of components for the reduced mixture.
 % OUTPUTS:
 % - gmr, the reduced mixture.
-% This function implements the greedy reduction algorithm proposed by
-% Williams.
+% This function implements the greedy reduction algorithm proposed in
+% Williams -> Cost-Function-Based Gaussian Mixture Reduction for Target
+% Tracking, J.L. Williams, P.S. Maybeck.
 
 assert(~isempty(gm),'The mixture has to contain at least one element.');
 assert(Nr>0 && length(gm)>=Nr,'The reduced mixture must have a positive number of components lower or equal to the starting mixture.');

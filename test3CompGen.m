@@ -1,10 +1,13 @@
-function gm = test3CompGen(numComp,r)
+function [gm,d,alpha] = test3CompGen(numComp,r,beta)
 % test3CompGen(numComp,r):
 % INPUTS:
 % - numComp, number of desired components for the full mixture,
-% - r, distance from the origin of the component means.
+% - r, distance from the origin of the component means,
+% - beta, covariance tuning parameter.
 % OUTPUTS:
 % - gm, a Gaussian mixture.
+% - d, new state dimension parameter; this is needed for the main loop computations
+% - alpha, new alpha.
 % This script generates numComp components on a 2D polygon vertices having
 % symmetric covariances (pairwise) and one weight which is slightly smaller
 % than the others.
@@ -12,16 +15,17 @@ function gm = test3CompGen(numComp,r)
 if nargin < 1
     numComp = 8;
     r = 5;
+    beta = 0.09;
 elseif nargin < 2
     r = 5;
+    beta = 0.09;
+elseif nargin < 3
+    beta = 0.09;
 end
 assert(numComp>0,'The number of components in the full mixture has to be greater than zero.');
 assert(r>=0,'The distance of the component means from the origin has to be non-negative.');
 
 sweepAngle = 2*pi/numComp;
-
-global Nh Nr d alpha
-Nh = numComp;
 %Nr = 8;
 d = 2;
 alpha = 2*r;
@@ -35,8 +39,7 @@ mu = zeros(numComp,2);
 Sigma = zeros(2,2,numComp);
 gm = struct('w',0,'mu',[],'Sigma',[]);
 
-P = rand(2,2);
-P = P*P' + 2*[15 0;0 1];
+P = wishrnd(beta*eye(d),d+5);
 covMatrixRotAngle = pi/(numComp/2);
 
 syms phi;

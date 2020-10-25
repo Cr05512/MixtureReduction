@@ -6,7 +6,9 @@ function gmNew = EM(gm_init, samples, numIter)
 % - numIter, maximum number of allowed iterations.
 % OUTPUTS:
 % - gmNew, the refined mixture according to the EM algorithm.
-% This function performs an EM refinement over the gm_init mixture by using samples from the full mixture.
+% This function implements EM refinement over the gm_init mixture by using samples from the full mixture
+% as presented in:
+% Maximum Likelihood from Incomplete Data via the EM Algorithm,  A. P. Dempster, N. M. Laird, D. B. Rubin
 if nargin < 3
     numIter = 100;
 end

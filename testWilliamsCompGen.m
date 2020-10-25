@@ -1,11 +1,14 @@
-function gm = testWilliamsCompGen()
+function [gm,Nh,Nr,d,delta] = testWilliamsCompGen()
 % gm = testWilliamsCompGen():
 % OUTPUTS:
-% - gm, a Gaussian mixture.
+% - gm, a Gaussian mixture
+% - Nh, new number of original components,
+% - Nr, new number of reduced components,
+% - d, new state dimension,
+% - delta, new components center.
 % This script generates a Gaussian mixture with parameters taken from
 % Williams' Master thesis example at page 1 of section 4.
 
-global Nh Nr d delta
 d = 1;
 Nh = 5;
 Nr = 2;

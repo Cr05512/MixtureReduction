@@ -9,8 +9,8 @@ function gmr = COWAMRA(gmh,Nr,algo,gamma)
 %   components will be merged, indipendently of their distance.
 % OUTPUTS:
 % - gmr, the reduced mixture according to the COWA algorithm.
-% This function performs the COWA algorithm in order to obtain a reduced
-% Gaussian Mixture.
+% This function implements the COWA algorithm presented in
+% Constrained optimized weight adaption for Gaussian mixture reduction, H.Chen, K. C. Chang, C. Smith
 if nargin < 3
     algo = 1;
     gamma = Inf;

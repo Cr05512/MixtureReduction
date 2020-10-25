@@ -10,7 +10,10 @@ function gmr = WestMRA(gm,Nr,algo,gamma)
 %   which are too far.
 % OUTPUTS:
 % - gmr, the reduced mixture.
-% This function implements both the West and Enhanced West algorithms.
+% This function implements both the West and Enhanced West algorithms
+% presented respectively in:
+% - Approximating Posterior Distributions by Mixture, M. West
+% - Constrained optimized weight adaption for Gaussian mixture reduction, H.Chen, K. C. Chang, C. Smith
 if nargin < 3
     algo = 0; %Classic West Algorithm
     gamma = Inf;
