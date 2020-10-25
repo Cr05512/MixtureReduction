@@ -172,7 +172,7 @@ for i=1:numAlgorithms
             gmr_vector(strcmpi(algorithms,'williams')) = {gmr};
         case 'gmrc'
             tic;
-            gmr = GMRC(fullMixture,params.Nr,params.nKMeansSteps,params.opt,params.sk,params.NOptSteps,params.optWeights);
+            gmr = GMRC(fullMixture,params.Nr,params.nKMeansSteps,params.opt,params.sk,params.nOptSteps,params.optWeights);
             time = toc;
             gmr_times(strcmpi(algorithms,'gmrc')) = time;
             gmr_vector(strcmpi(algorithms,'gmrc')) = {gmr};
