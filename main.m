@@ -4,13 +4,13 @@ close all
 
 %Type in the following list the algorithms you want to compare. Check
 %documentation for available algorithms.
-algorithms = {'Runnals','Salmond','EM'};
+algorithms = {'Runnals','CTDGMRA','Williams'};
 
 %Type it the test to use. Check documentation for available tests.
-test = 'random';
+test = 'Crouse';
 
 %Check documentation for parameter meaning
-params = struct('Nh',10,... % Full mixture components
+params = struct('Nh',20,... % Full mixture components
                 'Nr',5,... % Reduced Mixture components
                 'd',1,... % State dimension
                 'alpha',10,... % Component means spreading. In general setting it to Nh/4 gives nice visual results
@@ -22,17 +22,17 @@ params = struct('Nh',10,... % Full mixture components
                 'rho',0.9544,... % Adaptive pruning threshold
                 'lambda',0.0,... % Entropic regularization parameter
                 'maxiter',100,... % Maximum number of iterations
-                'cost_measure','L2',... % Cost measure
-                'initMethodCTD','greedy',... % Init method for CTDGMRA
+                'cost_measure','KLD',... % Cost measure
+                'initMethodCTD','Runnals',... % Init method for CTDGMRA
                 'algoWest',0,... % 0 for West algorithm, 1 for Enhanced West algorithm
                 'gammaWest',Inf,... % West/EWest dissimilarity threshold
                 'EMSamples',1500,... % Number of samples for the EM. In general 150*Nh*n gives nice approximations
-                'I',5,... % Number of virtual samples for the MKLD/DPHEM algorithm
+                'I',20,... % Number of virtual samples for the MKLD/DPHEM algorithm. Setting it equal to Nh yields good results.
                 'nEMIter',50,... % Number of EM iterations
                 'initMethodEM','greedy',... % Init method for the EM/DPHEM algorithms
                 'nKMeansSteps',100,... % Number of KMeans iterations
                 'opt',1,... % 0 to skip ISE Optimization for corresponding algorithms (Williams, GMRC), 1 to perform it
-                'sk',0.005,... % Gradient step size in the ISE Opt
+                'sk',0.001,... % Gradient step size in the ISE Opt
                 'nOptSteps',100,... % Number of ISE Opt iterations
                 'optWeights',1,... % 0 to skip weight opt, 1 to perform weight opt in the ISE optimization
                 'showResults',1,... % 0 to skip result visualization, 1 to show results

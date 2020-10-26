@@ -16,7 +16,7 @@ assert(rho>0 && rho<=1,'The threshold has to be between 0 and 1.');
 
 %Adaptive weight-censored pruning
 N = length(gm);
-[w_sort,perm] = sort([gm.w]');
+[w_sort,perm] = sort([gm.w]);
 gamma = zeros(N,1);
 
 for i=1:N
@@ -28,6 +28,8 @@ w_bar = w_sort(nmax+1:end);
 w_bar = w_bar./sum(w_bar);
 perm = perm(nmax+1:end);
 gmr = gm(perm);
+if length(gmr)<length(gm)
+    disp(strcat(num2str(length(gm)-length(gmr)),' components have been pruned.'));
 w = num2cell(w_bar);
 [gmr.w] = w{:};
 

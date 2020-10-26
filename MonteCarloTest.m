@@ -15,7 +15,7 @@ NumTests = 100; %MC runs
 params = struct('Nh',30,... % Full mixture components
                 'Nr',5,... % Reduced Mixture components
                 'd',1,... % State dimension
-                'alpha',10,... % Component means spreading. In general setting it to Nh/4 gives nice visual results
+                'alpha',7.5,... % Component means spreading. In general setting it to Nh/4 gives nice visual results
                 'beta',0.09,... % Component covariance tuning parameter.
                 'delta',0,... % Component center
                 'pruneGMComps',0,... % 0 to skip pruning, 1 to perform pruning
@@ -25,11 +25,11 @@ params = struct('Nh',30,... % Full mixture components
                 'lambda',0.0,... % Entropic regularization parameter
                 'maxiter',100,... % Maximum number of iterations
                 'cost_measure','L2',... % Cost measure
-                'initMethodCTD','greedy',... % Init method for CTDGMRA
+                'initMethodCTD','Runnals',... % Init method for CTDGMRA
                 'algoWest',0,... % 0 for West algorithm, 1 for Enhanced West algorithm
                 'gammaWest',Inf,... % West/EWest dissimilarity threshold
                 'EMSamples',1000,... % Number of samples for the EM. In general 150*Nh*n gives nice approximations
-                'I',5,... % Number of virtual samples for the MKLD/DPHEM algorithm
+                'I',100,... % Number of virtual samples for the MKLD/DPHEM algorithm. Setting it equal to 5*Nh yields good results.
                 'nEMIter',20,... % Number of EM iterations
                 'initMethodEM','greedy',... % Init method for the EM/DPHEM algorithms
                 'nKMeansSteps',100,... % Number of KMeans iterations
@@ -48,12 +48,12 @@ nISEVector = zeros(numAlgorithms,NumTests);
 timeVector = zeros(numAlgorithms,NumTests);
 CTDVector = zeros(numAlgorithms,NumTests);
 h = waitbar(0,'Processing...');
-
+set(h,'Position', [550,350,280,70]);
 
 for m = 1:NumTests
 
 
-    waitbar(m/NumTests,h)
+    waitbar(m/NumTests,h,strcat(['Processing...','Test: ',num2str(m),' of ',num2str(NumTests),'.']));
     
     
     [fullMixture, gmr_vector, gmr_times] = GaussianMixtureReduction(algorithms,test,params);

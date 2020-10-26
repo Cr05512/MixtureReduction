@@ -163,6 +163,7 @@ for k=1:Nsteps
     
     J = ISE(gmh,gmr_Opt);
     if abs(J-J_prev)<1e-06
+        disp(strcat(['ISEOpt converged after',' ',num2str(k),' ','iterations.']));
         break
     end
     J_prev = J;

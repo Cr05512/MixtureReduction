@@ -64,7 +64,7 @@ function [fullMixture,gmr_vector,gmr_times] = GaussianMixtureReduction(algorithm
 % - cost_measure, cost measure used to compute the cost matrix. The
 %   available measures are KLD, W2, GJSD, L2, MKLD,
 % - initMethodCTD, initialization method used for the CTDGMR algorithm. 
-%   Available init methods are KMeans, greedy, random,
+%   Available init methods are KMeans, Salmond, West, Runnals, Wasserstein, Williams, Random,
 % - algoWest, set it to 0 for West algorithm, to 1 for Enhanced West algorithm,
 % - gammaWest, the maximum dissimilarity threshold. If left empty or set to Inf
 %   all the components will be merged according to the algorithm principle.
@@ -91,7 +91,7 @@ function [fullMixture,gmr_vector,gmr_times] = GaussianMixtureReduction(algorithm
 
 availableAlgorithms = {'Williams','Runnals','Salmond','West','COWA','GMRC','Wasserstein','GMRCWas','EM','DPHEM','CTDGMRA','BF','Custom'}; %Check the corresponding documentation for further details
 availableMeasVec = {'KLD','W2','GJSD','MKLD','L2'}; %Vector of available dissimilarity measures
-availableInitMethodVec = {'KMeans','Greedy','Random'}; %Vector of available initialization methods for certain algorithms
+availableInitMethodVec = {'KMeans','Salmond','West','Runnals','Wasserstein','Williams','Random'}; %Vector of available initialization methods for certain algorithms
 availableTests = {'Random','Test2','Test3','Test4','Test5','Williams','Runnals','Crouse'}; %Check the corresponding documentation for further details
 
 
@@ -144,10 +144,8 @@ assert(all(ismember(lower(algorithms),lower(availableAlgorithms))), strcat(['Unk
 assert(params.Nh>=params.Nr,'The number of reduced components can not be higher than the original ones.');
 assert(any(strcmpi(availableTests,test)), strcat(['Unknown test. The available tests are:',' ',strjoin(availableTests,', '),'.']));
 assert(any(strcmpi(availableMeasVec,params.cost_measure)), strcat(['Unknown cost measure. The available measures are:',' ',strjoin(availableMeasVec,', '),'.']));
-assert(any(strcmpi(availableInitMethodVec,params.initMethodCTD)),'Unknown init method for the CTDGMRA. Aborting...');
 assert(params.pruneGMComps==0 || params.pruneGMComps==1,'Pruning can be either performed (1) or not (0).');
 assert(params.pruningMethod==0 || params.pruningMethod==1,'Pruning methods can be either standard (0) or adaptive (1).');
-assert(any(strcmpi(availableInitMethodVec,params.initMethodEM)),'Unknown init method for the EM/DPHEM algorithm. Aborting...');
 assert(params.showResults==0 || params.showResults==1,'The parameter showResults can take either 0 or 1 as values.');
 assert(params.nPoints>0 && floor(params.nPoints)==params.nPoints,'The nPoints parameter has to be an integer greater than zero.');
 
@@ -166,7 +164,9 @@ for i=1:numAlgorithms
         case 'williams'
             tic;
             gmr = WilliamsMRA(gm,params.Nr);
-            gmr = ISEOpt(fullMixture,gmr,params.sk,params.nOptSteps,params.optWeights);
+            if params.opt==1
+                gmr = ISEOpt(fullMixture,gmr,params.sk,params.nOptSteps,params.optWeights);
+            end
             time = toc;
             gmr_times(strcmpi(algorithms,'williams')) = time;
             gmr_vector(strcmpi(algorithms,'williams')) = {gmr};
@@ -223,21 +223,22 @@ for i=1:numAlgorithms
             gmr_vector(strcmpi(algorithms,'gmrcwas')) = {gmr};
             %%
         case 'ctdgmra'
+            assert(any(strcmpi(availableInitMethodVec,params.initMethodCTD)),'Unknown init method for the CTDGMRA. Aborting...');
             tic;
             switch lower(params.initMethodCTD)
                 case 'kmeans'
-                  gm_init = KMeans(fullMixture,GMRGen2(gm,params.Nr),params.cost_measure,params.nKMeansSteps);
-                  %gm_init = KMeans(gm,GMGen(Nr,d,alpha,beta,delta),cost_measure,nKMeansSteps);
-                case 'greedy'
-                    if strcmpi(params.cost_measure,'W2')
-                        gm_init = WassersteinMRA(gm,params.Nr);
-                   % elseif strcmp(cost_measure,'L2')
-                   %     gm_init = WilliamsMRA(gm,Nr);
-                    else
-                        gm_init = RunnalsMRA(gm,params.Nr);
-                    end
+                    gm_init = KMeans(fullMixture,GMRGen2(gm,params.Nr),params.cost_measure,params.nKMeansSteps);
+                case 'salmond'
+                    gm_init = SalmondMRA(gm,params.Nr);
+                case 'west'
+                    gm_init = WestMRA(gm,params.Nr,params.algoWest,params.gammaWest);
+                case 'runnals'
+                    gm_init = RunnalsMRA(gm,params.Nr);
+                case 'wasserstein'
+                    gm_init = WassersteinMRA(gm,params.Nr);
+                case 'williams'
+                    gm_init = WilliamsMRA(gm,params.Nr);
                 case 'random'
-                    %gm_init = GMGen(Nr,d,alpha,beta,delta);
                     gm_init = GMRGen2(gm,params.Nr);
             end
 
@@ -247,20 +248,22 @@ for i=1:numAlgorithms
             gmr_times(strcmpi(algorithms,'ctdgmra')) = time;
             gmr_vector(strcmpi(algorithms,'ctdgmra')) = {gmr};
         case 'em'
+            assert(any(strcmpi(availableInitMethodVec,params.initMethodEM)),'Unknown init method for the EM/DPHEM algorithm. Aborting...');
             tic;
             switch lower(params.initMethodEM)
                 case 'kmeans'
-                  gm_init_EM = KMeans(fullMixture,GMRGen2(gm,params.Nr),params.cost_measure,params.nKMeansSteps);
-                case 'greedy'
-                    if strcmpi(params.cost_measure,'W2')
-                        gm_init_EM = WassersteinMRA(gm,params.Nr);
-                   % elseif strcmp(cost_measure,'L2')
-                   %     gm_init_EM = WilliamsMRA(gm,Nr);
-                    else
-                        gm_init_EM = RunnalsMRA(gm,params.Nr);
-                    end
+                    gm_init_EM = KMeans(fullMixture,GMRGen2(gm,params.Nr),params.cost_measure,params.nKMeansSteps);
+                case 'salmond'
+                    gm_init_EM = SalmondMRA(gm,params.Nr);
+                case 'west'
+                    gm_init_EM = WestMRA(gm,params.Nr,params.algoWest,params.gammaWest);
+                case 'runnals'
+                    gm_init_EM = RunnalsMRA(gm,params.Nr);
+                case 'wasserstein'
+                    gm_init_EM = WassersteinMRA(gm,params.Nr);
+                case 'williams'
+                    gm_init = WilliamsMRA(gm,params.Nr);
                 case 'random'
-                    %gm_init_EM = GMGen(Nr,d,alpha,beta,delta);
                     gm_init_EM = GMRGen2(gm,params.Nr);
             end
 
@@ -271,19 +274,23 @@ for i=1:numAlgorithms
             gmr_vector(strcmpi(algorithms,'em')) = {gmr};
 
         case 'dphem'
+            assert(any(strcmpi(availableInitMethodVec,params.initMethodEM)),'Unknown init method for the EM/DPHEM algorithm. Aborting...');
             tic;
             switch lower(params.initMethodEM)
                 case 'kmeans'
                     gm_init_EM = KMeans(fullMixture,GMRGen2(gm,params.Nr),params.cost_measure,params.nKMeansSteps);
-                case 'greedy'
-                    if strcmpi(params.cost_measure,'W2')
-                        gm_init_EM = WassersteinMRA(gm,params.Nr);
-                    else
-                        gm_init_EM = RunnalsMRA(gm,params.Nr);
-                    end
+                case 'salmond'
+                    gm_init_EM = SalmondMRA(gm,params.Nr);
+                case 'west'
+                    gm_init_EM = WestMRA(gm,params.Nr,params.algoWest,params.gammaWest);
+                case 'runnals'
+                    gm_init_EM = RunnalsMRA(gm,params.Nr);
+                case 'wasserstein'
+                    gm_init_EM = WassersteinMRA(gm,params.Nr);
+                case 'williams'
+                    gm_init = WilliamsMRA(gm,params.Nr);
                 case 'random'
-                    %gm_init_EM = GMGen(Nr,d,alpha,beta,delta);
-                    gm_init_EM = GMRGen(gm,params.Nr);
+                    gm_init_EM = GMRGen2(gm,params.Nr);
             end
             gmr = DPHEM(fullMixture,gm_init_EM,params.I,params.nEMIter);
             time = toc;
@@ -315,7 +322,8 @@ if params.showResults == 1
 
     if ~isempty(algorithms) && params.d<=2
         figure(1)
-        set(gcf,'units','pixels','position',[300,1200,1280,720]);
+        set(gcf,'units','pixels','position',[300,150,1280,720]);
+
     end
 
 
