@@ -48,7 +48,7 @@ assert(optWeights==0 || optWeights==1,'The optWeights parameter can take values 
 gmr = RunnalsMRA(gmh,Nr);
 gmr = KMeans(gmh,gmr,'KLD',NKMeansSteps);
 if opt==1
-    [gmr,nISETrajGMRC] = ISEOpt(gmh,gmr,sk,NOptSteps,optWeights);
+    [gmr,nISETrajGMRC] = ISEOptimization(gmh,gmr,sk,NOptSteps,optWeights);
 end
 
 end

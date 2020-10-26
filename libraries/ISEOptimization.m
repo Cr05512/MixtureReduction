@@ -1,4 +1,4 @@
-function [gmr_Opt, nISETraj] = ISEOpt(gmh,gmr,sk,Nsteps,optWeights)
+function [gmr_Opt, nISETraj] = ISEOptimization(gmh,gmr,sk,Nsteps,optWeights)
 % [gmr_Opt, nISETraj] = ISEOpt(gmh,gmr,sk,Nsteps,optWeights):
 % INPUTS:
 % - gmh, gmr, two Gaussian mixtures,

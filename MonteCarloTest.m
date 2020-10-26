@@ -33,7 +33,7 @@ params = struct('Nh',30,... % Full mixture components
                 'nEMIter',20,... % Number of EM iterations
                 'initMethodEM','greedy',... % Init method for the EM/DPHEM algorithms
                 'nKMeansSteps',100,... % Number of KMeans iterations
-                'opt',1,... % 0 to skip ISE Optimization for corresponding algorithms (Williams, GMRC), 1 to perform it
+                'ISEOpt',1,... % 0 to skip ISE Optimization for corresponding algorithms (Williams, GMRC), 1 to perform it
                 'sk',0.005,... % Gradient step size in the ISE Opt
                 'nOptSteps',100,... % Number of ISE Opt iterations
                 'optWeights',1,... % 0 to skip weight opt, 1 to perform weight opt in the ISE optimization

@@ -78,7 +78,7 @@ function [fullMixture,gmr_vector,gmr_times] = GaussianMixtureReduction(algorithm
 % - initMethodEM, initialization method used for the EM/DPHEM algorithms. 
 %   Available init methods are KMeans, greedy, random,
 % - nKMeansSteps, number of KMeans maximum iterations,
-% - opt, set this parameter to 0 to skip ISE optimization in the algorithms
+% - ISEOpt, set this parameter to 0 to skip ISE optimization in the algorithms
 %   concerning it, set it to 1 to perform the optimization,
 % - sk, gradient step size in the ISE optimization,
 % - nOptSteps, number of optimization steps for the ISE optimization,
@@ -164,15 +164,15 @@ for i=1:numAlgorithms
         case 'williams'
             tic;
             gmr = WilliamsMRA(gm,params.Nr);
-            if params.opt==1
-                gmr = ISEOpt(fullMixture,gmr,params.sk,params.nOptSteps,params.optWeights);
+            if params.ISEOpt==1
+                gmr = ISEOptimization(fullMixture,gmr,params.sk,params.nOptSteps,params.optWeights);
             end
             time = toc;
             gmr_times(strcmpi(algorithms,'williams')) = time;
             gmr_vector(strcmpi(algorithms,'williams')) = {gmr};
         case 'gmrc'
             tic;
-            gmr = GMRC(fullMixture,params.Nr,params.nKMeansSteps,params.opt,params.sk,params.nOptSteps,params.optWeights);
+            gmr = GMRC(fullMixture,params.Nr,params.nKMeansSteps,params.ISEOpt,params.sk,params.nOptSteps,params.optWeights);
             time = toc;
             gmr_times(strcmpi(algorithms,'gmrc')) = time;
             gmr_vector(strcmpi(algorithms,'gmrc')) = {gmr};
@@ -211,7 +211,7 @@ for i=1:numAlgorithms
         case 'bf'
             tic;
             gmr = bruteForceGaussMixRed(fullMixture,params.Nr,true);
-            gmr = ISEOpt(fullMixture,gmr,params.sk,params.NOptSteps,params.optWeights);
+            gmr = ISEOptimization(fullMixture,gmr,params.sk,params.nOptSteps,params.optWeights);
             time = toc;
             gmr_times(strcmpi(algorithms,'bf')) = time;
             gmr_vector(strcmpi(algorithms,'bf')) = {gmr};
@@ -307,10 +307,10 @@ if params.showResults == 1
     if params.d==1
         maxMu = max([fullMixture.mu]);
         minMu = min([fullMixture.mu]);
-        %maxSigma = max([fullMixture.Sigma]);
+        maxSigma = max([fullMixture.Sigma]);
         center = (maxMu - minMu)/2;
-        %X = linspace(-(abs(minMu) + 2*sqrt(maxSigma) + center), (abs(maxMu) + 2*sqrt(maxSigma) + center),params.nPoints);
-        X = linspace(-1.5*(params.alpha + center), 1.5*(center + params.alpha), params.nPoints);
+        X = linspace(-(abs(minMu) + 2*sqrt(maxSigma) + center), (abs(maxMu) + 2*sqrt(maxSigma) + center),params.nPoints);
+        %X = linspace(-1.5*(params.alpha + center), 1.5*(center + params.alpha), params.nPoints);
     elseif params.d==2
         x1 = linspace(-2*params.alpha, 2*params.alpha,4*params.nPoints);
         x2 = linspace(-2*params.alpha, 2*params.alpha,4*params.nPoints);
@@ -342,7 +342,7 @@ if params.showResults == 1
                 plotGM1D(gm_init_EM,X); hold on
             end
             grid minor
-            title(strcat('nISE: ',num2str(nISE(fullMixture,gmr_vector{i})),' CTD',params.cost_measure,': ',num2str(CTD(fullMixture,gmr_vector{i},params.cost_measure)),' Time: ',num2str(gmr_times(i)),'s'),'FontSize',14);
+            title(strcat('nISE: ',num2str(nISE(fullMixture,gmr_vector{i})),' CTD',params.cost_measure,': ',num2str(CTD(fullMixture,gmr_vector{i},params.cost_measure)),' Time: ',num2str(gmr_times(i)),'s'),'FontSize',10);
             if any(strcmpi(algorithms{i},{'CTDGMRA','EM','DPHEM'}))
                 legend('Original',algorithms{i},'Init','FontSize',11);
             else
