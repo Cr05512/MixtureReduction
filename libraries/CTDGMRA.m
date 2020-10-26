@@ -9,7 +9,8 @@ function gmr = CTDGMRA(gmh,gmr,cost_meas,lambda,maxiter,I)
 % - gmr, the refined mixture according to the CTDGMRA algorithm.
 % This function implements the Composite Transportation Distance Gaussian
 % mixture reduction algoirthm presented in:
-% A Unified Framework for Gaussian Mixture Reduction with Composite Transportation Distance, Q. Zhang, J. Chen
+% Q. Zhang and J. Chen. "A unified framework for gaussian mixture reduction
+% with  composite  transportation  distance".arXiv:2002.08410v1  [stat.ML.],2020.
 if nargin < 4
     lambda = 0.1;
     maxiter = 100;

@@ -111,7 +111,7 @@ switch lower(test)
     case 'test4'
         [gm,params.d,params.alpha] = test4CompGen(params.Nh,10,params.beta);
     case 'test5'
-        [gm,params.Nh,params.Nr,params.d] = test5CompGen();
+        [gm,params.Nr,params.d] = test5CompGen(params.alpha,params.beta);
     case 'williams'
         [gm,params.Nh,params.Nr,params.d,params.delta] = testWilliamsCompGen();
     case 'runnals'
@@ -307,13 +307,13 @@ if params.showResults == 1
     if params.d==1
         maxMu = max([fullMixture.mu]);
         minMu = min([fullMixture.mu]);
-        maxSigma = max([fullMixture.Sigma]);
+        %maxSigma = max([fullMixture.Sigma]);
         center = (maxMu - minMu)/2;
-
-        X = linspace(-(abs(minMu) + 2*sqrt(maxSigma) + center), (abs(maxMu) + 2*sqrt(maxSigma) + center),params.nPoints);
+        %X = linspace(-(abs(minMu) + 2*sqrt(maxSigma) + center), (abs(maxMu) + 2*sqrt(maxSigma) + center),params.nPoints);
+        X = linspace(-1.5*(params.alpha + center), 1.5*(center + params.alpha), params.nPoints);
     elseif params.d==2
-        x1 = linspace(-2*params.alpha, 2*params.alpha,params.nPoints);
-        x2 = linspace(-2*params.alpha, 2*params.alpha,params.nPoints);
+        x1 = linspace(-2*params.alpha, 2*params.alpha,4*params.nPoints);
+        x2 = linspace(-2*params.alpha, 2*params.alpha,4*params.nPoints);
         [X1,X2] = meshgrid(x1,x2);
         X = [X1(:) X2(:)];
 

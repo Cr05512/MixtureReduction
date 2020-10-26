@@ -8,6 +8,7 @@ function [gm,Nh,Nr,d,delta] = testWilliamsCompGen()
 % - delta, new components center.
 % This script generates a Gaussian mixture with parameters taken from
 % Williams' Master thesis example at page 1 of section 4.
+% Link to the Master thesis: http://ssg.mit.edu/group/jlwil/publications/Wil03.pdf
 
 d = 1;
 Nh = 5;

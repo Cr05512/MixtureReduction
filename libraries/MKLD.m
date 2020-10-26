@@ -6,7 +6,9 @@ function d = MKLD(pdfi,pdfj,lambda,I)
 % - I, number of virtual samples.
 % OUTPUTS:
 % - d, the modified KLD.
-% This function computes the modified KLD between two Gaussian densities.
+% This function computes the modified KLD between two Gaussian densities as
+% presented in Q. Zhang and J. Chen. A unified framework for gaussian mixture
+% reductionwith  composite  transportation  distance.arXiv:2002.08410v1  [stat.ML.],2020.
 if nargin < 3
     lambda = 1;
     I = 50;

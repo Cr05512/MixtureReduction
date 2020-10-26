@@ -10,6 +10,8 @@ function [gm,d,alpha] = test2CompGen(numComp,r,beta)
 % - alpha, new alpha.
 % This script generates numComp components on a 2D polygon vertices having
 % symmetric covariances (pairwise) and the same weights.
+% This script is meant to test algorithms in the particular case of symmetric
+% Gaussian mixture
 
 if nargin < 1
     numComp = 8;

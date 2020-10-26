@@ -5,7 +5,8 @@ function B = KLDBound(pdf1, pdf2)
 % OUTPUTS:
 % - B, the Runnals' upper bound on the divergence gain between the full and reduced mixture after the component 1
 %   and 2 are merged.
-% This function computes the upper bound proposed by Runnals.
+% This function computes the upper bound proposed by A. R. Runnals "Kullback-Leibler Approach to Gaussian Mixture
+% Reduction". IEEE Trans. Aerosp. Electron. Syst., vol. 43(3):989--999, 2007
 
 pdf_merge = mpMerge([pdf1, pdf2]);
     

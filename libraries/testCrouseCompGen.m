@@ -7,7 +7,8 @@ function [gm,Nh,Nr,d,delta] = testCrouseCompGen()
 % - d, new state dimension,
 % - delta, new component center.
 % This script generates a one dimensional Gaussian mixture as shown in the
-% paper of Crouse et al. "A look at Gaussian Mixture Reduction Algorithms".
+% paper of D. F. Crouse et al. "A look at Gaussian Mixture Reduction
+% Algorithms". Proc. 14th Int. Conf. Inf. Fusion, pages 1–8, 2011
 Nh = 10;
 Nr = 5;
 d = 1;

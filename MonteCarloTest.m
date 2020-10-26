@@ -11,7 +11,7 @@ test = 'random'; %set this to random for MC tests
 
 NumTests = 100; %MC runs
 
-%Check documentation for parameter meaning
+%Check GaussianMixtureReduction documentation for parameter meaning
 params = struct('Nh',30,... % Full mixture components
                 'Nr',5,... % Reduced Mixture components
                 'd',1,... % State dimension
@@ -24,7 +24,7 @@ params = struct('Nh',30,... % Full mixture components
                 'rho',0.9544,... % Adaptive pruning threshold
                 'lambda',0.0,... % Entropic regularization parameter
                 'maxiter',100,... % Maximum number of iterations
-                'cost_measure','L2',... % Cost measure
+                'cost_measure','GJSD',... % Cost measure
                 'initMethodCTD','Runnals',... % Init method for CTDGMRA
                 'algoWest',0,... % 0 for West algorithm, 1 for Enhanced West algorithm
                 'gammaWest',Inf,... % West/EWest dissimilarity threshold

@@ -6,7 +6,8 @@ function [gm,Nh,Nr,d] = testRunnalsCompGen()
 % - Nr, new number of desired components,
 % - d, new state dimension.
 % This script generates a one dimensional Gaussian mixture as shown in the
-% paper of Runnals "Kullback-Leibler Approach to Gaussian Mixture Reduction".
+% paper of A. R. Runnals "Kullback-Leibler Approach to Gaussian Mixture
+% Reduction". IEEE Trans. Aerosp. Electron. Syst., vol. 43(3):989--999, 2007
 d = 12;
 Nh = 4;
 Nr = 3;

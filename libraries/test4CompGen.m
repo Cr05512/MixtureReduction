@@ -11,6 +11,9 @@ function [gm,d,alpha] = test4CompGen(numComp,r,beta)
 % This script generates numComp components on a 2D polygon vertices having
 % symmetric covariances (pairwise) and one weight which is slightly bigger
 % than the others.
+% This script is meant to test algorithms in the particular case of symmetric
+% Gaussian mixture, but with one component having a larger weight than the
+% others.
 
 
 if nargin < 1
