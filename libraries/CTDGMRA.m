@@ -21,8 +21,6 @@ elseif nargin < 5
 elseif nargin < 6
     I = length(gmh);
 end
-availableMeasVec = {'KLD','W2','GJSD','MKLD','L2'}; %Vector of available dissimilarity measures
-assert(any(strcmpi(availableMeasVec,cost_meas)), strcat(['Unknown cost measure. The available measures are:',' ',strjoin(availableMeasVec,', '),'.']));
 assert(lambda>=0,'The regularization parameter has to be non-negative.');
 assert(maxiter>=0,'The number of iterations has to be non-negative.');
 assert(I>0,'The number of virtual samples has to be greater than 0.');

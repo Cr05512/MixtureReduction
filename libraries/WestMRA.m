@@ -1,8 +1,9 @@
-function gmr = WestMRA(gm,Nr,algo,gamma)
-% gmr = WestMRA(gm, Nr, algo, gamma):
+function gmr = WestMRA(gm,Nr,cost_meas,algo,gamma)
+% gmr = WestMRA(gm, Nr, cost_meas, algo, gamma):
 % INPUTS:
 % - gm, a Gaussian mixture,
 % - Nr, desired number of components for the reduced mixture,
+% - cost_meas, cost measure used to find the nearest neighbor,
 % - algo, set it to 0 for West algorithm and to 1 for the Enhanced West,
 % - gamma, the maximum dissimilarity threshold. If left empty or set to Inf
 %   all the components will be merged according to the algorithm principle.
@@ -15,13 +16,18 @@ function gmr = WestMRA(gm,Nr,algo,gamma)
 % - Approximating Posterior Distributions by Mixture, M. West
 % - Constrained optimized weight adaption for Gaussian mixture reduction, H.Chen, K. C. Chang, C. Smith
 if nargin < 3
+    cost_meas = 'L2';
     algo = 0; %Classic West Algorithm
     gamma = Inf;
 elseif nargin < 4 
+    algo = 0;
+    gamma = Inf;
+elseif nargin < 5
     gamma = Inf;
 end
 assert(algo==0 || algo==1,'The algo parameter can take either 0 or 1 as value.');
 assert(gamma>0,'gamma has to be greater than zero.');
+
 
 %n = size(gm(1).mu,1);
 gmr = gm;
@@ -40,21 +46,12 @@ while length(gmr)-Nr>0
     if algo==1
         w = w./detVec;
     end
-
-    %Jrr = 1/sqrt((2*pi)^n * detVec);
-    
     
     [~,i] = min(w);
     
     for j=1:length(gmr)
         if j~=i
-           % if algo==0
-                pdf_merged = mpMerge([gmr(i);gmr(j)]);
-                dist(j) = gmr(i).w*gmr(j).w/(gmr(i).w+gmr(j).w)*mahalSquaredDist(gmr(i).mu,gmr(j).mu,pdf_merged.Sigma);
-            %else
-                %dist(j) = -2*mvnpdf(gmr(j).mu,gmr(i).mu,gmr(j).Sigma+gmr(i).Sigma) + Jrr(i) + Jrr(j);
-            %    dist(j) = ISE(gmr(i),gmr(j));
-            %end
+            dist(j) = CostMatrix(gmr(i),gmr(j),cost_meas);
         else
             dist(j) = Inf;
         end

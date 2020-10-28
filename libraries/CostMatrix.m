@@ -14,6 +14,7 @@ function C = CostMatrix(gmh,gmr,cost_meas,lambda,I)
 % - Generalized Jensen-Shannon divergence (GJSD),
 % - Modified KLD (MKLD),
 % - L2 distance (L2).
+% - normalized L2 distance (normL2)
 
 if nargin < 4
     lambda = 0.1;
@@ -21,7 +22,7 @@ if nargin < 4
 elseif nargin < 5
     I = 10*length(gmh);
 end
-availableMeasVec = {'KLD','W2','GJSD','MKLD','L2'}; %Vector of available dissimilarity measures
+availableMeasVec = {'KLD','W2','GJSD','MKLD','L2','normL2'}; %Vector of available dissimilarity measures
 assert(any(strcmpi(availableMeasVec,cost_meas)), strcat(['Unknown cost measure. The available measures are:',' ',strjoin(availableMeasVec,', '),'.']));
 assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element.');
 assert(lambda>=0,'The lambda parameter has to be non-negative.');
@@ -44,8 +45,10 @@ for i=1:length(gmh)
             C(i,j) = GJSD(gmh(i),gmr(j));
         elseif strcmpi(cost_meas,'MKLD')
             C(i,j) = MKLD(gmh(i),gmr(j),lambda,I);
-        elseif strcmpi(cost_meas,'L2');
+        elseif strcmpi(cost_meas,'L2')
             C(i,j) = L2Gauss(gmh(i),gmr(j));
+        elseif strcmpi(cost_meas,'normL2')
+            C(i,j) = normL2Gauss(gmh(i),gmr(j));
         end
     end
 end

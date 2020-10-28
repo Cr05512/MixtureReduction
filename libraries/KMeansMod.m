@@ -1,4 +1,4 @@
-function gmr = KMeans(gmh,gmr,cost_meas,NKMeansSteps)
+function gmr = KMeansMod(gmh,gmr,cost_meas,NKMeansSteps)
 % gmr = KMeans(gmh,gmr,cost_meas,NKMeansSteps):
 % INPUTS:
 % - gmh, gmr, two Gaussian mixtures,
@@ -24,6 +24,7 @@ Rnk = zeros(size(C));
 clusters = cell(length(gmr),1);
 J = Inf;
 JPrev = J;
+
 for k=1:NKMeansSteps
    
     C = CostMatrix(gmh,gmr,cost_meas);
@@ -52,8 +53,11 @@ for k=1:NKMeansSteps
     
     clusters = clusters(ind);
     
+    
     for l=1:length(clusters)
-        if strcmp(cost_meas,'KLD') || strcmp(cost_meas,'MKLD') || strcmp(cost_meas,'GJSD')
+        w_tilde = num2cell(ones(length(clusters{l}),1)./length(clusters{l}));
+        [clusters{l}.w] = w_tilde{:};
+        if strcmp(cost_meas,'KLD') || strcmp(cost_meas,'MKLD') || strcmp(cost_meas,'GJSD') 
             clusters{l} = mpMerge(clusters{l});
         elseif strcmp(cost_meas,'W2')
             clusters{l} = WassersteinBarycenter(clusters{l},100);
@@ -64,10 +68,39 @@ for k=1:NKMeansSteps
     JPrev = J;
     Rnk = zeros(size(C));
 end
-if k<NKMeansSteps
-    disp(horzcat('KMeans converged after ',num2str(k),' steps'));
-else
-    disp('KMeans did not converge in the maximum given steps');
+
+clusters = cell(length(gmr),1);
+Rnk = zeros(size(C));
+
+for i=1:length(gmh)
+    Rnk(i,assignVector(i)) = 1;
 end
+
+ind = [];
+for l=1:length(gmr)
+    clusters{l} = gmh(logical(Rnk(:,l)));
+    if ~isempty(clusters{l})
+        ind = [ind;l];
+    end
+end
+
+clusters = clusters(ind);
+
+for l=1:length(clusters)
+    if strcmp(cost_meas,'KLD') || strcmp(cost_meas,'MKLD') || strcmp(cost_meas,'GJSD') 
+        clusters{l} = mpMerge(clusters{l});
+    elseif strcmp(cost_meas,'W2')
+        clusters{l} = WassersteinBarycenter(clusters{l},100);
+    end
+end
+
+gmr = [clusters{:}]';
+
+
+% if k<NKMeansSteps
+%     disp(horzcat('KMeans converged after ',num2str(k),' steps'));
+% else
+%     disp('KMeans did not converge in the maximum given steps');
+% end
 
 end

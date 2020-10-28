@@ -1,4 +1,4 @@
-function [gmr,nISETrajGMRC] = GMRC(gmh,Nr,initMethod,NKMeansSteps,opt,sk,NOptSteps,optWeights)
+function [gmr,nISETrajGMRC] = GMRCMod(gmh,Nr,NKMeansSteps,opt,sk,NOptSteps,optWeights)
 % [gmr,nISETrajGMRC] = GMRC(gmh,Nr,NKMeansSteps,opt,sk,NOptSteps,optWeights):
 % INPUTS:
 % - gmh, a Gaussian mixture,
@@ -44,33 +44,11 @@ assert(sk>0,'The gradient step has to be greater than zero.');
 assert(NOptSteps>=0,'The number of optimization steps has to be non-negative.');
 assert(optWeights==0 || optWeights==1,'The optWeights parameter can take values either 0 or 1.');
 
-
-%Greedy initialization
-switch lower(initMethod)
-    case 'salmond'
-        gmr = SalmondMRA(gmh,Nr);
-    case 'runnals'
-        gmr = RunnalsMRA(gmh,Nr);
-    case 'williams'
-        gmr = WilliamsMRA(gmh,Nr);
-    case 'west'
-        gmr = WestMRA(gmh,Nr,'L2',0,Inf);
-end
-
-%Initial clustering
-gmr = KMeans(gmh,gmr,'KLD',1);
-
-%Clustering loop
-gmr = clusteringGMRC(gmh,gmr,1);
-
-%Iterative optimization
+    
+gmr = RunnalsMRA(gmh,Nr);
+gmr = KMeansMod(gmh,gmr,'KLD',NKMeansSteps);
 if opt==1
     [gmr,nISETrajGMRC] = ISEOptimization(gmh,gmr,sk,NOptSteps,optWeights);
-end
-
-%Weight refinement
-if opt==1 && optWeights == 1
-    gmr = COWAOpt(gmh,gmr);
 end
 
 end

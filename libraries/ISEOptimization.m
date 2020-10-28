@@ -151,7 +151,7 @@ for k=1:Nsteps
     
     if optWeights == 1
         p = q.^2;
-        p = p./sum(p);
+       % p = p./sum(p);
     end
     for i=1:length(gmr_Opt)
         if optWeights == 1
@@ -162,7 +162,7 @@ for k=1:Nsteps
     end
     
     J = ISE(gmh,gmr_Opt);
-    if abs(J-J_prev)<1e-06
+    if abs(J-J_prev)<1e-05
         disp(strcat(['ISEOpt converged after',' ',num2str(k),' ','iterations.']));
         break
     end
@@ -170,6 +170,11 @@ for k=1:Nsteps
     
     nISETraj(k) = nISE(gmh,gmr_Opt);
     
+end
+
+if optWeights==1
+    w_temp = num2cell([gmr_Opt.w]'./sum([gmr_Opt.w]));
+    [gmr_Opt.w] = w_temp{:};
 end
 
     

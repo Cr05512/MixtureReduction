@@ -89,8 +89,8 @@ function [fullMixture,gmr_vector,gmr_times] = GaussianMixtureReduction(algorithm
 %   the case d>2
 % - nPoints, number of evaluation points used in the plot function.
 
-availableAlgorithms = {'Williams','Runnals','Salmond','West','COWA','GMRC','Wasserstein','GMRCWas','EM','DPHEM','CTDGMRA','BF','Custom'}; %Check the corresponding documentation for further details
-availableMeasVec = {'KLD','W2','GJSD','MKLD','L2'}; %Vector of available dissimilarity measures
+availableAlgorithms = {'Williams','Runnals','Salmond','West','COWA','GMRC','GMRCMod','Wasserstein','GMRCWas','EM','DPHEM','CTDGMRA','BF','Custom'}; %Check the corresponding documentation for further details
+availableMeasVec = {'KLD','W2','GJSD','MKLD','L2','normL2'}; %Vector of available dissimilarity measures
 availableInitMethodVec = {'KMeans','Salmond','West','Runnals','Wasserstein','Williams','Random'}; %Vector of available initialization methods for certain algorithms
 availableTests = {'Random','Test2','Test3','Test4','Test5','Williams','Runnals','Crouse'}; %Check the corresponding documentation for further details
 
@@ -172,10 +172,16 @@ for i=1:numAlgorithms
             gmr_vector(strcmpi(algorithms,'williams')) = {gmr};
         case 'gmrc'
             tic;
-            gmr = GMRC(fullMixture,params.Nr,params.nKMeansSteps,params.ISEOpt,params.sk,params.nOptSteps,params.optWeights);
+            gmr = GMRC(fullMixture,params.Nr,params.initMethodGMRC,params.nKMeansSteps,params.ISEOpt,params.sk,params.nOptSteps,params.optWeights);
             time = toc;
             gmr_times(strcmpi(algorithms,'gmrc')) = time;
             gmr_vector(strcmpi(algorithms,'gmrc')) = {gmr};
+        case 'gmrcmod'
+            tic;
+            gmr = GMRCMod(fullMixture,params.Nr,params.nKMeansSteps,params.ISEOpt,params.sk,params.nOptSteps,params.optWeights);
+            time = toc;
+            gmr_times(strcmpi(algorithms,'gmrcmod')) = time;
+            gmr_vector(strcmpi(algorithms,'gmrcmod')) = {gmr};
         case 'runnals'
             %%
             tic;
@@ -198,13 +204,13 @@ for i=1:numAlgorithms
             gmr_vector(strcmpi(algorithms,'salmond')) = {gmr};
         case 'west'
             tic;
-            gmr = WestMRA(gm,params.Nr,params.algoWest,params.gammaWest);
+            gmr = WestMRA(gm,params.Nr,params.cost_measure,params.algoWest,params.gammaWest);
             time = toc;
             gmr_times(strcmpi(algorithms,'west')) = time;
             gmr_vector(strcmpi(algorithms,'west')) = {gmr};
         case 'cowa'
             tic;
-            gmr = COWAMRA(gm,params.Nr,params.algoWest,params.gammaWest);
+            gmr = COWAMRA(gm,params.Nr,params.cost_measure,params.algoWest,params.gammaWest);
             time = toc;
             gmr_times(strcmpi(algorithms,'cowa')) = time;
             gmr_vector(strcmpi(algorithms,'cowa')) = {gmr};

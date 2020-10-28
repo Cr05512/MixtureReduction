@@ -15,10 +15,8 @@ elseif nargin < 3
     cost_meas = 'KLD'; %By default
     disp('Assuming KLD as cost function...');
 end
-availableMeasVec = {'KLD','W2','GJSD','MKLD','L2'}; %Vector of available dissimilarity measures
 
 assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element.');
-assert(any(strcmpi(availableMeasVec,cost_meas)), strcat(['Unknown cost measure. The available measures are:',' ',strjoin(availableMeasVec,', '),'.']));
 
 C = CostMatrix(gmh,gmr,cost_meas);
 
