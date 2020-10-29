@@ -44,6 +44,15 @@ assert(sk>0,'The gradient step has to be greater than zero.');
 assert(NOptSteps>=0,'The number of optimization steps has to be non-negative.');
 assert(optWeights==0 || optWeights==1,'The optWeights parameter can take values either 0 or 1.');
 
+Nh = length(gmh);
+if(Nh==Nr)
+    gmr = gmh;
+    return
+elseif(Nr==1)
+    gmr = mpMerge(gmh);
+    return
+end
+
 
 %Greedy initialization
 switch lower(initMethod)
@@ -68,7 +77,7 @@ if opt==1
     [gmr,nISETrajGMRC] = ISEOptimization(gmh,gmr,sk,NOptSteps,optWeights);
 end
 
-%Weight refinement
+Weight refinement
 if opt==1 && optWeights == 1
     gmr = COWAOpt(gmh,gmr);
 end

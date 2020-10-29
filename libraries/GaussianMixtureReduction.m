@@ -216,8 +216,10 @@ for i=1:numAlgorithms
             gmr_vector(strcmpi(algorithms,'cowa')) = {gmr};
         case 'bf'
             tic;
-            gmr = bruteForceGaussMixRed(fullMixture,params.Nr,true);
-            gmr = ISEOptimization(fullMixture,gmr,params.sk,params.nOptSteps,params.optWeights);
+            gmr = BFGMR(fullMixture,params.Nr);
+            if params.ISEOpt == 1
+                gmr = ISEOptimization(fullMixture,gmr,params.sk,params.nOptSteps,params.optWeights);
+            end
             time = toc;
             gmr_times(strcmpi(algorithms,'bf')) = time;
             gmr_vector(strcmpi(algorithms,'bf')) = {gmr};

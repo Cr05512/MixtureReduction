@@ -4,12 +4,12 @@ close all
 
 %Type in the following list the algorithms you want to compare. Check
 %GaussianMixtureReduction documentation for available algorithms.
-algorithms = {'Runnals','GMRC','GMRCMod'};
+algorithms = {'GMRC','GMRCMod'};
 
 %Type it the test to use.  Check GaussianMixtureReduction documentation for available tests.
 test = 'random'; %set this to random for MC tests
 
-NumTests = 50; %MC runs
+NumTests = 100; %MC runs
 
 %Check GaussianMixtureReduction documentation for parameter meaning
 params = struct('Nh',40,... % Full mixture components
@@ -24,7 +24,7 @@ params = struct('Nh',40,... % Full mixture components
                 'rho',0.9544,... % Adaptive pruning threshold
                 'lambda',0.0,... % Entropic regularization parameter
                 'maxiter',100,... % Maximum number of iterations
-                'cost_measure','L2',... % Cost measure
+                'cost_measure','normL2',... % Cost measure
                 'initMethodCTD','Runnals',... % Init method for CTDGMRA
                 'algoWest',0,... % 0 for West algorithm, 1 for Enhanced West algorithm
                 'gammaWest',Inf,... % West/EWest dissimilarity threshold
@@ -32,12 +32,12 @@ params = struct('Nh',40,... % Full mixture components
                 'I',100,... % Number of virtual samples for the MKLD/DPHEM algorithm. Setting it equal to 5*Nh yields good results.
                 'nEMIter',20,... % Number of EM iterations
                 'initMethodEM','greedy',... % Init method for the EM/DPHEM algorithms
-                'nKMeansSteps',100,... % Number of KMeans iterations
+                'nKMeansSteps',20,... % Number of KMeans iterations
                 'initMethodGMRC','Runnals',...
-                'ISEOpt',1,... % 0 to skip ISE Optimization for corresponding algorithms (Williams, GMRC), 1 to perform it
+                'ISEOpt',0,... % 0 to skip ISE Optimization for corresponding algorithms (Williams, GMRC), 1 to perform it
                 'sk',0.005,... % Gradient step size in the ISE Opt
                 'nOptSteps',50,... % Number of ISE Opt iterations
-                'optWeights',1,... % 0 to skip weight opt, 1 to perform weight opt in the ISE optimization
+                'optWeights',0,... % 0 to skip weight opt, 1 to perform weight opt in the ISE optimization
                 'showResults',0,... % 0 to skip result visualization, 1 to show results. Set this to 0 for MC tests
                 'nPoints',300); % Number of evaluation points for plots
 

@@ -28,6 +28,19 @@ end
 assert(algo==0 || algo==1,'The algo parameter can take either 0 or 1 as value.');
 assert(gamma>0,'gamma has to be greater than zero.');
 
+Nh = length(gm);
+if(Nh==Nr)
+    gmr = gm;
+    return
+elseif(Nr==1)
+    if strcmpi(cost_meas,'W2')
+        gmr = WassersteinBarycenter(gm,100);
+    else
+        gmr = mpMerge(gm);
+    end
+    return
+end
+
 
 %n = size(gm(1).mu,1);
 gmr = gm;

@@ -28,6 +28,16 @@ assert(Nr>0,'The reduced mixture has to contain at least one element.');
 assert(algo==0 || algo==1,'The algo parameter can be either 0 (West) or 1 (enhanced West).');
 assert(Nr>0 && length(gmh)>=Nr,'The reduced mixture must have a positive number of components lower or equal to the starting mixture.');
 
+Nh = length(gmh);
+if(Nh==Nr)
+    gmr = gmh;
+    return
+elseif(Nr==1)
+    gmr = mpMerge(gmh);
+    return
+end
+
+
 gmr = WestMRA(gmh,Nr,cost_meas,algo,gamma);
 
 gmr = COWAOpt(gmh, gmr);

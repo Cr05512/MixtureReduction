@@ -12,6 +12,14 @@ function gmr = WilliamsMRA(gm, Nr)
 assert(~isempty(gm),'The mixture has to contain at least one element.');
 assert(Nr>0 && length(gm)>=Nr,'The reduced mixture must have a positive number of components lower or equal to the starting mixture.');
 
+Nh = length(gm);
+if(Nh==Nr)
+    gmr = gm;
+    return
+elseif(Nr==1)
+    gmr = mpMerge(gm);
+    return
+end
 
 gmr = gm;
 ISEMatrix = Inf(length(gm),length(gm));

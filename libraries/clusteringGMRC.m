@@ -3,7 +3,8 @@ function gmr = clusteringGMRC(gmh,gmr,NSteps)
 % INPUTS:
 % - gmh, gmr, two Gaussian mixtures
 % - NSteps, number of iterations for the clustering loop
-% OUTPUTS: gmr, the refined mixture.
+% OUTPUTS:
+% - gmr, the refined mixture.
 % This function implements the clustering loop as shown in:
 % Gaussian Mixture Reduction via Clustering, D. Schieferdecker, M.F. Huber
 

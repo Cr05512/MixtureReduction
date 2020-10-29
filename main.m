@@ -4,25 +4,25 @@ close all
 
 %Type in the following list the algorithms you want to compare. Check
 %GaussianMixtureReduction documentation for available algorithms.
-algorithms = {'Runnals','GMRC','GMRCMod'};
+algorithms = {'Runnals','GMRC','West'};
 
 %Type it the test to use.  Check GaussianMixtureReduction documentation for available tests.
-test = 'crouse';
+test = 'random';
 
 %Check GaussianMixtureReduction documentation for parameter meaning
-params = struct('Nh',30,... % Full mixture components
-                'Nr',5,... % Reduced Mixture components
+params = struct('Nh',40,... % Full mixture components
+                'Nr',10,... % Reduced Mixture components
                 'd',1,... % State dimension
-                'alpha',10,... % Component means spreading. In general setting it to Nh/4 gives nice visual results
+                'alpha',1.5,... % Component means spreading. In general setting it to Nh/4 gives nice visual results
                 'beta',0.09,... % Component covariance tuning parameter.
-                'delta',0,... % Component center
+                'delta',1.5,... % Component center
                 'pruneGMComps',0,... % 0 to skip pruning, 1 to perform pruning
                 'pruningMethod',1,... % 0 for standard pruning, 1 for adaptive pruning
                 'pruningThresh',0.01,... % Standard pruning threshold
                 'rho',0.9544,... % Adaptive pruning threshold
                 'lambda',0.0,... % Entropic regularization parameter
                 'maxiter',100,... % Maximum number of iterations
-                'cost_measure','normL2',... % Cost measure
+                'cost_measure','KLD',... % Cost measure
                 'initMethodCTD','Runnals',... % Init method for CTDGMRA
                 'algoWest',1,... % 0 for West algorithm, 1 for Enhanced West algorithm
                 'gammaWest',Inf,... % West/EWest dissimilarity threshold

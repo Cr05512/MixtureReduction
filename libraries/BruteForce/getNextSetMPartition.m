@@ -148,7 +148,7 @@ while(1)
 
         %First, we get the unique partition sizes and the number of repeated
         %partition sizes. 
-        [partSizes,numReps]=runLenEncode(curPartition);
+        [partSizes,numReps]=runLengthEncoding(curPartition);
         numUniqueParts=length(partSizes);
 
         startPartNum=cumsum([0;numReps(1:(numUniqueParts-1))]);

@@ -15,8 +15,7 @@ elseif nargin < 4
     NKMeansSteps = 100;
 end
 assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element.');
-assert(strcmp(cost_meas,'KLD') || strcmp(cost_meas,'W2') || strcmp(cost_meas,'GJSD') || strcmp(cost_meas,'MKLD'),...
-            'The allowed cost functions are (1) KLD, (2) MKLD, (3) W2 and (4) GJSD.');
+assert(NKMeansSteps>0,'The number of kmeans iterations has to be greater than zero.');
 
 
 C = Inf(length(gmh),length(gmr));
@@ -53,10 +52,10 @@ for k=1:NKMeansSteps
     clusters = clusters(ind);
     
     for l=1:length(clusters)
-        if strcmp(cost_meas,'KLD') || strcmp(cost_meas,'MKLD') || strcmp(cost_meas,'GJSD')
-            clusters{l} = mpMerge(clusters{l});
-        elseif strcmp(cost_meas,'W2')
+        if strcmpi(cost_meas,'W2')
             clusters{l} = WassersteinBarycenter(clusters{l},100);
+        else
+            clusters{l} = mpMerge(clusters{l});
         end
     end
     
@@ -64,10 +63,8 @@ for k=1:NKMeansSteps
     JPrev = J;
     Rnk = zeros(size(C));
 end
-if k<NKMeansSteps
-    disp(horzcat('KMeans converged after ',num2str(k),' steps'));
-else
-    disp('KMeans did not converge in the maximum given steps');
-end
+% if k<NKMeansSteps
+%     disp(horzcat('KMeans converged after ',num2str(k),' steps'));
+% end
 
 end
