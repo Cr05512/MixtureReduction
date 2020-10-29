@@ -31,8 +31,8 @@ params = struct('Nh',20,... % Full mixture components
                 'nEMIter',50,... % Number of EM iterations
                 'initMethodEM','Runnals',... % Init method for the EM/DPHEM algorithms
                 'nKMeansSteps',100,... % Number of KMeans iterations
-                'initMethodGMRC','Runnals',...
-                'ISEOpt',0,... % 0 to skip ISE Optimization for corresponding algorithms (Williams, GMRC), 1 to perform it
+                'initMethodGMRC','Runnals',... % Init method for the GMRC
+                'ISEOpt',1,... % 0 to skip ISE Optimization for corresponding algorithms (Williams, GMRC), 1 to perform it
                 'sk',0.005,... % Gradient step size in the ISE Opt
                 'nOptSteps',50,... % Number of ISE Opt iterations
                 'optWeights',1,... % 0 to skip weight opt, 1 to perform weight opt in the ISE optimization
