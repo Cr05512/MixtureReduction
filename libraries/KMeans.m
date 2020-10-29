@@ -1,4 +1,4 @@
-function gmr = KMeans(gmh,gmr,cost_meas,NKMeansSteps)
+function [gmr,Rnk] = KMeans(gmh,gmr,cost_meas,NKMeansSteps)
 % gmr = KMeans(gmh,gmr,cost_meas,NKMeansSteps):
 % INPUTS:
 % - gmh, gmr, two Gaussian mixtures,
@@ -6,6 +6,7 @@ function gmr = KMeans(gmh,gmr,cost_meas,NKMeansSteps)
 % - NKMeansSteps, maximum number of allowed iterations for the KMeans algorithm.
 % OUTPUTS:
 % - gmr, the refined mixture.
+% - Rnk, final cluster association matrix.
 % This function operates a K-Means refinement over the reduced mixture in
 % order to improve the corresponding parameters.
 if nargin < 3
@@ -20,7 +21,6 @@ assert(NKMeansSteps>0,'The number of kmeans iterations has to be greater than ze
 
 C = Inf(length(gmh),length(gmr));
 Rnk = zeros(size(C));
-clusters = cell(length(gmr),1);
 J = Inf;
 JPrev = J;
 for k=1:NKMeansSteps
@@ -39,29 +39,12 @@ for k=1:NKMeansSteps
         break;
     end
 
-    
-    ind = [];
-    
-    for l=1:length(gmr)
-        clusters{l} = gmh(logical(Rnk(:,l)));
-        if ~isempty(clusters{l})
-            ind = [ind;l];
-        end
-    end
-    
-    clusters = clusters(ind);
-    
-    for l=1:length(clusters)
-        if strcmpi(cost_meas,'W2')
-            clusters{l} = WassersteinBarycenter(clusters{l},100);
-        else
-            clusters{l} = mpMerge(clusters{l});
-        end
-    end
-    
-    gmr = [clusters{:}]';
+    gmr = computeClusterCenters(gmh,Rnk,cost_meas);
+
     JPrev = J;
-    Rnk = zeros(size(C));
+    if k<NKMeansSteps
+        Rnk = zeros(size(C)); %Reset of the associations
+    end
 end
 % if k<NKMeansSteps
 %     disp(horzcat('KMeans converged after ',num2str(k),' steps'));

@@ -1,11 +1,12 @@
-function gmr = KMeansMod(gmh,gmr,cost_meas,NKMeansSteps)
+function [gmr,Rnk] = KMeansMod(gmh,gmr,cost_meas,NKMeansSteps)
 % gmr = KMeans(gmh,gmr,cost_meas,NKMeansSteps):
 % INPUTS:
 % - gmh, gmr, two Gaussian mixtures,
 % - cost_meas, the cost functio used to compute the distance between components,
 % - NKMeansSteps, maximum number of allowed iterations for the KMeans algorithm.
 % OUTPUTS:
-% - gmr, the refined mixture.
+% - gmr, the refined mixture,
+% - Rnk, final cluster association matrix.
 % This function operates a K-Means refinement over the reduced mixture in
 % order to improve the corresponding parameters.
 if nargin < 3
@@ -64,14 +65,9 @@ for k=1:NKMeansSteps
     
     gmr = [clusters{:}]';
     JPrev = J;
-    Rnk = zeros(size(C));
-end
-
-clusters = cell(length(gmr),1);
-Rnk = zeros(size(C));
-
-for i=1:length(gmh)
-    Rnk(i,assignVector(i)) = 1;
+    if k<NKMeansSteps
+        Rnk = zeros(size(C)); %Reset of the associations
+    end
 end
 
 ind = [];

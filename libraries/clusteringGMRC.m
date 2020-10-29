@@ -1,8 +1,9 @@
-function gmr = clusteringGMRC(gmh,gmr,NSteps)
+function gmr = clusteringGMRC(gmh,gmr,Rnk,NSteps)
 % gmr = clusteringGMRC(gmh,gmr,NSteps):
 % INPUTS:
-% - gmh, gmr, two Gaussian mixtures
-% - NSteps, number of iterations for the clustering loop
+% - gmh, gmr, two Gaussian mixtures,
+% - Rnk, initial clustering association matrix,
+% - NSteps, number of iterations for the clustering loop.
 % OUTPUTS:
 % - gmr, the refined mixture.
 % This function implements the clustering loop as shown in:
@@ -12,20 +13,29 @@ assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one
 
 Nh = length(gmh);
 Nr = length(gmr);
-
 cost_vector = Inf(1,Nr);
 for k=1:NSteps
+
     for i=1:Nh
         for j=1:Nr
-            cost_vector(j) = normL2Gauss(gmh(i),gmr(j));
+            %1. reassociate site n_i to cluster C_j
+            Rnk(i,:) = zeros(1,Nr);
+            Rnk(i,j) = 1;
+            %2. recompute temporary centroids with such association matrix
+            gmr = computeClusterCenters(gmh,Rnk,'KLD');
+            
+            cost_vector(j) = nISE(gmh,gmr); %we compute the cost of such association
         end
         
+        %3. Associate site n_i to C_j for which cost_vector(j) is minimal
         [~,ind] = min(cost_vector);
-        gmr(ind) = mpMerge([gmh(i),gmr(ind)]);
+        Rnk(i,:) = zeros(1,Nr);
+        Rnk(i,ind) = 1;
+        %4. Recompute the centers
+        gmr = computeClusterCenters(gmh,Rnk,'KLD');
     end  
+
 end
 
-w_temp = num2cell([gmr.w]'./sum([gmr.w]));
-[gmr.w] = w_temp{:};
 
 end

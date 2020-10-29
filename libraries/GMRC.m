@@ -67,17 +67,17 @@ switch lower(initMethod)
 end
 
 %Initial clustering
-gmr = KMeans(gmh,gmr,'KLD',1);
+[gmr,Rnk] = KMeans(gmh,gmr,'KLD',1);
 
 %Clustering loop
-gmr = clusteringGMRC(gmh,gmr,1);
+gmr = clusteringGMRC(gmh,gmr,Rnk,1);
 
 %Iterative optimization
 if opt==1
     [gmr,nISETrajGMRC] = ISEOptimization(gmh,gmr,sk,NOptSteps,optWeights);
 end
 
-Weight refinement
+% Weight refinement
 if opt==1 && optWeights == 1
     gmr = COWAOpt(gmh,gmr);
 end
