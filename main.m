@@ -7,10 +7,10 @@ close all
 algorithms = {'Runnals','GMRC','GMRCMod'};
 
 %Type it the test to use.  Check GaussianMixtureReduction documentation for available tests.
-test = 'crouse';
+test = 'random';
 
 %Check GaussianMixtureReduction documentation for parameter meaning
-params = struct('Nh',20,... % Full mixture components
+params = struct('Nh',40,... % Full mixture components
                 'Nr',5,... % Reduced Mixture components
                 'd',1,... % State dimension
                 'alpha',5,... % Component means spreading. In general setting it to Nh/4 gives nice visual results

@@ -89,7 +89,7 @@ function [fullMixture,gmr_vector,gmr_times] = GaussianMixtureReduction(algorithm
 %   the case d>2
 % - nPoints, number of evaluation points used in the plot function.
 
-availableAlgorithms = {'Williams','Runnals','Salmond','West','COWA','GMRC','GMRCMod','Wasserstein','GMRCWas','EM','DPHEM','CTDGMRA','BF','Custom'}; %Check the corresponding documentation for further details
+availableAlgorithms = {'Williams','Runnals','Salmond','West','COWA','GMRC','GMRCMod','Wasserstein','GMRCWas','GMRCWasMod','EM','DPHEM','CTDGMRA','BF','Custom'}; %Check the corresponding documentation for further details
 availableMeasVec = {'KLD','W2','GJSD','MKLD','L2','normL2'}; %Vector of available dissimilarity measures
 availableInitMethodVec = {'KMeans','Salmond','West','Runnals','Wasserstein','Williams','Random'}; %Vector of available initialization methods for certain algorithms
 availableTests = {'Random','Test2','Test3','Test4','Test5','Williams','Runnals','Crouse'}; %Check the corresponding documentation for further details
@@ -229,6 +229,12 @@ for i=1:numAlgorithms
             time = toc;
             gmr_times(strcmpi(algorithms,'gmrcwas')) = time;
             gmr_vector(strcmpi(algorithms,'gmrcwas')) = {gmr};
+        case 'gmrcwasmod'
+            tic;
+            gmr = GMRCWasMod(gm,params.Nr,params.nKMeansSteps);
+            time = toc;
+            gmr_times(strcmpi(algorithms,'gmrcwasmod')) = time;
+            gmr_vector(strcmpi(algorithms,'gmrcwasmod')) = {gmr};
             %%
         case 'ctdgmra'
             assert(any(strcmpi(availableInitMethodVec,params.initMethodCTD)),'Unknown init method for the CTDGMRA. Aborting...');

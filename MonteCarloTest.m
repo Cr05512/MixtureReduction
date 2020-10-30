@@ -4,7 +4,7 @@ close all
 
 %Type in the following list the algorithms you want to compare. Check
 %GaussianMixtureReduction documentation for available algorithms.
-algorithms = {'GMRC','GMRCMod'};
+algorithms = {'GMRCWas','GMRCWasMod'};
 
 %Type it the test to use.  Check GaussianMixtureReduction documentation for available tests.
 test = 'random'; %set this to random for MC tests
@@ -24,7 +24,7 @@ params = struct('Nh',20,... % Full mixture components
                 'rho',0.9544,... % Adaptive pruning threshold
                 'lambda',0.0,... % Entropic regularization parameter
                 'maxiter',100,... % Maximum number of iterations
-                'cost_measure','KLD',... % Cost measure
+                'cost_measure','W2',... % Cost measure
                 'initMethodCTD','Runnals',... % Init method for CTDGMRA
                 'algoWest',0,... % 0 for West algorithm, 1 for Enhanced West algorithm
                 'gammaWest',Inf,... % West/EWest dissimilarity threshold
@@ -63,6 +63,7 @@ for m = 1:NumTests
         nISEVector(i,m) = nISE(fullMixture,gmr_vector{i});
         timeVector(i,m) = gmr_times(i);
         CTDVector(i,m) = CTD(fullMixture,gmr_vector{i},params.cost_measure);
+        %CTDVector(i,m) = convUpperBoundKLD(fullMixture,gmr_vector{i});
     end
 
 end

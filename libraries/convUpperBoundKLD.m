@@ -12,14 +12,8 @@ function CUBKLD = convUpperBoundKLD(gmh,gmr)
 % NOTE: the positivity property of the KLD holds with this
 % approximation.
 
-
-CUBKLD = 0;
-
-for i=1:length(gmh)
-    for j=1:length(gmr)
-        CUBKLD = CUBKLD + gmh(i).w*gmr(j).w*KLD(gmh(i),gmr(j));
-    end
-end
+C = CostMatrix(gmh,gmr,'KLD');
+CUBKLD = [gmh.w]*C*[gmr.w]';
 
 
 end
