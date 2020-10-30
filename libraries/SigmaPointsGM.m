@@ -15,7 +15,7 @@ samples = [];
 
 lambda = 3-n;
 samples = [samples [gm.mu]];
-A = reshape([gm.Sigma],n,n,N);
+A = cat(3,gm.Sigma);
 
 
 for i=1:N

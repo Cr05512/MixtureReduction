@@ -13,11 +13,17 @@ assert(nSamples>0,'The number of samples has to be non-negative.');
 n = size(gm(1).mu,1);
 samples = zeros(n,nSamples);
 w_bar = [gm.w]';
-cdf = cumsum(w_bar);
-for i=1:nSamples
-    r = rand();
-    ind = find(r<=cdf,1,'first');
-    samples(:,i) = mvnrnd(gm(ind).mu, gm(ind).Sigma);
+if length(w_bar)==1 %Single component muxture
+    for i=1:nSamples
+        samples(:,i) = mvnrnd(gm.mu,gm.Sigma);
+    end
+else
+    cdf = cumsum(w_bar);
+    for i=1:nSamples
+        r = rand();
+        ind = find(r<=cdf,1,'first');
+        samples(:,i) = mvnrnd(gm(ind).mu, gm(ind).Sigma);
+    end
 end
 
 

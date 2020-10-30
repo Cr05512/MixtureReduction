@@ -4,10 +4,10 @@ close all
 
 %Type in the following list the algorithms you want to compare. Check
 %GaussianMixtureReduction documentation for available algorithms.
-algorithms = {'Runnals','GMRC','Williams'};
+algorithms = {'Runnals','GMRC','GMRCMod'};
 
 %Type it the test to use.  Check GaussianMixtureReduction documentation for available tests.
-test = 'random';
+test = 'crouse';
 
 %Check GaussianMixtureReduction documentation for parameter meaning
 params = struct('Nh',20,... % Full mixture components
@@ -32,7 +32,7 @@ params = struct('Nh',20,... % Full mixture components
                 'initMethodEM','Runnals',... % Init method for the EM/DPHEM algorithms
                 'nKMeansSteps',100,... % Number of KMeans iterations
                 'initMethodGMRC','Runnals',... % Init method for the GMRC
-                'ISEOpt',1,... % 0 to skip ISE Optimization for corresponding algorithms (Williams, GMRC), 1 to perform it
+                'ISEOpt',0,... % 0 to skip ISE Optimization for corresponding algorithms (Williams, GMRC), 1 to perform it
                 'sk',0.005,... % Gradient step size in the ISE Opt
                 'nOptSteps',50,... % Number of ISE Opt iterations
                 'optWeights',1,... % 0 to skip weight opt, 1 to perform weight opt in the ISE optimization

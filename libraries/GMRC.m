@@ -64,6 +64,8 @@ switch lower(initMethod)
         gmr = WilliamsMRA(gmh,Nr);
     case 'west'
         gmr = WestMRA(gmh,Nr,'L2',0,Inf);
+    case 'wasserstein'
+        gmr = WassersteinMRA(gmh,Nr);
 end
 
 %Initial clustering

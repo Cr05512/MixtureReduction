@@ -23,8 +23,8 @@ for k=1:NSteps
             Rnk(i,j) = 1;
             %2. recompute temporary centroids with such association matrix
             gmr = computeClusterCenters(gmh,Rnk,'KLD');
-            
             cost_vector(j) = nISE(gmh,gmr); %we compute the cost of such association
+            %cost_vector(j) = CTD(gmh,gmr,'normL2');
         end
         
         %3. Associate site n_i to C_j for which cost_vector(j) is minimal

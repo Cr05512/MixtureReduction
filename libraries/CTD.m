@@ -22,6 +22,7 @@ C = CostMatrix(gmh,gmr,cost_meas);
 
 %assert(norm(sum([gmh.w])-1)<1e-12 && norm(sum([gmr.w])-1)<1e-12,'Weights are not normalized.');
 pi_star = EffEROTP(gmh,C,0);
+%pi_star = computeOTP(C,[gmh.w]',[gmr.w]');
 
 d = trace(pi_star'*C);  %Matrix inner product
 

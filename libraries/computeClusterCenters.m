@@ -29,7 +29,7 @@ for i=1:length(clusters) %We use length(clusters) because it can be smaller than
     end
 end
 
-gmr = [clusters{:}]';
+gmr = [clusters{:}];
 
 end
 

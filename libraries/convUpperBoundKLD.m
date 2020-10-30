@@ -1,0 +1,26 @@
+function CUBKLD = convUpperBoundKLD(gmh,gmr)
+% CUBKLD = convUpperBoundKLD(gmh,gmr):
+% INPUTS:
+% - gmh, gmr, two Gaussian mixtures,
+% OUTPUTS:
+% - CUBKLD, numerically computed KLD.
+% This function implements the computation of a convex upper bound on the KLD between two
+% mixtures as shown in:
+% "Approximating the Kullback Leibler Divergence Between Gaussian Mixture
+% Models", J. R. Hershey, P. Olsen, Conference: Acoustics, Speech and Signal
+% Processing, 2007. ICASSP 2007. IEEE International Conference onVolume: 4
+% NOTE: the positivity property of the KLD holds with this
+% approximation.
+
+
+CUBKLD = 0;
+
+for i=1:length(gmh)
+    for j=1:length(gmr)
+        CUBKLD = CUBKLD + gmh(i).w*gmr(j).w*KLD(gmh(i),gmr(j));
+    end
+end
+
+
+end
+

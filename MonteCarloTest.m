@@ -12,10 +12,10 @@ test = 'random'; %set this to random for MC tests
 NumTests = 100; %MC runs
 
 %Check GaussianMixtureReduction documentation for parameter meaning
-params = struct('Nh',40,... % Full mixture components
+params = struct('Nh',20,... % Full mixture components
                 'Nr',5,... % Reduced Mixture components
                 'd',1,... % State dimension
-                'alpha',10,... % Component means spreading. In general setting it to Nh/4 gives nice visual results
+                'alpha',5,... % Component means spreading. In general setting it to Nh/4 gives nice visual results
                 'beta',0.09,... % Component covariance tuning parameter.
                 'delta',0,... % Component center
                 'pruneGMComps',0,... % 0 to skip pruning, 1 to perform pruning
@@ -24,7 +24,7 @@ params = struct('Nh',40,... % Full mixture components
                 'rho',0.9544,... % Adaptive pruning threshold
                 'lambda',0.0,... % Entropic regularization parameter
                 'maxiter',100,... % Maximum number of iterations
-                'cost_measure','normL2',... % Cost measure
+                'cost_measure','KLD',... % Cost measure
                 'initMethodCTD','Runnals',... % Init method for CTDGMRA
                 'algoWest',0,... % 0 for West algorithm, 1 for Enhanced West algorithm
                 'gammaWest',Inf,... % West/EWest dissimilarity threshold
