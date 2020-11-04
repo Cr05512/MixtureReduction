@@ -1,4 +1,4 @@
-function C = CorrMeasure(gmh,gmr)
+function C = CorrMeasureGauss(pdfh,pdfr)
 % C = CorrMeasure(gmh,gmr):
 % INPUTS:
 % - gmh, gmr, two Gaussian Mixtures.
@@ -8,9 +8,12 @@ function C = CorrMeasure(gmh,gmr)
 % mixtures.  D. J. Petrucci.  Gaussian mixture reduction for bayesian
 % target tracking inclutter.Master’s thesis, Air Force Institute of Technology, 2005.
 
-assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element each.');
 
-C = crossLikeness(gmh,gmr)/sqrt(selfLikeness(gmh)*selfLikeness(gmr));
+Jhh = mvnpdf(pdfh.mu,pdfh.mu,2*pdfh.Sigma);
+Jrr = mvnpdf(pdfr.mu,pdfr.mu,2*pdfr.Sigma);
+Jhr = mvnpdf(pdfr.mu,pdfh.mu,pdfr.Sigma+pdfh.Sigma);
+
+C = Jhr/sqrt(Jhh*Jrr);
 
 end
 

@@ -89,10 +89,10 @@ function [fullMixture,gmr_vector,gmr_times] = GaussianMixtureReduction(algorithm
 %   the case d>2
 % - nPoints, number of evaluation points used in the plot function.
 
+availableInitMethodVec = {'KMeans','Runnals','Salmond','Wasserstein','Williams','Random','West'};
 availableAlgorithms = {'Williams','Runnals','Salmond','West','COWA','GMRC','GMRCMod','Wasserstein','GMRCWas','GMRCWasMod','EM','DPHEM','CTDGMRA','BF','Custom'}; %Check the corresponding documentation for further details
-availableMeasVec = {'KLD','W2','GJSD','MKLD','L2','normL2'}; %Vector of available dissimilarity measures
-availableInitMethodVec = {'KMeans','Salmond','West','Runnals','Wasserstein','Williams','Random'}; %Vector of available initialization methods for certain algorithms
-availableTests = {'Random','Test2','Test3','Test4','Test5','Williams','Runnals','Crouse'}; %Check the corresponding documentation for further details
+availableMeasVec = {'KLD','W2','GJSD','MKLD','L2','normL2','CM','symKLD','SRJSD'}; %Vector of available dissimilarity measuresavailableInitMethodVec = {'KMeans','Salmond','West','Runnals','Wasserstein','Williams','Random'}; %Vector of available initialization methods for certain algorithms
+availableTests = {'Random','Test2','Test3','Test4','Test5','Williams','Runnals','Crouse','test1CTDGMRA','test2CTDGMRA','test3CTDGMRA'}; %Check the corresponding documentation for further details
 
 
 %Result variables
@@ -118,6 +118,12 @@ switch lower(test)
         [gm,params.Nh,params.Nr,params.d] = testRunnalsCompGen();
     case 'crouse'
         [gm,params.Nh,params.Nr,params.d,params.delta] = testCrouseCompGen();
+    case 'test1ctdgmra'
+        [gm,params.Nh,params.Nr,params.d,params.alpha] = test1CTDGMRA();
+    case 'test2ctdgmra'
+        [gm,params.Nh,params.Nr,params.d,params.alpha] = test2CTDGMRA();
+    case 'test3ctdgmra'
+        [gm,params.Nh,params.Nr,params.d,params.alpha] = test3CTDGMRA();
     otherwise
         disp('Unknown test.');
 end
@@ -156,7 +162,7 @@ for i=1:numAlgorithms
     
         case 'custom'
             tic;
-            gmr = CustomMRA();
+            gmr = softClusteringKLD2(gm,params.Nr,100);
             time = toc;
             gmr_times(strcmpi(algorithms,'custom')) = time;
             gmr_vector(strcmpi(algorithms,'custom')) = {gmr};
@@ -256,7 +262,7 @@ for i=1:numAlgorithms
                     gm_init = GMRGen2(gm,params.Nr);
             end
 
-            gmr = CTDGMRA(fullMixture,gm_init,params.cost_measure,params.lambda,params.maxiter,params.I);
+            gmr = CTDGMRA(fullMixture,gm_init,params.cost_measure,params.lambda,params.maxiter,params.I,params.alphaGJSD);
 
             time = toc;
             gmr_times(strcmpi(algorithms,'ctdgmra')) = time;

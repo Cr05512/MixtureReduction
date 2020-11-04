@@ -1,0 +1,13 @@
+function dSRJS = SRJSD(pdfh,pdfr)
+% dSRJS = SRJSD(pdfh,pdfr):
+% INPUTS:
+% - pdfh, pdfr, two Gaussian densities.
+% OUTPUTS:
+% - sSRJS, resulting squared root Jensen-Shannon divergence.
+% This function computes the squared root Jensen-Shannon divergence between two multivariate Gaussians. It is
+% not suitable for other kind of distributions. Note, this is a true
+% distance.
+
+dSRJS = real(sqrt(GJSD(pdfh,pdfr,0.5)));
+end
+

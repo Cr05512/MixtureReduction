@@ -1,10 +1,11 @@
-function gmr = CTDGMRA(gmh,gmr,cost_meas,lambda,maxiter,I)
+function gmr = CTDGMRA(gmh,gmr,cost_meas,lambda,maxiter,I,alphaGJSD)
 % gmr = CTDGMRA(gmh,gmr,cost_meas,lambda,maxiter,I):
 % INPUTS:
 % - gmh,gmr, two Gaussian mixtures,
 % - cost_meas, desired cost function (possible choices: KLD, W2, GJSD, MKLD, L2),
 % - lambda, regularization parameter,
-% - I, number of virtual samples (only needed by the MKLD measure).
+% - I, number of virtual samples (only needed by the MKLD measure),
+% - alphaGJSD, alpha used in the generalized Jensen-Shannon divergence.
 % OUTPUTS:
 % - gmr, the refined mixture according to the CTDGMRA algorithm.
 % This function implements the Composite Transportation Distance Gaussian
@@ -15,11 +16,16 @@ if nargin < 4
     lambda = 0.1;
     maxiter = 100;
     I = length(gmh);
+    alphaGJSD = 0.5;
 elseif nargin < 5
     maxiter = 100;
     I = length(gmh);
+    alphaGJSD = 0.5;
 elseif nargin < 6
     I = length(gmh);
+    alphaGJSD = 0.5;
+elseif nargin < 7
+    alphaGJSD = 0.5;
 end
 assert(lambda>=0,'The regularization parameter has to be non-negative.');
 assert(maxiter>=0,'The number of iterations has to be non-negative.');
@@ -33,7 +39,7 @@ J_prev = J;
 
 for k=1:maxiter
     
-    C = CostMatrix(gmh,gmr,cost_meas,lambda,I);
+    C = CostMatrix(gmh,gmr,cost_meas,lambda,I,alphaGJSD);
     %pi_star = computeEROTP(C,[gmh.w]',[gmr.w]',lambda,maxiter);
     pi_star = EffEROTP(gmh,C,lambda); %It works only in this context, we are solving the opt problem by considering only one constraint
     
