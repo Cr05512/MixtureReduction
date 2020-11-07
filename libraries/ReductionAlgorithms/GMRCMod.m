@@ -55,10 +55,13 @@ end
 
     
 gmr = RunnalsMRA(gmh,Nr);
-gmr = KMeansMod(gmh,gmr,'KLD',NKMeansSteps);
-%gmr = KMeans(gmh,gmr,'KLD',NKMeansSteps);
+gmr = GMKMeansMod(gmh,gmr,'KLD',NKMeansSteps);
 if opt==1
     [gmr,nISETrajGMRC] = ISEOptimization(gmh,gmr,sk,NOptSteps,optWeights);
+end
+
+if opt==1 && optWeights == 1
+    gmr = COWAOpt(gmh,gmr);
 end
 
 end

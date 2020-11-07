@@ -23,7 +23,7 @@ elseif(Nr==1)
 end
 
 gmr = WassersteinMRA(gmh,Nr);
-[gmr,Rnk] = KMeans(gmh,gmr,'W2',1);
+[gmr,Rnk] = GMKMeans(gmh,gmr,'W2',1);
 gmr = clusteringGMRCWas(gmh,gmr,Rnk,1);
 
 end

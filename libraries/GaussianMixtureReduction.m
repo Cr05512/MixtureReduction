@@ -1,17 +1,18 @@
-function [fullMixture,gmr_vector,gmr_times] = GaussianMixtureReduction(algorithms, test, params)
+function [fullMixture,gmr_vector,gmr_times,params] = GaussianMixtureReduction(algorithms, test, userParams)
 % [fullMixture,gmr_vector,gmr_times] = GaussianMixtureReduction(algorithms,test, params):
 % INPUTS:
 % - algorithms, a cell array containing all the names of the algorithms to
 %   be compared,
 % - test, string containing the test to be executed,
-% - params, struct containing all the parameters necessary for executing
-%   the available algorithms. More on this below.
+% - useParams, user defined struct containing all the parameters necessary for executing
+%   the desired algorithms. More on this below.
 % OUTPUTS:
 % - fullMixture, initial mixture to be reduced,
 % - gmr_vector, a cell array containing the reduced mixture(s) according to
 %   the order given in the algorithms parameter,
 % - gmr_times, array containing execution times of the algorithms provided
-%   in the algorithms parameter.
+%   in the algorithms parameter,
+% - params, full parameter vector.
 % This function implements a batch of Gaussian mixture reduction
 % algorithms. It returns the initial mixture, the reduced mixtures
 % according to each desired algorithm and the corresponding execution
@@ -63,7 +64,9 @@ function [fullMixture,gmr_vector,gmr_times] = GaussianMixtureReduction(algorithm
 % - maxiter, maximum number of iterations in several algorithms,
 % - cost_measure, cost measure used to compute the cost matrix. The
 %   available measures are KLD, W2, GJSD, L2, MKLD,
-% - initMethodCTD, initialization method used for the CTDGMR algorithm. 
+% - alphaGJSD, alpha coefficient in the Generalized Jensen-shannon
+%   divergences. alpha=0.5 returns the Jensen-Shannon divergence,
+% - initMethodCTD, initialization method used for the CTDGMR algorithm.
 %   Available init methods are KMeans, Salmond, West, Runnals, Wasserstein, Williams, Random,
 % - algoWest, set it to 0 for West algorithm, to 1 for Enhanced West algorithm,
 % - gammaWest, the maximum dissimilarity threshold. If left empty or set to Inf
@@ -78,6 +81,7 @@ function [fullMixture,gmr_vector,gmr_times] = GaussianMixtureReduction(algorithm
 % - initMethodEM, initialization method used for the EM/DPHEM algorithms. 
 %   Available init methods are KMeans, greedy, random,
 % - nKMeansSteps, number of KMeans maximum iterations,
+% - initMethodGMRC, initialization method for the GMRC algorithm,
 % - ISEOpt, set this parameter to 0 to skip ISE optimization in the algorithms
 %   concerning it, set it to 1 to perform the optimization,
 % - sk, gradient step size in the ISE optimization,
@@ -89,10 +93,36 @@ function [fullMixture,gmr_vector,gmr_times] = GaussianMixtureReduction(algorithm
 %   the case d>2
 % - nPoints, number of evaluation points used in the plot function.
 
+if nargin < 1
+    algorithms = {'Runnals'};
+    test = 'Crouse';
+    userParams = struct();
+elseif nargin < 2
+    test = 'Crouse';
+    userParams = struct();
+elseif nargin < 3
+    userParams = struct();
+end
+
 availableInitMethodVec = {'KMeans','Runnals','Salmond','Wasserstein','Williams','Random','West'};
 availableAlgorithms = {'Williams','Runnals','Salmond','West','COWA','GMRC','GMRCMod','Wasserstein','GMRCWas','GMRCWasMod','EM','DPHEM','CTDGMRA','BF','Custom'}; %Check the corresponding documentation for further details
 availableMeasVec = {'KLD','W2','GJSD','MKLD','L2','normL2','CM','symKLD','SRJSD'}; %Vector of available dissimilarity measuresavailableInitMethodVec = {'KMeans','Salmond','West','Runnals','Wasserstein','Williams','Random'}; %Vector of available initialization methods for certain algorithms
 availableTests = {'Random','Test2','Test3','Test4','Test5','Williams','Runnals','Crouse','test1CTDGMRA','test2CTDGMRA','test3CTDGMRA'}; %Check the corresponding documentation for further details
+
+params = initParams(); %retrieve default parameter block
+
+userFields = fieldnames(userParams);
+
+% Use dynamic expressions in order to reassign the user defined params
+% fields
+
+for i=1:length(userFields)
+    params.(userFields{i}) = userParams.(userFields{i}); 
+end
+
+if ~any(strcmpi(userFields,'alpha'))
+    params.alpha = params.Nh/4;
+end
 
 
 %Result variables
@@ -162,7 +192,7 @@ for i=1:numAlgorithms
     
         case 'custom'
             tic;
-            gmr = SCMRA(gm,params.Nr,params.reduction_step,params.cost_measure,params.lambda,params.maxiter,params.I);
+            gmr = SCMRA(gm,params.Nr,params.cost_measure,params.lambda,params.maxiter);
             time = toc;
             gmr_times(strcmpi(algorithms,'custom')) = time;
             gmr_vector(strcmpi(algorithms,'custom')) = {gmr};
@@ -258,7 +288,7 @@ for i=1:numAlgorithms
             gm_init_EM = GMInitGen(fullMixture,gm,params,params.initMethodEM);
 
             samples = GMSamples(fullMixture,params.EMSamples);
-            gmr = EM(gm_init_EM,samples,params.nEMIter);
+            gmr = GMEM(gm_init_EM,samples,params.nEMIter);
             time = toc;
             gmr_times(strcmpi(algorithms,'em')) = time;
             gmr_vector(strcmpi(algorithms,'em')) = {gmr};

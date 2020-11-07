@@ -11,19 +11,24 @@ if nargin<2
     k = 1;
 end
 assert(~isempty(gm),'The Gaussian mixture has to contain at least one element.');
-assert(k>0,'The number of components to be pruned has to be greater than zero.');
+assert(k>=0,'The number of components to be pruned has to be greater than zero.');
 
-w = [gm.w]';
-% w_bar = w;
-% for i=1:length(gm)
-%     w_bar(i) = w_bar(i)/det(gm(i).Sigma);
-% end
-[~,ind] = mink(w,k);
-indKeep = setdiff(1:length(gm),ind);
-gm_pruned = gm(indKeep);
-% w = w(indKeep);
-% w_norm = num2cell(w./sum(w));
-% [gm_pruned.w] = w_norm{:};
+if k==0
+    gm_pruned = gm;
+else
+
+    w = [gm.w]';
+    % w_bar = w;
+    % for i=1:length(gm)
+    %     w_bar(i) = w_bar(i)/det(gm(i).Sigma);
+    % end
+    [~,ind] = mink(w,k);
+    indKeep = setdiff(1:length(gm),ind);
+    gm_pruned = gm(indKeep);
+    w = w(indKeep);
+    w_norm = num2cell(w./sum(w));
+    [gm_pruned.w] = w_norm{:};
+end
 
     
 end

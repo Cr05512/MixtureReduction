@@ -19,7 +19,7 @@ mu = [1 2 3 4 10]';
 Sigma = [0.1 20 2 2 2];
 delta = (max(mu)-min(mu))/2;
 
-gm(Nh,1); = struct('w',[],'mu',[],'Sigma',[]);
+gm(Nh,1) = struct('w',[],'mu',[],'Sigma',[]);
 
 for i=1:length(w)
     gm(i).w = w(i);

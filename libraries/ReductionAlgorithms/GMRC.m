@@ -66,10 +66,13 @@ switch lower(initMethod)
         gmr = WestMRA(gmh,Nr,'L2',0,Inf);
     case 'wasserstein'
         gmr = WassersteinMRA(gmh,Nr);
+    otherwise
+        disp('Unknown init method for the GMRC. Aborting...');
+        return;
 end
 
 %Initial clustering
-[gmr,Rnk] = KMeans(gmh,gmr,'KLD',1);
+[gmr,Rnk] = GMKMeans(gmh,gmr,'KLD',1);
 
 %Clustering loop
 gmr = clusteringGMRC(gmh,gmr,Rnk,1);

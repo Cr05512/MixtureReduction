@@ -21,6 +21,22 @@ function gm = GMGen(N,d,alpha,beta,delta)
 % the covariance matrices are sampled from the Wishart distribution with the "average" covariance equal
 % to P_bar = beta*eye(d)*(d+5).
 
+if nargin < 2
+    d = 1;
+    alpha = N/4;
+    beta = 0.09;
+    delta = 0;
+elseif nargin < 3
+    alpha = N/4;
+    beta = 0.09;
+    delta = 0;
+elseif nargin < 4
+    beta = 0.09;
+    delta = 0;
+elseif nargin < 5
+    delta = 0;
+end
+
 assert(N>0 && floor(N)==N,'The mixture has to contain at least one element.');
 assert(d>0 && floor(d)==d,'The state dimension has to be a positive integer.');
 assert(alpha>0 && beta>0,'The parameters alpha and beta have to be greater than zero.');

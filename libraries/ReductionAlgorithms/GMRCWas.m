@@ -23,7 +23,7 @@ elseif(Nr==1)
 end
 
 gmr = WassersteinMRA(gmh,Nr);
-gmr = KMeans(gmh,gmr,'W2',NKMeansSteps);
+gmr = GMKMeans(gmh,gmr,'W2',NKMeansSteps);
 
 end
 

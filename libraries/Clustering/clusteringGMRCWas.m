@@ -22,7 +22,7 @@ for k=1:NSteps
             Rnk(i,:) = zeros(1,Nr);
             Rnk(i,j) = 1;
             %2. recompute temporary centroids with such association matrix
-            gmr = computeClusterCenters(gmh,Rnk,'W2');
+            gmr = computeClusterCentersGM(gmh,Rnk,'W2');
             cost_vector(j) = CTD(gmh,gmr,'W2'); %we compute the cost of such association
             %cost_vector(j) = CTD(gmh,gmr,'normL2');
         end
@@ -32,7 +32,7 @@ for k=1:NSteps
         Rnk(i,:) = zeros(1,Nr);
         Rnk(i,ind) = 1;
         %4. Recompute the centers
-        gmr = computeClusterCenters(gmh,Rnk,'W2');
+        gmr = computeClusterCentersGM(gmh,Rnk,'W2');
     end  
 
 end

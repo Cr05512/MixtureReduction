@@ -4,16 +4,14 @@ close all
 
 %Type in the following list the algorithms you want to compare. Check
 %GaussianMixtureReduction documentation for available algorithms.
-algorithms = {'Runnals','Custom'};
+algorithms = {'Runnals','Custom','CTDGMRA'};
 
 %Type it the test to use.  Check GaussianMixtureReduction documentation for available tests.
 test = 'random'; %set this to random for MC tests
 
 NumTests = 100; %MC runs
-Nh = 40;
 %Check GaussianMixtureReduction documentation for parameter meaning
-params = initParams(Nh);
-params.showResults = 0;
+params = struct('Nh',40,'Nr',5,'d',1,'lambda',0.05,'showResults',0);
             
 numAlgorithms = length(algorithms);
 
@@ -31,7 +29,7 @@ for m = 1:NumTests
     waitbar(m/NumTests,h,strcat(['Processing...','Test: ',num2str(m),' of ',num2str(NumTests),'.']));
     
     
-    [fullMixture, gmr_vector, gmr_times] = GaussianMixtureReduction(algorithms,test,params);
+    [fullMixture, gmr_vector, gmr_times, params] = GaussianMixtureReduction(algorithms,test,params);
     
     for i=1:numAlgorithms
         nISEVector(i,m) = nISE(fullMixture,gmr_vector{i});
