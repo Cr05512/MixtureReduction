@@ -10,11 +10,11 @@ params = struct('Nh',Nh,... % Full mixture components
                 'pruningMethod',1,... % 0 for standard pruning, 1 for adaptive pruning
                 'pruningThresh',0.01,... % Standard pruning threshold
                 'rho',0.9544,... % Adaptive pruning threshold
-                'lambda',0.05,... % Entropic regularization parameter
+                'lambda',0.0,... % Entropic regularization parameter
                 'maxiter',30,... % Maximum number of iterations
                 'cost_measure','KLD',... % Cost measure
                 'alphaGJSD',0.5,... %alpha used in the generalized JSD
-                'initMethodCTD','Runnals',... % Init method for CTDGMRA
+                'initMethodCTD','kmeans',... % Init method for CTDGMRA
                 'reduction_step',1,... % Reduction step for the SCMRA
                 'algoWest',1,... % 0 for West algorithm, 1 for Enhanced West algorithm
                 'gammaWest',Inf,... % West/EWest dissimilarity threshold

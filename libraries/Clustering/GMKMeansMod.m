@@ -1,5 +1,5 @@
-function [gmr,Rnk] = KMeansMod(gmh,gmr,cost_meas,NKMeansSteps)
-% gmr = KMeans(gmh,gmr,cost_meas,NKMeansSteps):
+function [gmr,Rnk] = GMKMeansMod(gmh,gmr,cost_meas,NKMeansSteps)
+% gmr = GMKMeans(gmh,gmr,cost_meas,NKMeansSteps):
 % INPUTS:
 % - gmh, gmr, two Gaussian mixtures,
 % - cost_meas, the cost functio used to compute the distance between components,

@@ -26,7 +26,7 @@ Sigma(:,:,3) = 4*Sigma1;
 Sigma(:,:,4) = 4*Sigma1;
 
 
-gm = struct('w',[],'mu',[],'Sigma',[]);
+gm(Nh,1); = struct('w',[],'mu',[],'Sigma',[]);
 
 for i=1:length(w)
     gm(i).w = w(i);

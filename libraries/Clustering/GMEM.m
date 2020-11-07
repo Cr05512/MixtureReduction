@@ -1,5 +1,5 @@
-function gmNew = EM(gm_init, samples, numIter)
-% gmNew = EM(gm_init, samples, numIter):
+function gmNew = GMEM(gm_init, samples, numIter)
+% gmNew = GMEM(gm_init, samples, numIter):
 % INPUTS:
 % - gm_init, initial Gaussian mixture,
 % - samples, data obtained by sampling the Gaussian mixture, check GMSamples(gm,nSamples) for further info,

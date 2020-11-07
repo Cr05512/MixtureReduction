@@ -35,7 +35,7 @@ ycoords = zeros(numComp,1);
 w = (1/numComp)*ones(numComp,1);
 mu = zeros(numComp,2);
 Sigma = zeros(2,2,numComp);
-gm = struct('w',0,'mu',[],'Sigma',[]);
+gm(numComp,1) = struct('w',0,'mu',[],'Sigma',[]);
 
 P = wishrnd(beta*eye(d),d+5);
 covMatrixRotAngle = pi/(numComp/2);

@@ -21,7 +21,7 @@ Sigma = [0.0487, 0.0305, 0.1171, 0.0174, 0.0295, 0.0102, 0.0323, 0.0380, 0.0115,
 delta = (max(mu)-min(mu))/2;
 
 
-gm = struct('w',[],'mu',[],'Sigma',[]);
+gm(Nh,1) = struct('w',[],'mu',[],'Sigma',[]);
 
 for i=1:Nh
     gm(i).w = w(i);

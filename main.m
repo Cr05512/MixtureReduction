@@ -4,11 +4,11 @@ close all
 
 %Type in the following list the algorithms you want to compare. Check
 %GaussianMixtureReduction documentation for available algorithms.
-algorithms = {'Runnals','Custom'};
+algorithms = {'Runnals','CTDGMRA'};
 
 %Type it the test to use.  Check GaussianMixtureReduction documentation for available tests.
 test = 'random';
-Nh = 40;
+Nh = 20;
 %Check GaussianMixtureReduction documentation for parameter meaning
 
 params = initParams(Nh);

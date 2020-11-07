@@ -1,5 +1,5 @@
-function gmr = computeClusterCenters(gmh,Rnk,cost_meas)
-% gmr = computeClusterCenters(gmh,Rnk):
+function gmr = computeClusterCentersGM(gmh,Rnk,cost_meas)
+% gmr = computeClusterCentersGM(gmh,Rnk):
 % INPUTS:
 % - gmh, a Gaussian mixture (the sites),
 % - Rnk, cluster association matrix,

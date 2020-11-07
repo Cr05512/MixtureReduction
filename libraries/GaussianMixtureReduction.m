@@ -111,7 +111,7 @@ switch lower(test)
     case 'test4'
         [gm,params.d,params.alpha] = test4CompGen(params.Nh,10,params.beta);
     case 'test5'
-        [gm,params.Nr,params.d] = test5CompGen(params.alpha,params.beta);
+        [gm,params.Nh,params.Nr,params.d] = test5CompGen(params.alpha,params.beta);
     case 'williams'
         [gm,params.Nh,params.Nr,params.d,params.delta] = testWilliamsCompGen();
     case 'runnals'
@@ -245,22 +245,7 @@ for i=1:numAlgorithms
         case 'ctdgmra'
             assert(any(strcmpi(availableInitMethodVec,params.initMethodCTD)),'Unknown init method for the CTDGMRA. Aborting...');
             tic;
-            switch lower(params.initMethodCTD)
-                case 'kmeans'
-                    gm_init = KMeans(fullMixture,GMRGen2(gm,params.Nr),params.cost_measure,params.nKMeansSteps);
-                case 'salmond'
-                    gm_init = SalmondMRA(gm,params.Nr);
-                case 'west'
-                    gm_init = WestMRA(gm,params.Nr,params.algoWest,params.gammaWest);
-                case 'runnals'
-                    gm_init = RunnalsMRA(gm,params.Nr);
-                case 'wasserstein'
-                    gm_init = WassersteinMRA(gm,params.Nr);
-                case 'williams'
-                    gm_init = WilliamsMRA(gm,params.Nr);
-                case 'random'
-                    gm_init = GMRGen2(gm,params.Nr);
-            end
+            gm_init = GMInitGen(fullMixture,gm,params,params.initMethodCTD);
 
             gmr = CTDGMRA(fullMixture,gm_init,params.cost_measure,params.lambda,params.maxiter,params.I,params.alphaGJSD);
 
@@ -270,22 +255,7 @@ for i=1:numAlgorithms
         case 'em'
             assert(any(strcmpi(availableInitMethodVec,params.initMethodEM)),'Unknown init method for the EM/DPHEM algorithm. Aborting...');
             tic;
-            switch lower(params.initMethodEM)
-                case 'kmeans'
-                    gm_init_EM = KMeans(fullMixture,GMRGen2(gm,params.Nr),params.cost_measure,params.nKMeansSteps);
-                case 'salmond'
-                    gm_init_EM = SalmondMRA(gm,params.Nr);
-                case 'west'
-                    gm_init_EM = WestMRA(gm,params.Nr,params.algoWest,params.gammaWest);
-                case 'runnals'
-                    gm_init_EM = RunnalsMRA(gm,params.Nr);
-                case 'wasserstein'
-                    gm_init_EM = WassersteinMRA(gm,params.Nr);
-                case 'williams'
-                    gm_init = WilliamsMRA(gm,params.Nr);
-                case 'random'
-                    gm_init_EM = GMRGen2(gm,params.Nr);
-            end
+            gm_init_EM = GMInitGen(fullMixture,gm,params,params.initMethodEM);
 
             samples = GMSamples(fullMixture,params.EMSamples);
             gmr = EM(gm_init_EM,samples,params.nEMIter);
@@ -296,22 +266,7 @@ for i=1:numAlgorithms
         case 'dphem'
             assert(any(strcmpi(availableInitMethodVec,params.initMethodEM)),'Unknown init method for the EM/DPHEM algorithm. Aborting...');
             tic;
-            switch lower(params.initMethodEM)
-                case 'kmeans'
-                    gm_init_EM = KMeans(fullMixture,GMRGen2(gm,params.Nr),params.cost_measure,params.nKMeansSteps);
-                case 'salmond'
-                    gm_init_EM = SalmondMRA(gm,params.Nr);
-                case 'west'
-                    gm_init_EM = WestMRA(gm,params.Nr,params.algoWest,params.gammaWest);
-                case 'runnals'
-                    gm_init_EM = RunnalsMRA(gm,params.Nr);
-                case 'wasserstein'
-                    gm_init_EM = WassersteinMRA(gm,params.Nr);
-                case 'williams'
-                    gm_init = WilliamsMRA(gm,params.Nr);
-                case 'random'
-                    gm_init_EM = GMRGen2(gm,params.Nr);
-            end
+            gm_init_EM = GMInitGen(fullMixture,gm,params,params.initMethodEM);
             gmr = DPHEM(fullMixture,gm_init_EM,params.I,params.nEMIter);
             time = toc;
             gmr_times(strcmpi(algorithms,'dphem')) = time;

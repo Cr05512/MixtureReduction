@@ -1,5 +1,5 @@
-function [gmr,Rnk] = KMeans(gmh,gmr,cost_meas,NKMeansSteps)
-% gmr = KMeans(gmh,gmr,cost_meas,NKMeansSteps):
+function [gmr,Rnk] = GMKMeans(gmh,gmr,cost_meas,NKMeansSteps)
+% gmr = GMKMeans(gmh,gmr,cost_meas,NKMeansSteps):
 % INPUTS:
 % - gmh, gmr, two Gaussian mixtures,
 % - cost_meas, the cost functio used to compute the distance between components,
@@ -39,7 +39,7 @@ for k=1:NKMeansSteps
         break;
     end
 
-    gmr = computeClusterCenters(gmh,Rnk,cost_meas);
+    gmr = computeClusterCentersGM(gmh,Rnk,cost_meas);
 
     JPrev = J;
     if k<NKMeansSteps
