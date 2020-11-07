@@ -43,7 +43,7 @@ for k=1:numIter
     
     for i=1:Nh
         for j=1:Nr
-            %E(i,j) = log(mvnpdf(gmh(i).mu,gmr(j).mu,gmr(j).Sigma)) - 0.5*trace(gmr(j).Sigma\gmh(i).Sigma);
+            %E(i,j) = -KLD(gmh(i),gmr(j));
             E(i,j) = -d/2*log(2*pi) - 0.5*log(det(gmr(j).Sigma)) - 0.5*(gmh(i).mu - gmr(j).mu)'*Sigmarinv(:,:,j)*(gmh(i).mu - gmr(j).mu) - 0.5*trace(gmr(j).Sigma\gmh(i).Sigma);
         end
     end

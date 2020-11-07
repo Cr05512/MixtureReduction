@@ -162,7 +162,7 @@ for i=1:numAlgorithms
     
         case 'custom'
             tic;
-            gmr = softClusteringKLD2(gm,params.Nr,100);
+            gmr = SCMRA(gm,params.Nr,params.reduction_step,params.cost_measure,params.lambda,params.maxiter,params.I);
             time = toc;
             gmr_times(strcmpi(algorithms,'custom')) = time;
             gmr_vector(strcmpi(algorithms,'custom')) = {gmr};

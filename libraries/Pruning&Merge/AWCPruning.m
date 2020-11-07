@@ -28,10 +28,11 @@ w_bar = w_sort(nmax+1:end);
 w_bar = w_bar./sum(w_bar);
 perm = perm(nmax+1:end);
 gmr = gm(perm);
-if length(gmr)<length(gm)
-    disp(strcat(num2str(length(gm)-length(gmr)),' components have been pruned.'));
+
+%disp(strcat(num2str(length(gm)-length(gmr)),' components have been pruned.'));
 w = num2cell(w_bar);
 [gmr.w] = w{:};
+
 
 %disp(horzcat('Pruned : ',num2str(nmax),' components.'));
 
