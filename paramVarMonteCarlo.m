@@ -1,0 +1,93 @@
+clc
+clear
+close all
+
+Nh = 15;
+dVec = [1 2 4 8 12 15];
+
+%d = 1;
+
+numMCRuns = 100;
+
+exp1 = Experiment('',           struct(),...                    %Pruning
+                  'Runnalls',    struct('Nr',5),...              %Greedy Reduction
+                  '',           struct('NOptSteps_ref',10),...                    %Refinement
+                  'random',     struct());  %Test
+              
+exp2 = Experiment('',           struct(),...
+                  'GMRC',       struct('Nr',5,'ISEOpt',0,'sk',0.005),...
+                  '',           struct(),...
+                  'random',     struct());
+              
+exp3 = Experiment('',           struct(),...
+                  'PCMRA',      struct('Nr',5,'p',round(Nh/3),'h',1,'lambda',0.1),...
+                  '',     struct('sk',0.005),...
+                  'random',     struct());
+experiments = [exp1;exp2;exp3];
+numExperiments = numel(experiments);
+
+NISEVecTot = zeros(numExperiments,numel(dVec));
+TimeVecTot = zeros(numExperiments,numel(dVec));
+multiWaitbar( 'CloseAll' );
+
+for n=1:numel(dVec)
+    d = dVec(n);
+    multiWaitbar( 'd steps',n/numel(dVec), 'Color', [0.8 0.0 0.1] );
+    
+    alpha = Nh/4;
+    exp1.setTestParams(struct('d',d,'alpha',alpha));
+    exp2.setTestParams(struct('d',d,'alpha',alpha));
+    exp3.setTestParams(struct('d',d,'alpha',alpha));
+
+    NISEVector = zeros(numExperiments,numMCRuns);
+    timeVector = NISEVector;
+    
+    
+    for k=1:numMCRuns
+
+        rngSeed = randi(100000);
+        
+        for i=1:numExperiments
+            experiments(i).setTestParams(struct('rngSeed',rngSeed));
+            [gmr,gm,time] = experiments(i).execute();
+            NISEVector(i,k) = nISE(gm,gmr);
+            timeVector(i,k) = time;
+        end
+        multiWaitbar( 'MonteCarlo steps',  k/numMCRuns, 'Color', [0.2 0.9 0.3] );
+
+    end
+    
+    NISEVecTot(:,n) = sum(NISEVector,2)./numMCRuns;
+    TimeVecTot(:,n) = sum(timeVector,2)./numMCRuns;
+end
+multiWaitbar( 'CloseAll' );
+
+%%
+
+
+
+figure(1)
+subplot(2,1,1)
+plot(dVec,NISEVecTot(1,:)); hold on
+plot(dVec,NISEVecTot(2,:)); hold on
+plot(dVec,NISEVecTot(3,:)); hold on
+grid minor
+title('NISE');
+legend(exp1.getAlgo,exp2.getAlgo,exp3.getAlgo);
+
+
+subplot(2,1,2)
+plot(dVec,TimeVecTot(1,:)); hold on
+plot(dVec,TimeVecTot(2,:)); hold on
+plot(dVec,TimeVecTot(3,:)); hold on
+grid minor
+title('Time');
+legend(exp1.getAlgo,exp2.getAlgo,exp3.getAlgo);
+
+
+
+
+
+
+
+

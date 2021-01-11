@@ -1,0 +1,29 @@
+function samples = SigmaPointsGM(gm)
+% samples = SigmaPointsGM(gm):
+% INPUTS:
+% - gm, a Gaussian mixture.
+% OUTPUTS:
+% - samples, sigma points generated from each component of the mixture (stateDim x numComps matrix).
+% This function generate the sigma points from each component of the
+% mixture.
+
+assert(~isempty(gm),'The mixture has to contain at least one element.');
+
+n = size(gm(1).mu,1);
+N = numel(gm);
+samples = [];
+
+lambda = 3-n;
+samples = [samples [gm.mu]];
+A = cat(3,gm.Sigma);
+
+
+for i=1:N
+    A(:,:,i) = sqrt(lambda+n)*chol(A(:,:,i));
+    for j=1:n
+        samples = [samples gm(i).mu + A(:,j,i) gm(i).mu - A(:,j,i)];
+    end
+end
+
+
+end

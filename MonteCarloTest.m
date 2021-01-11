@@ -1,55 +1,72 @@
-
+clc
 clear
 close all
 
-%Type in the following list the algorithms you want to compare. Check
-%GaussianMixtureReduction documentation for available algorithms.
-algorithms = {'Runnals','Custom','CTDGMRA'};
+Nh = 20;
+d = 1;
+alpha = Nh/4;
+rngSeed = randi(100000);
 
-%Type it the test to use.  Check GaussianMixtureReduction documentation for available tests.
-test = 'random'; %set this to random for MC tests
+exp1 = Experiment('',           struct(),...
+                  'Runnalls',      struct('Nr',5),...
+                  '',     struct('NOptSteps',40,'sk',0.01),...
+                  'random',     struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
+              
+exp2 = Experiment('',           struct(),...
+                  'GMRC',       struct('Nr',5,'ISEOpt',0,'NOptSteps',30,'sk',0.005),...
+                  '',           struct('I',20),...
+                  'random',     struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
+              
+exp3 = Experiment('',           struct(),...
+                  'PCMRA',      struct('Nr',5,'p',round(Nh/4),'lambda',0.05,'costMeas','KLD','redAlgo','Runnalls'),...
+                  '',     struct('NOptSteps',30,'sk',0.005),...
+                  'random',     struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
+              
+experiments = [exp1;exp2;exp3];
+numExperiments = numel(experiments);
 
-NumTests = 100; %MC runs
-%Check GaussianMixtureReduction documentation for parameter meaning
-params = struct('Nh',40,'Nr',5,'d',1,'lambda',0.05,'showResults',0);
-            
-numAlgorithms = length(algorithms);
 
 
 
-nISEVector = zeros(numAlgorithms,NumTests);
-timeVector = zeros(numAlgorithms,NumTests);
-CTDVector = zeros(numAlgorithms,NumTests);
+numMCRuns = 50;
+NISEVector = zeros(numExperiments,numMCRuns);
+timeVector = NISEVector;
+CTDVector = NISEVector;
 h = waitbar(0,'Processing...');
 set(h,'Position', [550,350,280,70]);
-
-for m = 1:NumTests
-
-
-    waitbar(m/NumTests,h,strcat(['Processing...','Test: ',num2str(m),' of ',num2str(NumTests),'.']));
+for k=1:numMCRuns
+    clc
+    disp(strcat(['MC Run: ',num2str(k),'/',num2str(numMCRuns)]));
     
-    
-    [fullMixture, gmr_vector, gmr_times, params] = GaussianMixtureReduction(algorithms,test,params);
-    
-    for i=1:numAlgorithms
-        nISEVector(i,m) = nISE(fullMixture,gmr_vector{i});
-        timeVector(i,m) = gmr_times(i);
-        CTDVector(i,m) = CTD(fullMixture,gmr_vector{i},params.cost_measure);
-        %CTDVector(i,m) = convUpperBoundKLD(fullMixture,gmr_vector{i});
+    rngSeed = randi(100000000);
+    waitbar(k/numMCRuns,h,strcat(['Processing...','Run: ',num2str(k),' of ',num2str(numMCRuns),'.']));
+    for i=1:numExperiments
+        experiments(i).setTestParams(struct('rngSeed',rngSeed));
+        [gmr,gm,time] = experiments(i).execute();
+        NISEVector(i,k) = nISE(gm,gmr);
+        timeVector(i,k) = time;
+        CTDVector(i,k) = CTD(gm,gmr,'KLD');
     end
-
-end
-
    
     
+end
+%%
 
 close(h);
-%%
-avgnISE = sum(nISEVector,2)./NumTests;
-avgTime = sum(timeVector,2)./NumTests;
-avgCTD = sum(CTDVector,2)./NumTests;
+
+avgnISE = sum(NISEVector,2)./numMCRuns;
+avgTime = sum(timeVector,2)./numMCRuns;
+avgCTD = sum(CTDVector,2)./numMCRuns;
 
 T=table(avgnISE,avgTime,avgCTD);
-T.Properties.RowNames = algorithms;
+rowNames = cell(numExperiments,1);
+for i=1:numExperiments
+    rowNames{i} = strcat('Experiment ',num2str(i));
+end
+T.Properties.RowNames = rowNames;
 T.Properties.VariableUnits = {'NISE','s','CTD'};
 disp(T)
+
+
+
+
