@@ -37,7 +37,7 @@ C = zeros(Nh,Nr);
 for i=1:Nh
     for j=1:Nr
         if strcmpi(costMeas,'MKLD')
-            C(i,j) = feval(costMeas,gmh(i),gmr(j),lambda,I);
+            C(i,j) = feval(costMeas,gmh(i),gmr(j),I);
         elseif strcmpi(costMeas,'GJSD')
             C(i,j) = feval(costMeas,gmh(i),gmr(j),alphaGJSD);
         else
