@@ -5,8 +5,8 @@ close all
 rngSeed = randi(1000000);  %With seed 5504, Nh=36 and sk=0.01, Runnals takes more time than PCMRA
 Nh = 20;
 
-d = 1;
-alpha = Nh/4;
+d = 2;
+alpha = Nh/3;
 
 %INSTRUCTIONS:
 
@@ -40,21 +40,21 @@ alpha = Nh/4;
 
 
 exp1 = Experiment('',           struct(),...
-                  'Runnalls',       struct('Nr',5,'seq',1),...
-                  '',           struct('costMeas','MKLD','lambda',1),...
-                  'random', struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
+                  'Wasserstein',   struct('Nr',4,'seq',1),...
+                  'CTDGMRA',           struct('costMeas','W2','lambda',1),...
+                  'test2CTDGMRA',     struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
               
 exp2 = Experiment('',           struct(),...
                   'GMRC',       struct('Nr',5,'ISEOpt',0,'NOptSteps',50,'sk',0.005),...
                   '',           struct(),...
-                  'random',     struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
+                  'test2CTDGMRA',     struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
               
 exp3 = Experiment('',           struct(),...
                   'PCMRA',      struct('Nr',5,'p',round(Nh/4),'lambda',0.05,'costMeas','KLD','redAlgo','Runnalls'),...
                   '',           struct('NOptSteps',50,'sk',0.005),...
-                  'random',     struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
+                  'test2CTDGMRA',     struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
 
-experiments = [exp1;exp2;exp3];
+experiments = [exp1];
 numTests = numel(experiments);
 
 gm_vector = cell(numTests,1);
