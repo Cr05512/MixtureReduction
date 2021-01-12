@@ -1,5 +1,5 @@
-function w2Dist = Wasserstein2Dist(pdf1,pdf2)
-% w2Dist = Wasserstein2Dist(pdf1,pdf2):
+function w2Dist = W2(pdf1,pdf2)
+% w2Dist = W2(pdf1,pdf2):
 % INPUTS:
 % - pdf1, pdf2, two Gaussian densities.
 % OUTPUTS:

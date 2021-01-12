@@ -1,5 +1,5 @@
-function C = CorrMeasureGauss(pdfh,pdfr)
-% C = CorrMeasure(pdfh,pdfr):
+function C = CM(pdfh,pdfr)
+% C = CM(pdfh,pdfr):
 % INPUTS:
 % - pdfh, pdfr, two Gaussian Densities.
 % OUTPUTS:

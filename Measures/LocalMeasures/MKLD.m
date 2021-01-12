@@ -1,4 +1,4 @@
-function d = MKLD(wj,pdfi,pdfj,lambda,I)
+function d = MKLD(pdfi,pdfj,lambda,I)
 % MKL = MKLD(wj,pdfi,pdfj,lambda,I):
 % INPUTS:
 % - pdfi, pdfj, two Gaussian densities,
@@ -18,7 +18,7 @@ end
 assert(lambda>=0,'The lambda parameter has to be non-negative.');
 assert(I>0,'The number of virtual samples has to be greater than 0.');
 
-d = -(1/lambda)*log(wj) - (I/lambda)*funEij(pdfi,pdfj);
+d = -(1/lambda)*log(pdfj.w) - (I/lambda)*funEij(pdfi,pdfj);
 
 end
 

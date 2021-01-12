@@ -1,5 +1,5 @@
-function normL2dist = normL2Gauss(pdfh,pdfr)
-% normL2dist = normL2Gauss(pdfh,pdfr):
+function normL2dist = normL2(pdfh,pdfr)
+% normL2dist = normL2(pdfh,pdfr):
 % INPUTS:
 % - pdfh, pdfr, two Gaussian densities.
 % OUTPUTS:

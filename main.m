@@ -2,7 +2,7 @@ clc
 clear
 close all
 
-rngSeed = 758363; %randi(1000000);  %With seed 5504, Nh=36 and sk=0.01, Runnals takes more time than PCMRA
+rngSeed = randi(1000000);  %With seed 5504, Nh=36 and sk=0.01, Runnals takes more time than PCMRA
 Nh = 20;
 
 d = 1;
@@ -41,8 +41,8 @@ alpha = Nh/4;
 
 exp1 = Experiment('',           struct(),...
                   'Runnalls',       struct('Nr',5,'seq',1),...
-                  'ISEOpt+COWAOpt',           struct('NOptSteps',50,'sk',0.005),...
-                  'testCrouse', struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
+                  '',           struct('costMeas','MKLD','lambda',1),...
+                  'random', struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
               
 exp2 = Experiment('',           struct(),...
                   'GMRC',       struct('Nr',5,'ISEOpt',0,'NOptSteps',50,'sk',0.005),...
@@ -54,7 +54,7 @@ exp3 = Experiment('',           struct(),...
                   '',           struct('NOptSteps',50,'sk',0.005),...
                   'random',     struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
 
-experiments = [exp1];
+experiments = [exp1;exp2;exp3];
 numTests = numel(experiments);
 
 gm_vector = cell(numTests,1);
