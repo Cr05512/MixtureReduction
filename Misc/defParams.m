@@ -57,7 +57,9 @@ function [pruneParamsBlock,algoParamsBlock,refParamsBlock,testParamsBlock] = def
             algoParamsBlock.('p') = 5;
             algoParamsBlock.('h') = 1;
         elseif strcmpi(algo,'bf')
-            algoParamsBlock.('seq') = 0;
+            algoParamsBlock.('seq') = 1;
+        elseif strcmpi(algo,'testAlgo')
+            algoParamsBlock.('nPoints') = 1000;
         end
     end
 

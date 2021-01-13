@@ -3,27 +3,24 @@ clear
 close all
 
 Nh = 15;
-dVec = [1 2 4 8 12 15];
+dVec = [1 2 4 6 8 10 12 14];
+alpha = Nh/3;
 
-%d = 1;
+d = 1;
 
-numMCRuns = 100;
+numMCRuns = 50;
 
-exp1 = Experiment('',           struct(),...                    %Pruning
-                  'Runnalls',    struct('Nr',5),...              %Greedy Reduction
-                  '',           struct('NOptSteps_ref',10),...                    %Refinement
-                  'random',     struct());  %Test
               
 exp2 = Experiment('',           struct(),...
-                  'GMRC',       struct('Nr',5,'ISEOpt',0,'sk',0.005),...
-                  '',           struct(),...
-                  'random',     struct());
+                  'GMRC',       struct('Nr',5,'ISEOpt',0),...
+                  '',           struct('I',10),...
+                  'random',     struct('Nh',Nh,'alpha',alpha));
               
 exp3 = Experiment('',           struct(),...
-                  'PCMRA',      struct('Nr',5,'p',round(Nh/3),'h',1,'lambda',0.1),...
-                  '',     struct('sk',0.005),...
-                  'random',     struct());
-experiments = [exp1;exp2;exp3];
+                  'PCMRA',      struct('Nr',5,'p',3,'lambda',0.05,'costMeas','KLD','redAlgo','Runnalls'),...
+                  '',           struct('NOptSteps',50,'sk',0.005),...
+                  'random',     struct('Nh',Nh,'alpha',alpha));
+experiments = [exp2;exp3];
 numExperiments = numel(experiments);
 
 NISEVecTot = zeros(numExperiments,numel(dVec));
@@ -34,10 +31,9 @@ for n=1:numel(dVec)
     d = dVec(n);
     multiWaitbar( 'd steps',n/numel(dVec), 'Color', [0.8 0.0 0.1] );
     
-    alpha = Nh/4;
-    exp1.setTestParams(struct('d',d,'alpha',alpha));
-    exp2.setTestParams(struct('d',d,'alpha',alpha));
-    exp3.setTestParams(struct('d',d,'alpha',alpha));
+    for i=1:numExperiments
+        experiments(i).setTestParams(struct('d',d));
+    end
 
     NISEVector = zeros(numExperiments,numMCRuns);
     timeVector = NISEVector;
@@ -64,25 +60,28 @@ multiWaitbar( 'CloseAll' );
 
 %%
 
-
+Legend = cell(numExperiments,1);
+for i=1:numExperiments
+    Legend{i} = experiments(i).getAlgo;
+end
 
 figure(1)
 subplot(2,1,1)
-plot(dVec,NISEVecTot(1,:)); hold on
-plot(dVec,NISEVecTot(2,:)); hold on
-plot(dVec,NISEVecTot(3,:)); hold on
+for i=1:numExperiments
+    plot(dVec,NISEVecTot(i,:)); hold on
+end
 grid minor
 title('NISE');
-legend(exp1.getAlgo,exp2.getAlgo,exp3.getAlgo);
+legend(Legend);
 
 
 subplot(2,1,2)
-plot(dVec,TimeVecTot(1,:)); hold on
-plot(dVec,TimeVecTot(2,:)); hold on
-plot(dVec,TimeVecTot(3,:)); hold on
+for i=1:numExperiments
+    plot(dVec,TimeVecTot(i,:)); hold on
+end
 grid minor
 title('Time');
-legend(exp1.getAlgo,exp2.getAlgo,exp3.getAlgo);
+legend(Legend);
 
 
 

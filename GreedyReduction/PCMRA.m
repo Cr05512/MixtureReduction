@@ -75,15 +75,16 @@ for k = 1:p
     Nk = round(gamma^k * Nh);
     
     gmr1 = reduce(redAlgo,gmr,Nk);
-   
     gmr1 = refine('CTDGMRA',gmr1,gmh,costMeas,lambda,h);
     
-
+    
     gmr2 = pruning('kSmallestPruning',gmr,numel(gmr)-Nk);
     if lambda>0 %Doing hard-clustering after pruning might yield bad perfomances
         gmr2 = refine('CTDGMRA',gmr2,gmh,costMeas,lambda,h);
+        %Rgmr2 = refine('COWAOpt',gmr2,gmh);
+        
     end
-
+    
     if measFlag == 0
         Jhh = selfLikeness(gmh);
         Jhr1 = crossLikeness(gmh,gmr1);
@@ -95,25 +96,19 @@ for k = 1:p
     else
         c1 = CTD(gmh,gmr1,costMeas);
         c2 = CTD(gmh,gmr2,costMeas);
-%            c1 = ApproxMCKLD(gmh,gmr1,100000);
-%             c2 = ApproxMCKLD(gmh,gmr2,100000);
     end
-
+ 
     if c1 < c2
         gmr = gmr1;
     else
         gmr = gmr2;
-        disp('Pruning!');
+        %disp('Pruning!');
     end
-    %else
-    %    gmr = gmr1;
-    %end
-    
-    
     
 end
 
-gmr = refine('CTDGMRA',gmr,gmh,costMeas,lambda,maxiter);
+%gmr = refine('CTDGMRA',gmr,gmh,costMeas,lambda,maxiter);
+gmr = refine('clusteringGMRC',gmr,gmh,1);
 
 
 end

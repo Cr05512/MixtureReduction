@@ -1,4 +1,4 @@
-function [gm,newParams] = testRunnals()
+function [gm,newParams] = testRunnalls()
 % gm = testRunnals():
 % OUTPUTS:
 % - gm, a Gaussian mixture,
@@ -6,7 +6,7 @@ function [gm,newParams] = testRunnals()
 % - Nr, new number of desired components (scalar),
 % - d, new state dimension (scalar).
 % This script generates a one dimensional Gaussian mixture as shown in the
-% paper of A. R. Runnals "Kullback-Leibler Approach to Gaussian Mixture
+% paper of A. R. Runnalls "Kullback-Leibler Approach to Gaussian Mixture
 % Reduction". IEEE Trans. Aerosp. Electron. Syst., vol. 43(3):989--999, 2007
 d = 12;
 Nh = 4;

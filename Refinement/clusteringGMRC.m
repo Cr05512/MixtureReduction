@@ -1,5 +1,5 @@
 function gmr = clusteringGMRC(gmr,gmh,NSteps)
-% gmr = clusteringGMRC(gmr,gmh,NSteps):
+% gmr = clusteringGMRC(gmr,gmh,costMeas,NSteps):
 % INPUTS:
 % - gmr, gmh, two Gaussian mixture densities,
 % - NSteps, number of iterations for the clustering loop (scalar).

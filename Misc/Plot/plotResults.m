@@ -86,7 +86,7 @@ for i=1:numExperiments
             axis('square');
             grid minor
         else
-            disp(strcat(['Experiment: ',num2str(i),' nISE: ',num2str(nISE(gm_vector{i},gmr_vector{i})),', CTD',costMeas,': ',num2str(CTD(gm_vector{i},gmr_vector{i},costMeas)),', Time: ',num2str(gmr_times(i)),'s']));
+            disp(strcat(['Experiment: ',num2str(i),' nISE: ',num2str(nISE(gm_vector{i},gmr_vector{i})),', CTD',costMeas,': ',num2str(CTD(gm_vector{i},gmr_vector{i},costMeas)),', Time: ',num2str(time_vector(i)),'s']));
         end
     end
         
