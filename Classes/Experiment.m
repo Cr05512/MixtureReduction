@@ -59,20 +59,19 @@ classdef Experiment < handle
                     obj.prune = prune;
                 end
                 
-                assert(~isempty(algo),'The algorithm has not been assigned. Returning...');
+                %assert(~isempty(algo),'The algorithm has not been assigned. Returning...');
                 obj.algorithm = algo;
 
                 if ~isempty(ref)
                    
                     obj.refinement = ref;
                 end
-
-                assert(~isempty(test),'The test has not been assigned. Returning...');
+               
                 availableTests = Experiment.getAvailableTests();
                 assert(ismember(lower(test),lower(availableTests)), strcat(['Unknown test. The available tests are:',' ',strjoin(availableTests,', '),'.']));
                 obj.test = test;
                 
-                [obj.pruneParams,obj.algoParams,obj.refParams,obj.testParams] = Experiment.paramParser(prune,pruneParams,algo,algoParams,ref,refParams,test,testParams);
+                [obj.pruneParams,obj.algoParams,obj.refParams,obj.testParams] = procParams(prune,pruneParams,algo,algoParams,ref,refParams,test,testParams);
             end
             
         end
@@ -186,6 +185,8 @@ classdef Experiment < handle
         
         function [gmr,gm,time] = execute(obj)
            
+            assert(~isempty(obj.algorithm),'The algorithm has not been assigned. Returning...');
+            assert(~isempty(obj.test),'The test has not been assigned. Returning...');
             
             %We get the init GM
             gm = obj.initGMGen();
@@ -229,58 +230,6 @@ classdef Experiment < handle
     end
      
     methods (Static)
-        
-        function [pruneParams,algoParams,refParams,testParams] = paramParser(prune,userPruneParams,algo,userAlgoParams,ref,userRefParams,test,userTestParams)
-            %params should be a struct containing used defined parameters
-            [pruneParams,algoParams,refParams,testParams] = defParams(prune,algo,ref,test);
-            
-            if isstruct(userPruneParams)
-                userPruneFields = fieldnames(userPruneParams);
-                for i=1:length(userPruneFields)
-                    if isfield(pruneParams,userPruneFields{i})
-                        pruneParams.(userPruneFields{i}) = userPruneParams.(userPruneFields{i});
-                    else
-                        disp('The provided param is not a known param.');
-                    end
-                end
-            end
-            
-            if isstruct(userAlgoParams)
-                userAlgoFields = fieldnames(userAlgoParams);
-                for i=1:length(userAlgoFields)
-                    if isfield(algoParams,userAlgoFields{i})
-                        algoParams.(userAlgoFields{i}) = userAlgoParams.(userAlgoFields{i}); 
-                    else
-                        disp('The provided param is not a known param.');
-                    end
-                end
-            end
-            
-            for k=1:numel(refParams)
-                if isstruct(userRefParams)
-                    userRefFields = fieldnames(userRefParams);
-                    for i=1:length(userRefFields)
-                        if isfield(refParams{k},userRefFields{i})
-                            refParams{k}.(userRefFields{i}) = userRefParams.(userRefFields{i});
-                        end
-                    end
-                end
-                
-            end
-            
-            if isstruct(userTestParams)
-                userTestFields = fieldnames(userTestParams);
-                for i=1:length(userTestFields)
-                    if isfield(testParams,userTestFields{i})
-                        testParams.(userTestFields{i}) = userTestParams.(userTestFields{i});
-                    else
-                        disp('The provided param is not a known param.');
-                    end
-                end
-            end
-         
-
-        end
         
         function testList = getAvailableTests()
             tmp = split({dir(strcat(what('TestsList').path,'/*.m')).name}','.m');

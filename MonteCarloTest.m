@@ -2,43 +2,44 @@ clc
 clear
 close all
 
-Nh = 20;
-d = 10;
+Nh = 50;
+Nr = 10;
+d = 2;
 alpha = Nh/3;
-rngSeed = randi(100000);
+test = 'random';
 
 exp1 = Experiment('',           struct(),...
-                  'Runnalls',   struct('Nr',5,'seq',1),...
+                  'Runnalls',   struct('Nr',Nr),...
                   '',           struct('costMeas','MKLD','lambda',1.0,'I',10),...
-                  'random',     struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
+                  test,     struct('Nh',Nh,'alpha',alpha','d',d));
               
 exp2 = Experiment('',           struct(),...
-                  'GMRC',       struct('Nr',5,'ISEOpt',0),...
-                  '',           struct('I',10),...
-                  'random',     struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
-              
+                  'Runnalls',   struct('Nr',Nr),...
+                  '',           struct('costMeas','MKLD','lambda',1.0,'I',10),...
+                  test,     struct('Nh',Nh,'alpha',alpha','d',d));
+                 
 exp3 = Experiment('',           struct(),...
-                  'PCMRA',      struct('Nr',5,'p',5,'h',1,'lambda',0.1,'costMeas','KLD','redAlgo','Runnalls'),...
-                  '',           struct('NOptSteps',50,'sk',0.005),...
-                  'random',     struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
+                  'newPCMRA',      struct('Nr',Nr,'p',3,'h',2,'lambda',0.2,'costMeas','KLD','redAlgo','Runnalls'),...
+                  '',           struct(),...
+                  test,     struct('Nh',Nh,'alpha',alpha','d',d));
               
-experiments = [exp1;exp2;exp3];
+experiments = [exp1;exp3];
 numExperiments = numel(experiments);
 
 
 
 
-numMCRuns = 50;
+numMCRuns = 100;
 NISEVector = zeros(numExperiments,numMCRuns);
 timeVector = NISEVector;
 CTDVector = NISEVector;
 h = waitbar(0,'Processing...');
-set(h,'Position', [550,350,280,70]);
+%set(h,'Position', [550,350,280,70]);
 for k=1:numMCRuns
     clc
     disp(strcat(['MC Run: ',num2str(k),'/',num2str(numMCRuns)]));
     
-    rngSeed = randi(100000000);
+    rngSeed = randi(10000000);
     waitbar(k/numMCRuns,h,strcat(['Processing...','Run: ',num2str(k),' of ',num2str(numMCRuns),'.']));
     for i=1:numExperiments
         experiments(i).setTestParams(struct('rngSeed',rngSeed));
@@ -47,7 +48,6 @@ for k=1:numMCRuns
         timeVector(i,k) = time;
         CTDVector(i,k) = CTD(gm,gmr,'KLD');
     end
-   
     
 end
 %%

@@ -68,7 +68,11 @@ elseif(Nr==1)
     gmr = mpMerge(gmh);
     return
 end
-%Jhh = selfLikeness(gmh);
+Jhh = selfLikeness(gmh);
+
+if lambda == 0
+    p = 1;
+end
 
 for k = 1:p
     gamma = (Nr/Nh)^(1/p);
@@ -78,36 +82,38 @@ for k = 1:p
     gmr1 = refine('CTDGMRA',gmr1,gmh,costMeas,lambda,h);
     
     
-    gmr2 = pruning('kSmallestPruning',gmr,numel(gmr)-Nk);
     if lambda>0 %Doing hard-clustering after pruning might yield bad perfomances
-        gmr2 = refine('CTDGMRA',gmr2,gmh,costMeas,lambda,h);
-        %Rgmr2 = refine('COWAOpt',gmr2,gmh);
         
+        gmr2 = pruning('kSmallestPruning',gmr,numel(gmr)-Nk);
+        gmr2 = refine('CTDGMRA',gmr2,gmh,costMeas,lambda,h);
+        if measFlag == 0
+            Jhr1 = crossLikeness(gmh,gmr1);
+            Jhr2 = crossLikeness(gmh,gmr2);
+            Jrr1 = selfLikeness(gmr1);
+            Jrr2 = selfLikeness(gmr2);
+            c1 = (Jhh -2*Jhr1 + Jrr1)/(Jhh + Jrr1);
+            c2 = (Jhh -2*Jhr2 + Jrr2)/(Jhh + Jrr2);
+        else
+            c1 = CTD(gmh,gmr1,costMeas);
+            c2 = CTD(gmh,gmr2,costMeas);
+        end
+
+        if c1 < c2
+            gmr = gmr1;
+        else
+            gmr = gmr2;
+            %disp('Pruning!');
+        end
+    else
+        gmr = gmr1;
     end
     
-    if measFlag == 0
-        Jhh = selfLikeness(gmh);
-        Jhr1 = crossLikeness(gmh,gmr1);
-        Jhr2 = crossLikeness(gmh,gmr2);
-        Jrr1 = selfLikeness(gmr1);
-        Jrr2 = selfLikeness(gmr2);
-        c1 = (Jhh -2*Jhr1 + Jrr1)/(Jhh + Jrr1);
-        c2 = (Jhh -2*Jhr2 + Jrr2)/(Jhh + Jrr2);
-    else
-        c1 = CTD(gmh,gmr1,costMeas);
-        c2 = CTD(gmh,gmr2,costMeas);
-    end
- 
-    if c1 < c2
-        gmr = gmr1;
-    else
-        gmr = gmr2;
-        %disp('Pruning!');
-    end
+    
     
 end
 
-%gmr = refine('CTDGMRA',gmr,gmh,costMeas,lambda,maxiter);
+%gmr = refine('CTDGMRA',gmr,gmh,'KLD',0.0,maxiter);
+
 gmr = refine('clusteringGMRC',gmr,gmh,1);
 
 

@@ -1,4 +1,4 @@
-function gmr = Williams(gmh, Nr)
+function gmr = newWilliams(gmh, Nr)
 % gmr = Williams(gmh, Nr):
 % INPUTS:
 % - gmh, a Gaussian mixture,
@@ -22,78 +22,82 @@ elseif(Nr==1)
 end
 
 
-ISEMatrix = Inf(Nh,Nh);
-%We consider all the merging hypothesis, which are Nk*(Nk-1)/2
-%In order to do so we compute a new mixture where a pair of
-%components is merged
-%Moreover, we compute the Jhh term of the ISE here considering that
-%it will stay constant over this iteration
-Jhh = selfLikeness(gmr);
-for i=1:Nh
-    for j=1:Nh
-        if i<=j
-            gm_temp = gmr;
-            if i==j
-                gm_temp(i) = [];
-                Jhr = crossLikeness(gmr,gm_temp);
-                Jrr = selfLikeness(gm_temp);
-            else  
-                pdf_merged = mpMerge(gm_temp([i,j]));
-                gm_temp(i) = pdf_merged;
-                gm_temp(j) = [];
-                Jhr = crossLikeness(gmr,gm_temp);
-                Jrr = selfLikeness(gm_temp);
-            end
-            ISEMatrix(i,j) = Jhh -2*Jhr + Jrr;
-        end
-    end
-end
 
-while numel(gmr)-Nr>0 %We iterate until the desired number of components is reached
+gmr = gmh;
+Jhrm = matrixCrossLikeness(gmr,gmr);
+Jrrm = matrixSelfLikeness(gmr);
+Jrrm_min = Jrrm;
 
-    [i,j] = find(ISEMatrix == min(ISEMatrix(ISEMatrix<Inf)),1);
+idxs = [0,0];
 
-    if i~=j
-        pdf_merged = mpMerge(gmr([i,j]));
-        gmr(i) = pdf_merged;
-        gmr(j) = [];
-        if numel(gmr)-Nr>0
-            Jhh = selfLikeness(gmr);
-            ISEMatrix(j,:) = [];
-            ISEMatrix(:,j) = [];
-            upd_ind = setdiff(1:numel(gmr),i);
-            for j=upd_ind
-                gm_temp = gmr;
-                pdf_merged = mpMerge(gm_temp([i,j]));
-                gm_temp(i) = pdf_merged;
-                gm_temp(j) = [];
-                Jhr = crossLikeness(gmr,gm_temp);
-                Jrr = selfLikeness(gm_temp);
-                if i<j
-                    ISEMatrix(i,j) = Jhh -2*Jhr + Jrr;
+while numel(gmr)>Nr
+    ISEMin = Inf;
+    for i=1:numel(gmr)
+        for j=1:numel(gmr)
+            if i<=j
+                Jhrm_temp = Jhrm;
+                Jrrm_temp = Jrrm;
+                if i==j
+
+                    %Pruning
+
+                    %CrossLikeness
+                    Jhrm_temp(:,i) = [];
+
+                    %Reduced SelfLikeness
+                    Jrrm_temp(i,:) = [];
+                    Jrrm_temp(:,i) = [];
+
                 else
-                    ISEMatrix(j,i) = Jhh -2*Jhr + Jrr;
+                    %Merging
+                    pdfMerged = mpMerge(gmr([i;j]));
+
+                    %CrossLikeness
+                    newColhr = matrixCrossLikeness(gmr,pdfMerged);
+                    Jhrm_temp(:,i) = newColhr;
+                    Jhrm_temp(:,j) = [];
+
+                    %Reduced SelfLikeness
+
+                    tempColrr = matrixCrossLikeness(gmr(setdiff(1:numel(gmr),[i,j])),pdfMerged);
+                    newValrr = selfLikeness(pdfMerged);
+                    newColrr = zeros(numel(gmr)-1,1);
+                    newColrr(setdiff(1:numel(gmr)-1,i)) = tempColrr;
+                    newColrr(i) = newValrr;
+
+                    Jrrm_temp(j,:) = [];
+                    Jrrm_temp(:,j) = [];
+                    Jrrm_temp(i,:) = newColrr;
+                    Jrrm_temp(:,i) = newColrr;
+
                 end
-            end
-            gm_temp = gmr;
-            gm_temp(i) = [];
-            Jhr = crossLikeness(gmr,gm_temp);
-            Jrr = selfLikeness(gm_temp);
-            ISEMatrix(i,i) = Jhh - 2*Jhr + Jrr;
-        end
-
-
-    else
-        gmr(i) = [];
-        if numel(gmr)-Nr>0
-            ISEMatrix(i,:) = [];
-            ISEMatrix(:,i) = [];
+                ISECurr = - 2*sum(sum(Jhrm_temp)) + sum(sum(Jrrm_temp));
+                if ISECurr < ISEMin
+                    ISEMin = ISECurr;
+                    idxs(1) = i;
+                    idxs(2) = j;
+                    Jrrm_min = Jrrm_temp;
+                end
+           end
         end
     end
-
-end
+    
+    Jhrm = Jrrm_min;
+    Jrrm = Jrrm_min;
+    
+    if idxs(1) == idxs(2)
+        gmr(idxs(1)) = [];
         
-    
-    
+    else
+        gmr(idxs(1)) = mpMerge(gmr(idxs));
+        gmr(idxs(2)) = [];
+    end
+end
+
+
+
+
+
+
 end
 

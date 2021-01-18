@@ -1,11 +1,10 @@
-function [gmr,C,pi_star] = CTDGMRA(gmr,gmh,costMeas,lambda,maxiter,I,alphaGJSD)
+function [gmr,C,pi_star] = CTDGMRA(gmr,gmh,costMeas,lambda,maxiter,varargin)
 % [gmr,C,pi_star] = CTDGMRA(gmh,gmr,costMeas,lambda,maxiter,I):
 % INPUTS:
 % - gmr,gmh, respectively the reduced and original mixtures,
 % - costMeas, desired cost measure (char array),
 % - lambda, regularization parameter (scalar),
-% - I, number of virtual samples (only needed by the MKLD measure) (scalar),
-% - alphaGJSD, alpha used in the generalized Jensen-Shannon divergence (scalar).
+% - varargin, additional parameters needed by some measures (can be empty).
 % OUTPUTS:
 % - gmr, the refined mixture according to the CTDGMRA algorithm.
 % This function implements the Composite Transportation Distance Gaussian
@@ -16,26 +15,20 @@ if nargin < 3
     costMeas = 'KLD';
     lambda = 0.1;
     maxiter = 100;
-    I = numel(gmh);
-    alphaGJSD = 0.5;
 elseif nargin < 4
     lambda = 0.1;
     maxiter = 100;
-    I = numel(gmh);
-    alphaGJSD = 0.5;
 elseif nargin < 5
     maxiter = 100;
-    I = numel(gmh);
-    alphaGJSD = 0.5;
-elseif nargin < 6
-    I = numel(gmh);
-    alphaGJSD = 0.5;
-elseif nargin < 7
-    alphaGJSD = 0.5;
 end
 assert(lambda>=0,'The regularization parameter has to be non-negative.');
 assert(maxiter>=0,'The number of iterations has to be non-negative.');
-assert(I>0,'The number of virtual samples has to be greater than 0.');
+
+if maxiter==0
+    C = 0;
+    pi_star = 0;
+    return
+end
 
 gmh_temp = gmh;
 Nr = numel(gmr);
@@ -45,8 +38,7 @@ J_prev = J;
 
 for k=1:maxiter
     
-    C = CostMatrix(gmh,gmr,costMeas,lambda,I,alphaGJSD);
-    %pi_star = computeEROTP(C,[gmh.w]',[gmr.w]',lambda,maxiter);
+    C = CostMatrix(gmh,gmr,costMeas,varargin{:});
     pi_star = EffEROTP(gmh,C,lambda); %It works only in this context, we are solving the opt problem by considering only one constraint
     
     J = trace(pi_star'*C) - lambda*MatrixEntropy(pi_star);
