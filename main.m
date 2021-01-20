@@ -3,10 +3,11 @@ clear
 close all
 
 rngSeed = randi(1000000);  %With seed 5504, Nh=36 and sk=0.01, Runnals takes more time than PCMRA
-Nh = 20;
+Nh = 30;
 
-d = 1;
+d = 2;
 alpha = Nh/3;
+beta = 0.09;
 
 %INSTRUCTIONS:
 
@@ -31,32 +32,32 @@ alpha = Nh/3;
 % 6. The structure containing the necessary refinement parameters for all
 % the chosen algorithms (struct).
 % 7. The chosen test (char array); if it is left empty the experiment won't
-% take place.
+% take place.1.0
 % 8. The structure containing the parameters necessary for the test
 % (struct).
 % After creating the Experiment object, it is possible to execute it
 % through the methos .execute(), e.g. exp1 = Experiment(...),
 % exp1.execute().
 
-test = 'testWilliams';
-Nr = 2;
+test = 'random';
+Nr = 5;
 
 exp1 = Experiment('',           struct(),...
-                  '',   struct('Nr',Nr,'p',5,'h',1,'lambda',0.0,'costMeas','KLD','redAlgo','Runnalls'),...
+                  'Runnalls',   struct('Nr',Nr),...
                   '',           struct(),...
-                  test,     struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
+                  test,     struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
               
 exp2 = Experiment('',           struct(),...
-                  'Williams',       struct('Nr',Nr),...
-                  '',           struct(),...
-                  test,         struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
+                  'Runnalls',       struct('Nr',Nr),...
+                  'clusteringGMRC',           struct(),...
+                  test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
               
 exp3 = Experiment('',           struct(),...
-                  'newPCMRA',      struct('Nr',Nr,'p',3,'h',2,'lambda',0.2,'costMeas','KLD','redAlgo','Runnalls'),...
-                  '',           struct(),...
-                  test,     struct('Nh',Nh,'alpha',alpha','d',d,'rngSeed',rngSeed));
+                  'Runnalls',      struct('Nr',Nr),...
+                  'clusteringApproxKLD',           struct(),...
+                  test,     struct('Nh',Nh,'alpha',alpha','d',d,'beta',beta,'rngSeed',rngSeed));
 
-experiments = [exp2;exp3];
+experiments = [exp1;exp2;exp3];
 numTests = numel(experiments);
 
 gm_vector = cell(numTests,1);

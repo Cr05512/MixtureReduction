@@ -6,7 +6,7 @@ function J = nISE(gmh,gmr)
 % - J, the normalized integral squared error (scalar).
 % This function computes the normalized integral squared error between two
 % Gaussian mixtures.
-assert(~isempty(gmh) && ~isempty(gmh),'The mixtures have to contain at least one element.');
+assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element.');
 
 Jhr = crossLikeness(gmh,gmr);
 Jhh = selfLikeness(gmh);
