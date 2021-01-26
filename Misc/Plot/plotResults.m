@@ -1,4 +1,4 @@
-function [] = plotResults(gmr_vector,gm_vector,time_vector,experiments,costMeas,nPoints)
+function [] = plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot,nPoints)
 % plotResults(gmr_vector,gm_vector,gmr_times,experiments,costMeas):
 % INPUT:
 % - gmr_vector, vector containing reduced mixtures (numExperiments x 1 vector),
@@ -10,10 +10,7 @@ function [] = plotResults(gmr_vector,gm_vector,time_vector,experiments,costMeas,
 % Together with the plots, all the data used to generate such experiment
 % and result are reported in the title bar.
 
-if nargin < 5
-    costMeas = 'KLD';
-    nPoints = 500;
-elseif nargin < 6
+if nargin < 6
     nPoints = 500;
 end
 
@@ -25,9 +22,9 @@ for i=1:numExperiments
     
     if ~isempty(experiments(i).getAlgo) && ~isempty(experiments(i).getTest)
         
-        str = buildParamString(experiments(i),gm_vector{i},gmr_vector{i},time_vector(i),costMeas);
+        str = buildParamString(experiments(i),gm_vector{i},gmr_vector{i},time_vector(i));
 
-        if experiments(i).getTestParams.d == 1
+        if experiments(i).getTestParams.d == 1 && showPlot==1
             figure(i)
             
             sgt = sgtitle(str,'interpreter','latex');
@@ -52,7 +49,7 @@ for i=1:numExperiments
             
             legend('Original',legendStr,'FontSize',12,'interpreter','latex');
             
-        elseif experiments(i).getTestParams.d == 2
+        elseif experiments(i).getTestParams.d == 2 && showPlot==1
             figure(i)
 
             sgt = sgtitle(str,'interpreter','latex');
@@ -85,9 +82,9 @@ for i=1:numExperiments
             set(gca,'YDir','normal');
             axis('square');
             grid minor
-        else
-            disp(strcat(['Experiment: ',num2str(i),' nISE: ',num2str(nISE(gm_vector{i},gmr_vector{i})),', CTD',costMeas,': ',num2str(CTD(gm_vector{i},gmr_vector{i},costMeas)),', Time: ',num2str(time_vector(i)),'s']));
         end
+        disp(strcat(['Experiment: ',num2str(i),' nISE: ',num2str(nISE(gm_vector{i},gmr_vector{i})),', UTKLD: ',num2str(UTKLD(gm_vector{i},gmr_vector{i})),', Time: ',num2str(time_vector(i)),'s']));
+        
     end
         
 end

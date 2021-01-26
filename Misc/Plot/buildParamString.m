@@ -1,4 +1,4 @@
-function str = buildParamString(exp,gmh,gmr,time,costMeas)
+function str = buildParamString(exp,gmh,gmr,time)
 % str = buildParamString(exp,gmh,gmr,time,costMeas):
 % INPUT:
 % - exp, the current experiment,
@@ -100,7 +100,7 @@ else
 end
 str = [str,strPrune];
 
-str = [str,strcat('\textbf{NISE}:',' ',num2str(nISE(gmh,gmr)),', \textbf{CTD',costMeas,'}:',' ',num2str(CTD(gmh,gmr,costMeas)),', \textbf{Time}:',' ',num2str(time),'s')];
+str = [str,strcat('\textbf{NISE}:',' ',num2str(nISE(gmh,gmr)),', \textbf{UTKLD}:',' ',num2str(UTKLD(gmh,gmr)),', \textbf{Time}:',' ',num2str(time),'s')];
 
 
 

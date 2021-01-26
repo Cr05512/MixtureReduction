@@ -13,9 +13,9 @@ assert(nSamples>0,'The number of samples has to be non-negative.');
 d = size(gm(1).mu,1);
 samples = zeros(d,nSamples);
 w_bar = [gm.w]'./sum([gm.w]);
-if length(w_bar)==1 %Single component muxture
+if length(w_bar)==1 %Single component mixture
     for i=1:nSamples
-        samples(:,i) = mvnrnd(gm(i).mu,gm(i).Sigma);
+        samples(:,i) = mvnrnd(gm.mu,gm.Sigma);
     end
 else
     cdf = cumsum(w_bar);

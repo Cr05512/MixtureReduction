@@ -71,12 +71,9 @@ function [pruneParamsBlock,algoParamsBlock,refParamsBlock,testParamsBlock] = pro
             algoParamsBlock.('h') = 1;
         elseif strcmpi(algo,'newpcmra')
             algoParamsBlock.('redAlgo') = 'Runnalls';
-            algoParamsBlock.('measFlag') = 0;
-            algoParamsBlock.('costMeas') = 'KLD';
-            algoParamsBlock.('lambda') = 0.05;
-            algoParamsBlock.('maxiter') = 0;
             algoParamsBlock.('p') = 5;
             algoParamsBlock.('h') = 1;
+            algoParamsBlock.('maxiter') = 0;
         elseif strcmpi(algo,'bf')
             algoParamsBlock.('seq') = 1;
         end
@@ -117,6 +114,11 @@ function [pruneParamsBlock,algoParamsBlock,refParamsBlock,testParamsBlock] = pro
             elseif strcmpi(refs(i),'GMKMeans')
                 refParamsBlock{i}.('costMeas') = 'KLD';
                 refParamsBlock{i}.('NKMeansSteps') = 50;
+            elseif strcmpi(refs(i),'clusteringGMRC')
+                refParamsBlock{i}.('NSteps') = 1;
+            elseif strcmpi(refs(i),'clusteringApproxKLD')
+                refParamsBlock{i}.('NSteps') = 1;
+                refParamsBlock{i}.('coeffs') = [0.5 1.1];
             else
                 refParamsBlock{i} = struct();
             end

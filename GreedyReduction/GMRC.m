@@ -82,7 +82,7 @@ end
 
 % Weight refinement
 if opt==1 && optWeights == 1
-    gmr = refine('COWAOpt',gmr,gmh);
+    gmr = refine('weightISEOpt',gmr,gmh);
 end
 
 end

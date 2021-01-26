@@ -1,13 +1,8 @@
-clc
+%clc
 clear
 close all
 
-rngSeed = randi(1000000);  %With seed 5504, Nh=36 and sk=0.01, Runnals takes more time than PCMRA
-Nh = 30;
 
-d = 2;
-alpha = Nh/3;
-beta = 0.09;
 
 %INSTRUCTIONS:
 
@@ -39,6 +34,14 @@ beta = 0.09;
 % through the methos .execute(), e.g. exp1 = Experiment(...),
 % exp1.execute().
 
+rngSeed = randi(1000000);
+Nh = 25;
+
+d = 1;
+alpha = Nh/3;
+beta = 0.1;
+showPlot = 1;
+
 test = 'random';
 Nr = 5;
 
@@ -49,15 +52,15 @@ exp1 = Experiment('',           struct(),...
               
 exp2 = Experiment('',           struct(),...
                   'Runnalls',       struct('Nr',Nr),...
-                  'clusteringGMRC',           struct(),...
+                  '',           struct('NSteps',1,'coeffs',[0.5 1.3]),...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
               
 exp3 = Experiment('',           struct(),...
                   'Runnalls',      struct('Nr',Nr),...
-                  'clusteringApproxKLD',           struct(),...
+                  '',           struct('NSteps',1),...
                   test,     struct('Nh',Nh,'alpha',alpha','d',d,'beta',beta,'rngSeed',rngSeed));
 
-experiments = [exp1;exp2;exp3];
+experiments = [exp1;exp2];
 numTests = numel(experiments);
 
 gm_vector = cell(numTests,1);
@@ -71,6 +74,8 @@ for i=1:numTests
 end
 
 %%
-plotResults(gmr_vector,gm_vector,time_vector,experiments,'KLD');
+plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot);
 
+
+%ApproxMCKLD(gm_vector{1},gmr_vector,1000000)
 
