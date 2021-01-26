@@ -40,7 +40,7 @@ end
 
 gmr = reduce('West',gmh,Nr,costMeas,algo,gamma);
 
-gmr = refine('COWAOpt',gmr, gmh);
+gmr = refine('weightISEOpt',gmr, gmh);
 
 end
 

@@ -12,10 +12,10 @@ assert(~isempty(gm),'The Gaussian Mixture has to be non-empty.');
 
 %At first we get an estimate of the GM center offset
 [offset,P] = getMixtureMoments(gm);
-errorEll = errorEllipses(offset,P,0.99);
+errorEll = errorEllipses(offset,P,0.9999);
 alpha = max(max(errorEll));
 d = size(gm(1).mu,1);
-mult = 1.5;
+mult = 1.2;
 if d==1
     X = linspace(-mult*alpha+offset, mult*alpha+offset,nPoints);
     varargout{1} = X;

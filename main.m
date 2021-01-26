@@ -2,8 +2,6 @@
 clear
 close all
 
-
-
 %INSTRUCTIONS:
 
 %To retrieve available choices type:
@@ -35,10 +33,10 @@ close all
 % exp1.execute().
 
 rngSeed = randi(1000000);
-Nh = 25;
+Nh = 20;
 
 d = 1;
-alpha = Nh/3;
+alpha = 7;
 beta = 0.1;
 showPlot = 1;
 
@@ -52,12 +50,12 @@ exp1 = Experiment('',           struct(),...
               
 exp2 = Experiment('',           struct(),...
                   'Runnalls',       struct('Nr',Nr),...
-                  '',           struct('NSteps',1,'coeffs',[0.5 1.3]),...
+                  'clusteringApproxKLD',           struct('NSteps',3,'coeffs',[0.3 1.3]),...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
               
 exp3 = Experiment('',           struct(),...
                   'Runnalls',      struct('Nr',Nr),...
-                  '',           struct('NSteps',1),...
+                  'clusteringGMRC',           struct('NSteps',1),...
                   test,     struct('Nh',Nh,'alpha',alpha','d',d,'beta',beta,'rngSeed',rngSeed));
 
 experiments = [exp1;exp2];

@@ -1,5 +1,11 @@
 function gmr = weightISEOpt(gmr,gmh)
 % gmr = weightISEOpt(gmh,gmr):
+% INPUT:
+% gmr, gmh, two Gaussian mixtures.
+% OUTPUT:
+% gmr, weight-refined Gaussian mixture.
+% This function implements a quadratic programming solver to optimize the
+% GM weights according to the ISE measure.
 
 Nh = numel(gmh);
 Nr = numel(gmr);
