@@ -15,7 +15,7 @@ Pj = pdfj.Sigma;
 d = size(mui,1);
 
 %dKLij = 0.5*(trace(Pjinv*Pi) + log(det(2*pi*Pj))-d)-log(mvnpdf(mui,muj,Pj));
-dKLij = 0.5*(trace(Pj\Pi) + (muj-mui)'*(Pj\(muj-mui))-d+log(det(Pj)/det(Pi)));
+dKLij = 0.5*(trace(Pj\Pi) + (mui-muj)'*(Pj\(mui-muj))-d+log(det(Pj)/det(Pi)));
 %The previous two expressions are equivalent
 
 end

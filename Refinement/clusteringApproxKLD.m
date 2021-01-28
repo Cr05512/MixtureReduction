@@ -8,12 +8,12 @@ function gmr = clusteringApproxKLD(gmr,gmh,NSteps,coeffs)
 % - gmr, the refined Gaussian mixture.
 % This function implements the clustering loop as shown in:
 % Gaussian Mixture Reduction via Clustering, D. Schieferdecker, M.F. Huber
-
+d = size(gmh(1).mu,1);
 if nargin < 3
     NSteps = 1;
-    coeffs = [0.5 1.1];
+    coeffs =  sqrt((2*d+1)/2);
 elseif nargin < 4
-    coeffs = [0.5 1.1];
+    coeffs =  sqrt((2*d+1)/2);
 end
 
 assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element.');
@@ -22,7 +22,7 @@ Nh = numel(gmh);
 Nr = numel(gmr);
 cost_vector = Inf(1,Nr);
 Rnk = computeAssignMatrix(gmh,gmr,'KLD');
-d = size(gmh(1).mu,1);
+
 
 numCoeffs = numel(coeffs);
 SPs = zeros(d,Nh*(2*numCoeffs*d+1));

@@ -1,6 +1,7 @@
 function UTKLDVal = UTKLD(gmh,gmr,coeffs)
+d = size(gmh(1).mu,1);
 if nargin < 3
-    coeffs = [0.3 1.3];
+    coeffs = alphaUTKLD(d,10);
 end
 d = size(gmh(1).mu,1);
 Nh = numel(gmh);

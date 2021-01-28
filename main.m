@@ -36,7 +36,7 @@ rngSeed = randi(1000000);
 Nh = 20;
 
 d = 1;
-alpha = 7;
+alpha = 5;
 beta = 0.1;
 showPlot = 1;
 
@@ -45,20 +45,24 @@ Nr = 5;
 
 exp1 = Experiment('',           struct(),...
                   'Runnalls',   struct('Nr',Nr),...
-                  '',           struct(),...
-                  test,     struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
+                  '',           struct('NSteps',1),...
+                  test,     struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));              
+
               
 exp2 = Experiment('',           struct(),...
                   'Runnalls',       struct('Nr',Nr),...
-                  'clusteringApproxKLD',           struct('NSteps',3,'coeffs',[0.3 1.3]),...
+                  'clusteringApproxKLD',           struct('NSteps',1,'coeffs',[sqrt((2*d+1)/2)]),...
+                  test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
+
+exp3 = Experiment('',           struct(),...
+                  'Runnalls',       struct('Nr',Nr),...
+                  'clusteringApproxKLD',           struct('NSteps',1,'coeffs',alphaUTKLD(d,5)),...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
               
-exp3 = Experiment('',           struct(),...
-                  'Runnalls',      struct('Nr',Nr),...
-                  'clusteringGMRC',           struct('NSteps',1),...
-                  test,     struct('Nh',Nh,'alpha',alpha','d',d,'beta',beta,'rngSeed',rngSeed));
+              
+              
 
-experiments = [exp1;exp2];
+experiments = [exp1;exp2;exp3];
 numTests = numel(experiments);
 
 gm_vector = cell(numTests,1);
@@ -71,7 +75,7 @@ for i=1:numTests
     [gmr_vector{i},gm_vector{i},time_vector(i)] = experiments(i).execute();
 end
 
-%%
+%%30
 plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot);
 
 
