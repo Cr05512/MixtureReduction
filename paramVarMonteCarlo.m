@@ -3,23 +3,32 @@ clear
 close all
 
 Nh = 15;
-dVec = [1 2 4 6 8 10 12 14];
+Nr = 5;
+dVec = [1 2 4];
 alpha = Nh/3;
+beta = 0.09;
 
 d = 1;
 
 numMCRuns = 50;
+test = 'random';
+              
+exp1 = Experiment('',           {struct('rho',0.3)},...
+                  'Runnalls',   struct('Nr',Nr),...
+                  '',           {},...
+                  test,     struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));              
 
               
-exp2 = Experiment('',           struct(),...
-                  'GMRC',       struct('Nr',5,'ISEOpt',0),...
-                  '',           struct('I',10),...
-                  'random',     struct('Nh',Nh,'alpha',alpha));
-              
-exp3 = Experiment('',           struct(),...
-                  'PCMRA',      struct('Nr',5,'p',3,'lambda',0.05,'costMeas','KLD','redAlgo','Runnalls'),...
-                  '',           struct('NOptSteps',50,'sk',0.005),...
-                  'random',     struct('Nh',Nh,'alpha',alpha));
+exp2 = Experiment('',           {},...
+                  'Runnalls',       struct('Nr',Nr),...
+                  'clusteringUTKLD',           {struct('NSteps',2,'numRings',5)},...
+                  test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));
+
+exp3 = Experiment('',           {},...
+                  'Runnalls',       struct('Nr',Nr),...
+                  'clusteringUTKLDord+clusteringUTKLDord',  {struct('NSteps',1,'numRings',6,'order','ascend'),struct('numRings',5,'order','descend')},...
+                  test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));
+
 experiments = [exp2;exp3];
 numExperiments = numel(experiments);
 
@@ -62,7 +71,7 @@ multiWaitbar( 'CloseAll' );
 
 Legend = cell(numExperiments,1);
 for i=1:numExperiments
-    Legend{i} = experiments(i).getAlgo;
+    Legend{i} = strcat([experiments(i).getAlgo,'+',experiments(i).getRef]);
 end
 
 figure(1)
