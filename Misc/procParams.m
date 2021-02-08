@@ -7,11 +7,11 @@ function [pruneParamsBlock,algoParamsBlock,refParamsBlock,testParamsBlock] = pro
 % - test, the desired test to execture (char array).
 % OUTPUT:
 % - pruneParamsBlock, a struct containing all the default parameters for
-%   the chosen pruning algorithm (struct),
+%   the chosen pruning algorithm (cell),
 % - algoParamsBlock, a struct containing all the default parameters for
 %   the chosen greedy reduction algorithm (struct),
 % - refParamsBlock, a struct containing all the default parameters for
-%   the chosen refinement algorithm (struct),
+%   the chosen refinement algorithm (cell),
 % - testParamsBlock, a struct containing all the default parameters for
 %   the chosen test (struct).
 % This function provides to the experiment class the ability to retrieve

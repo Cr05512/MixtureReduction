@@ -1,4 +1,12 @@
 function dBhatt = bhattD(pdfi,pdfj)
+% dBhatt = bhattD(pdfi,pdfj):
+% INPUT:
+% - pdfi, pdfj, two Gaussian densities.
+% OUTPUT:
+% - dBhatt, the Bhattacharyya distance value (scalar).
+% This function implements the Bhattacharyya distance computation for two Gaussian densities.
+% Note that the Bhattacharyya distance is a Chernoff alpha-divergence for
+% alpha = 0.5.
 
 mui = pdfi.mu;
 muj = pdfj.mu;

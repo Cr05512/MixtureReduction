@@ -33,11 +33,11 @@ clear
 % exp1.execute().
 
 rngSeed = randi(1000000);
-Nh = 10;
+Nh = 25;
 %%
 close all
 d = 1;
-alpha = 5;
+alpha = 6;
 beta = 0.09;
 showPlot = 1;
 
@@ -46,7 +46,7 @@ Nr = 5;
 
 exp1 = Experiment('',           {struct('rho',0.3)},...
                   'Runnalls',   struct('Nr',Nr),...
-                  '',           {},...
+                  '',           {struct('costMeas','wKLD','lambda',0)},...
                   test,     struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));              
 
               
@@ -57,7 +57,7 @@ exp2 = Experiment('',           {},...
 
 exp3 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  'clusteringUTKLDord+clusteringUTKLDord',  {struct('NSteps',1,'numRings',6,'order','ascend'),struct('numRings',5,'order','descend')},...
+                  'clusteringUTKLDord+clusteringUTKLDord',  {struct('NSteps',1,'numRings',5,'order','ascend'),struct('numRings',5,'order','descend')},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
               
               
