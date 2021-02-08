@@ -59,7 +59,7 @@ for i=1:numExperiments
             
             subplot(1,2,1)
 
-            plotGM2D(gm_vector{i},x1,x2,X); hold on
+            plotGM2D(gm_vector{i},X,x1,x2); hold on
             xlim([min(x1) max(x1)])
             ylim([min(x2) max(x2)])
             for k=1:numel(gm_vector{i})
@@ -71,7 +71,7 @@ for i=1:numExperiments
             grid minor
             title('Original Mixture','interpreter','latex','FontSize',14);
             subplot(1,2,2)
-            plotGM2D(gmr_vector{i},x1,x2,X); hold on
+            plotGM2D(gmr_vector{i},X,x1,x2); hold on
             title('Reduced Mixture','interpreter','latex','FontSize',14);
             xlim([min(x1) max(x1)])
             ylim([min(x2) max(x2)])

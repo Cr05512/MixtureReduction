@@ -1,4 +1,4 @@
-function [] = plotGM2D(gm,x1,x2,X)
+function [] = plotGM2D(gm,X,x1,x2)
 % [] = plotGM2D(gm,X):
 % INPUTS:
 % - gm, a Gaussian mixture,

@@ -19,7 +19,13 @@ if nargin < 3
 end
 
 assert(~isempty(gmh),'The mixture has to contain at least one element.');
-assert(numel(gmh)>=Nr,'The original number of components has to be greater or equal than the reduced ones.');
+assert(Nr>0,'The number of reduced components has to be greater than zero.');
+
+
+if numel(gmh)<Nr
+    gmr = gmh;
+    return
+end
 
 
 gmr = gmh;

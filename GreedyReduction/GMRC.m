@@ -58,6 +58,10 @@ assert(sk>0,'The gradient step has to be greater than zero.');
 assert(NOptSteps>=0,'The number of optimization steps has to be non-negative.');
 assert(optWeights==0 || optWeights==1,'The optWeights parameter can take values either 0 or 1.');
 
+if numel(gmh)<Nr
+    gmr = gmh;
+    return
+end
 Nh = numel(gmh);
 if(Nh==Nr)
     gmr = gmh;

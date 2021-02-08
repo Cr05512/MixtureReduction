@@ -45,11 +45,11 @@ classdef Experiment < handle
             
             if nargin == 0
                 obj.prune = '';
-                obj.pruneParams = struct();
+                obj.pruneParams = {};
                 obj.algorithm = '';
                 obj.algoParams = struct();
                 obj.refinement = '';
-                obj.refParams = struct();
+                obj.refParams = {};
                 obj.test = '';
                 obj.testParams = struct();
                 
@@ -190,18 +190,20 @@ classdef Experiment < handle
             
             %We get the init GM
             gm = obj.initGMGen();
-
+            gmr = gm;
             timeVec = zeros(1,3);
             
             %We can perform pruning
+            tic;
             if ~isempty(obj.prune)
-                pruneArgVector = struct2cell(obj.pruneParams);
-                tic;
-                gmr = pruning(obj.prune,gm,pruneArgVector{:});
-                timeVec(1) = toc;
-            else
-                gmr = gm;
+                prunings = split(obj.prune,'+');
+                
+                for k=1:numel(prunings)
+                    pruneArgVector = struct2cell(obj.pruneParams{k});
+                    gmr = pruning(prunings{k},gmr,pruneArgVector{:});
+                end
             end
+            timeVec(1) = toc;
             
             %We apply the greedy reduction
             

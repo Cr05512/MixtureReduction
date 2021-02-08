@@ -8,8 +8,11 @@ function gmr = Salmond(gmh, Nr)
 % This function implements the joining algorithms presented in
 % Mixture reduction algorithms for target tracking in clutter, D.J. Salmond
 assert(numel(gmh)>0,'The mixture has to contain at least one element.');
-assert(Nr>0 && numel(gmh)>=Nr,'The reduced mixture must have a positive number of components lower or equal to the starting mixture.');
 
+if numel(gmh)<Nr
+    gmr = gmh;
+    return
+end
 gmr = gmh;
 Nh = numel(gmh);
 if(Nh==Nr)

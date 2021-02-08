@@ -1,6 +1,6 @@
 %clc
 clear
-close all
+
 
 %INSTRUCTIONS:
 
@@ -20,8 +20,8 @@ close all
 % 4. The structure containing the algorithm parameters (struct).
 % 5. The chosen refinement algorithm (char array); can be left empty or it
 % is possible to stack several subsequent refinements by using the '+'
-% sign, e.g. 'ISEOpt+COWAOpt' will perform the ISEOpt at first and the
-% COWAOpt at last.
+% sign, e.g. 'ISEOpt+weightISEOpt' will perform the ISEOpt at first and the
+% weightISEOpt at last.
 % 6. The structure containing the necessary refinement parameters for all
 % the chosen algorithms (struct).
 % 7. The chosen test (char array); if it is left empty the experiment won't
@@ -33,31 +33,33 @@ close all
 % exp1.execute().
 
 rngSeed = randi(1000000);
-Nh = 20;
-
+Nh = 10;
+%%
+close all
 d = 1;
 alpha = 5;
-beta = 0.1;
+beta = 0.09;
 showPlot = 1;
 
 test = 'random';
 Nr = 5;
 
-exp1 = Experiment('',           struct(),...
+exp1 = Experiment('',           {struct('rho',0.3)},...
                   'Runnalls',   struct('Nr',Nr),...
-                  '',           struct('NSteps',1),...
+                  '',           {},...
                   test,     struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));              
 
               
-exp2 = Experiment('',           struct(),...
+exp2 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  'clusteringApproxKLD',           struct('NSteps',1,'coeffs',[sqrt((2*d+1)/2)]),...
+                  'clusteringUTKLDord',           {struct('NSteps',2,'numRings',5)},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
 
-exp3 = Experiment('',           struct(),...
+exp3 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  'clusteringApproxKLD',           struct('NSteps',1,'coeffs',alphaUTKLD(d,5)),...
+                  'clusteringUTKLDord+clusteringUTKLDord',  {struct('NSteps',1,'numRings',6,'order','ascend'),struct('numRings',5,'order','descend')},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
+              
               
               
               
@@ -69,13 +71,12 @@ gm_vector = cell(numTests,1);
 gmr_vector = cell(numTests,1);
 time_vector = zeros(numTests,1);
 
-%%
+
 
 for i=1:numTests
     [gmr_vector{i},gm_vector{i},time_vector(i)] = experiments(i).execute();
 end
 
-%%30
 plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot);
 
 

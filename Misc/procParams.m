@@ -20,25 +20,32 @@ function [pruneParamsBlock,algoParamsBlock,refParamsBlock,testParamsBlock] = pro
 % user to skip the parameter specification in the main.m file.
 
     %Pruning processing
-    pruneParamsBlock = struct();
+    pruneParamsBlock = {};
     if ~isempty(prune)
-        if strcmpi(prune,'Adaptive')
-            pruneParamsBlock.('rho') = 0.9544;
-        elseif strcmpi(prune,'Standard')
-            pruneParamsBlock.('threshold') = 0.05;
-        elseif strcmpi(prune,'kSmallest')
-            pruneParamsBlock.('k') = 1;
-        end
-        
-        if isstruct(userPruneParams)
-            userPruneFields = fieldnames(userPruneParams);
-            for i=1:length(userPruneFields)
-                if isfield(pruneParamsBlock,userPruneFields{i})
-                    pruneParamsBlock.(userPruneFields{i}) = userPruneParams.(userPruneFields{i});
-                else
-                    disp('The provided param is not a known param.');
+        prunings = split(prune,'+');
+        for i=1:numel(prunings)
+            
+            if strcmpi(prunings(i),'adaptivePruning')
+                pruneParamsBlock{i}.('rho') = 0.9544;
+            elseif strcmpi(prunings(i),'standardPruning')
+                pruneParamsBlock{i}.('threshold') = 0.05;
+            elseif strcmpi(prunings(i),'kSmallestPruning')
+                pruneParamsBlock{i}.('k') = 1;
+            else
+                pruneParamsBlock{i} = struct();
+            end
+            
+            if ~isempty(userPruneParams)
+                if isstruct(userPruneParams{i})
+                    userPruneFields = fieldnames(userPruneParams{i});
+                    for j=1:length(userPruneFields)
+                        if isfield(pruneParamsBlock{i},userPruneFields{j})
+                            pruneParamsBlock{i}.(userPruneFields{j}) = userPruneParams{i}.(userPruneFields{j});
+                        end
+                    end
                 end
             end
+            
         end
         
     end
@@ -61,19 +68,6 @@ function [pruneParamsBlock,algoParamsBlock,refParamsBlock,testParamsBlock] = pro
             algoParamsBlock.('accThresh') = 1e-06;
         elseif strcmpi(algo,'gmrcwas')
             algoParamsBlock.('NKMeansSteps') = 50;
-        elseif strcmpi(algo,'pcmra')
-            algoParamsBlock.('redAlgo') = 'Runnalls';
-            algoParamsBlock.('measFlag') = 0;
-            algoParamsBlock.('costMeas') = 'KLD';
-            algoParamsBlock.('lambda') = 0.05;
-            algoParamsBlock.('maxiter') = 0;
-            algoParamsBlock.('p') = 5;
-            algoParamsBlock.('h') = 1;
-        elseif strcmpi(algo,'newpcmra')
-            algoParamsBlock.('redAlgo') = 'Runnalls';
-            algoParamsBlock.('p') = 5;
-            algoParamsBlock.('h') = 1;
-            algoParamsBlock.('maxiter') = 0;
         elseif strcmpi(algo,'bf')
             algoParamsBlock.('seq') = 1;
         end
@@ -92,7 +86,6 @@ function [pruneParamsBlock,algoParamsBlock,refParamsBlock,testParamsBlock] = pro
 
     refParamsBlock = {};
     if ~isempty(ref)
-        %By convention the suffix "_ref" is added to refinement parameters
         refs = split(ref,'+');
         for i=1:numel(refs)
         
@@ -116,18 +109,24 @@ function [pruneParamsBlock,algoParamsBlock,refParamsBlock,testParamsBlock] = pro
                 refParamsBlock{i}.('NKMeansSteps') = 50;
             elseif strcmpi(refs(i),'clusteringGMRC')
                 refParamsBlock{i}.('NSteps') = 1;
-            elseif strcmpi(refs(i),'clusteringApproxKLD')
+            elseif strcmpi(refs(i),'clusteringUTKLD')
                 refParamsBlock{i}.('NSteps') = 1;
-                refParamsBlock{i}.('coeffs') = [0.5 1.1];
+                refParamsBlock{i}.('numRings') = 1;
+            elseif strcmpi(refs(i),'clusteringUTKLDord')
+                refParamsBlock{i}.('NSteps') = 1;
+                refParamsBlock{i}.('numRings') = 1;
+                refParamsBlock{i}.('order') = 'ascend';
             else
                 refParamsBlock{i} = struct();
             end
             
-            if isstruct(userRefParams)
-                userRefFields = fieldnames(userRefParams);
-                for j=1:length(userRefFields)
-                    if isfield(refParamsBlock{i},userRefFields{j})
-                        refParamsBlock{i}.(userRefFields{j}) = userRefParams.(userRefFields{j});
+            if ~isempty(userRefParams)
+                if isstruct(userRefParams{i})
+                    userRefFields = fieldnames(userRefParams{i});
+                    for j=1:length(userRefFields)
+                        if isfield(refParamsBlock{i},userRefFields{j})
+                            refParamsBlock{i}.(userRefFields{j}) = userRefParams{i}.(userRefFields{j});
+                        end
                     end
                 end
             end
@@ -137,19 +136,19 @@ function [pruneParamsBlock,algoParamsBlock,refParamsBlock,testParamsBlock] = pro
             if isfield(refParamsBlock{i},'costMeas')
                 if strcmpi(refParamsBlock{i}.('costMeas'),'MKLD')
                     if any(strcmpi(userRefFields,'I'))
-                        refParamsBlock{i}.('I') = userRefParams.I;
+                        refParamsBlock{i}.('I') = userRefParams{i}.I;
                     else
                         refParamsBlock{i}.('I') = 20;
                     end
 
                 elseif strcmpi(refParamsBlock{i}.('costMeas'),'GJSD')
                     if any(strcmpi(userRefFields,'alphaGJSD'))
-                        refParamsBlock{i}.('alphaGJSD') = userRefParams.alphaGJSD;
+                        refParamsBlock{i}.('alphaGJSD') = userRefParams{i}.alphaGJSD;
                     else
                         refParamsBlock{i}.('alphaGJSD') = 0.5;
                     end
                 end
-            end
+           end
             
         end
         

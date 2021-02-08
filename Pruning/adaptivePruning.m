@@ -24,7 +24,7 @@ for i=1:N
 end
 
 nmax = max(find(gamma>=rho));
-w_bar = w_sort(nmax:end);
+w_bar = w_sort(nmax+1:end);
 w_bar = w_bar./sum(w_bar);
 perm = perm(nmax+1:end);
 gmr = gmh(perm);

@@ -9,8 +9,12 @@ function gmr = Wasserstein(gmh, Nr)
 % distance presented in:
 % Wasserstein-Distance-Based Gaussian Mixture Reduction, A. Assa, K.N. Plataniotis
 assert(~isempty(gmh),'The mixture has to contain at least one element.');
-assert(Nr>0 && numel(gmh)>=Nr,'The reduced mixture must have a positive number of components lower or equal to the starting mixture.');
+assert(Nr>0,'The number of reduced components has to be greater than zero.');
 
+if numel(gmh)<Nr
+    gmr = gmh;
+    return
+end
 gmr = gmh;
 Nh = numel(gmh);
 if(Nh==Nr)

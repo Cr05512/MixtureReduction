@@ -16,6 +16,11 @@ assert(~isempty(gmh),'The mixture has to contain at least one element.');
 assert(Nr>0,'The reduced mixture has to contain at least one element.');
 assert(NKMeansSteps>=0,'The number of Kmeans iterations has to be non-negative.');
 
+if numel(gmh)<Nr
+    gmr = gmh;
+    return
+end
+
 gmr = gmh;
 Nh = numel(gmh);
 

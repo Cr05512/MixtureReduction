@@ -80,20 +80,28 @@ end
 str = [str,strRef];
 
 
-strPrune = '\textbf{Pruning}$\rightarrow$'; 
+strPrune = '\textbf{Pruning}$\rightarrow$';
+if ~isempty(exp.getPrune)
+    prunings = split(exp.getPrune,'+');
+else
+    prunings = [];
+end
 prune = exp.getPrune;
 if ~isempty(prune)
-    strPrune = strcat([strPrune,'\textbf{',prune,'}',':']);
     pruneParams = exp.getPruneParams;
-    if ~isempty(pruneParams)
-        fieldNames = fieldnames(pruneParams);
-        numFields = numel(fieldNames);
-        for m=1:numFields
-            strPrune = strcat([strPrune,' ',fieldNames{m},'=',num2str(pruneParams.(fieldNames{m})),',']);
-        end
 
-    else
-        strPrune = strcat([strPrune,'\textbf{None},']);
+    for k=1:numel(pruneParams)
+        strPrune = strcat([strPrune,' \textbf{',prunings{k},'}:']);
+        if ~isempty(fieldnames(pruneParams{k}))
+            fieldNames = fieldnames(pruneParams{k});
+            numFields = numel(fieldNames);
+            for m=1:numFields
+                strPrune = strcat([strPrune,' ',fieldNames{m},'=',num2str(pruneParams{k}.(fieldNames{m})),',']);
+            end
+
+        else
+            strPrune = strcat([strPrune,' None,']);
+        end
     end
 else
     strPrune = strcat([strPrune,'\textbf{None},']);

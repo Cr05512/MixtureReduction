@@ -28,6 +28,13 @@ end
 assert(~isempty(gmh)>0,'The Gaussian Mixture has to be non-empty.');
 assert(algo==0 || algo==1,'The algo parameter can take either 0 or 1 as value.');
 assert(gamma>0,'gamma has to be greater than zero.');
+assert(Nr>0,'The number of reduced components has to be greater than zero.');
+
+
+if numel(gmh)<Nr
+    gmr = gmh;
+    return
+end
 
 
 Nh = numel(gmh);

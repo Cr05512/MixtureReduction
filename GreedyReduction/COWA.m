@@ -26,8 +26,10 @@ end
 assert(~isempty(gmh),'The Gaussian Mixture has to be non-empty.');
 assert(Nr>0,'The reduced mixture has to contain at least one element.');
 assert(algo==0 || algo==1,'The algo parameter can be either 0 (West) or 1 (enhanced West).');
-assert(Nr>0 && length(gmh)>=Nr,'The reduced mixture must have a positive number of components lower or equal to the starting mixture.');
-
+if numel(gmh)<Nr
+    gmr = gmh;
+    return
+end
 Nh = numel(gmh);
 if(Nh==Nr)
     gmr = gmh;

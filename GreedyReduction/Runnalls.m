@@ -8,8 +8,14 @@ function gmr = Runnalls(gmh, Nr)
 % This function implements the algorithm presented in
 % Kullback-Leibler Approach to Gaussian Mixture Reduction, A.R. Runnals
 assert(~isempty(gmh),'The mixture has to contain at least one element.');
-assert(Nr>0 && numel(gmh)>=Nr,'The reduced mixture must have a positive number of components lower or equal to the starting mixture.');
+assert(Nr>0,'The number of reduced components has to be greater than zero.');
 
+
+
+if numel(gmh)<Nr
+    gmr = gmh;
+    return
+end
 gmr = gmh;
 Nh = numel(gmh);
 if(Nh==Nr)
