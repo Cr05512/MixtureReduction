@@ -23,11 +23,11 @@ function gm = GMGen(N,d,alpha,beta,delta)
 
 if nargin < 2
     d = 1;
-    alpha = N/4;
+    alpha = N/3;
     beta = 0.09;
     delta = zeros(d,1);
 elseif nargin < 3
-    alpha = N/4;
+    alpha = N/3;
     beta = 0.09;
     delta = zeros(d,1);
 elseif nargin < 4
@@ -46,6 +46,7 @@ w_bar = w./sum(w);
 
 %Generate means
 mu = -alpha*ones(d,N) + alpha*2*rand(d,N) + delta;
+%mu = zeros(2,1);
 
 %Generate Symmetric Positive Definite Covariance matrices
 Sigma = zeros(d,d,N);
@@ -55,7 +56,8 @@ for i=1:N
     %sigma = 0.5*(sigma+sigma');
     %sigma = sigma*sigma';
     %sigma = sigma + beta*eye(n);
-    sigma = wishrnd(beta*eye(d),d+5);
+    sigma = wishrnd(beta*eye(d),d+3);
+    %sigma = eye(2);
     Sigma(:,:,i) = sigma;
 end
 

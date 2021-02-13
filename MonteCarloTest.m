@@ -2,10 +2,10 @@
 clear
 close all
 
-Nh = 10;
+Nh = 20;
 Nr = 5;
-d = 10;
-alpha = 3;
+d = 7;
+alpha = 2;
 beta = 0.09;
 showPlot = 1;
 
@@ -13,18 +13,18 @@ test = 'random';
 
 exp1 = Experiment('',           {struct('rho',0.3)},...
                   'Runnalls',   struct('Nr',Nr),...
-                  '',           {},...
+                  '',           {struct('costMeas','RenyiAlphaD','lambda',0.3,'alpha',0.5)},...
                   test,     struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));              
 
               
 exp2 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  'clusteringUTKLD',           {struct('NSteps',2,'numRings',5)},...
+                  'clusteringUTKLD',           {struct('NSteps',1,'numRings',5)},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));
 
 exp3 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  'clusteringUTKLDord+clusteringUTKLDord',  {struct('NSteps',1,'numRings',6,'order','ascend'),struct('numRings',5,'order','descend')},...
+                  'clusteringISUTKLD',  {struct('NSteps',2,'numRings',1)},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));
  
 experiments = [exp1;exp2;exp3];
@@ -36,8 +36,8 @@ numExperiments = numel(experiments);
 numMCRuns = 50;
 NISEVector = zeros(numExperiments,numMCRuns);
 timeVector = NISEVector;
-UTKLDVector = NISEVector;
-MCKLDVector = NISEVector;
+ISUTKLDVector = NISEVector;
+ISMCKLDVector = NISEVector;
 h = waitbar(0,'Processing...');
 gmr_vector = cell(numExperiments,1);
 %set(h,'Position', [550,350,280,70]);
@@ -52,11 +52,11 @@ for k=1:numMCRuns
         [gmr,gm,time] = experiments(i).execute();
         NISEVector(i,k) = nISE(gm,gmr);
         timeVector(i,k) = time;
-        UTKLDVector(i,k) = UTKLD(gm,gmr,10);
+        ISUTKLDVector(i,k) = ISUTKLD(gm,gmr,10);
         gmr_vector{i} = gmr;
     end
-    MCKLDVector(:,k) = ApproxMCKLD(gm,gmr_vector);
-    MCKLDVector(:,k)
+    ISMCKLDVector(:,k) = ISMCKLD(gm,gmr_vector);
+    ISMCKLDVector(:,k)
     
 end
 
@@ -65,10 +65,10 @@ close(h);
 %%
 avgnISE = sum(NISEVector,2)./numMCRuns;
 avgTime = sum(timeVector,2)./numMCRuns;
-avgUTKLD = sum(UTKLDVector,2)./numMCRuns;
-avgMCKLD = sum(MCKLDVector,2)./numMCRuns;
+avgISUTKLD = sum(ISUTKLDVector,2)./numMCRuns;
+avgISMCKLD = sum(ISMCKLDVector,2)./numMCRuns;
 
-T=table(avgnISE,avgTime,avgUTKLD,avgMCKLD);
+T=table(avgnISE,avgTime,avgISUTKLD,avgISMCKLD);
 rowNames = cell(numExperiments,1);
 for i=1:numExperiments
     rowNames{i} = strcat('Experiment ',num2str(i));

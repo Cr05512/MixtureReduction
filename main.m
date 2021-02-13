@@ -33,12 +33,12 @@ clear
 % exp1.execute().
 
 rngSeed = randi(1000000);
-Nh = 25;
+Nh = 20;
 %%
 close all
 d = 1;
-alpha = 6;
-beta = 0.09;
+alpha = 4;
+beta = 0.1;
 showPlot = 1;
 
 test = 'random';
@@ -46,25 +46,31 @@ Nr = 5;
 
 exp1 = Experiment('',           {struct('rho',0.3)},...
                   'Runnalls',   struct('Nr',Nr),...
-                  '',           {struct('costMeas','wKLD','lambda',0)},...
+                  '',           {struct('costMeas','RenyiAlphaD','lambda',0.3,'alpha',0.5)},...
                   test,     struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));              
 
               
 exp2 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  'clusteringUTKLD',           {struct('NSteps',2,'numRings',5)},...
+                  'ISEOptMBI',           {struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
 
 exp3 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  'clusteringUTKLDord+clusteringUTKLDord',  {struct('NSteps',1,'numRings',5,'order','ascend'),struct('numRings',5,'order','descend')},...
+                  'ISEOpt',  {struct('NOptSteps',100,'sk',0.005)},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
+              
+exp4 = Experiment('',           {},...
+                  'BF',       struct('Nr',Nr),...
+                  'ISEOpt',  {struct('sk',0.001,'NOptSteps',30,'accThresh',1e-08)},...
+                  test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
+
               
               
               
               
 
-experiments = [exp1;exp2;exp3];
+experiments = [exp1;exp3];
 numTests = numel(experiments);
 
 gm_vector = cell(numTests,1);

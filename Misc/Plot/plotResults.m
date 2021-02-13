@@ -83,7 +83,7 @@ for i=1:numExperiments
             axis('square');
             grid minor
         end
-        disp(strcat(['Experiment: ',num2str(i),' nISE: ',num2str(nISE(gm_vector{i},gmr_vector{i})),', UTKLD: ',num2str(UTKLD(gm_vector{i},gmr_vector{i})),', Time: ',num2str(time_vector(i)),'s']));
+        disp(strcat(['Experiment: ',num2str(i),' nISE: ',num2str(nISE(gm_vector{i},gmr_vector{i})),', JR2: ',num2str(JR2Divergence(gm_vector{i},gmr_vector{i})),', UTKLD: ',num2str(UTKLD(gm_vector{i},gmr_vector{i})),', Time: ',num2str(time_vector(i)),'s']));
         
     end
         

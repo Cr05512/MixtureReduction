@@ -12,11 +12,11 @@ function gmr_Opt = ISEOpt(gmr,gmh,sk,NOptSteps,optWeights,accThresh)
 % parameters in order to get a better approximation.
 if nargin < 3
     sk = 0.01;
-    NOptSteps = 20;
+    NOptSteps = 50;
     optWeights = 1;
     accThresh = 1e-06;
 elseif nargin < 4
-    NOptSteps = 20;
+    NOptSteps = 50;
     optWeights = 1;
     accThresh = 1e-06;
 elseif nargin < 5
@@ -69,22 +69,36 @@ for k=1:NOptSteps
     dJrrdmu = dJhrdmu;
     dJhrdL = zeros(dr,dr,Nr);
     dJrrdL = dJhrdL;
+    
+    
+    LtL = zeros(dr,dr,Nr);
+    for i=1:Nr
+        LtL(:,:,i) = L(:,:,i)'*L(:,:,i);
+    end
+    
+    SigmahLijinv = zeros(dr,dr,Nh,Nr);
+    for i=1:Nh
+        for j=1:Nr
+            SigmahLijinv(:,:,i,j) = inv(Sigmah(:,:,i) + LtL(:,:,j));
+        end
+    end
+    
    
     for j=1:Nr
         for i=1:Nh
-            prodPDFhr = struct('w',1,'mu',mu(:,j),'Sigma',Sigmah(:,:,i) + L(:,:,j)'*L(:,:,j));
+            prodPDFhr = struct('w',1,'mu',mu(:,j),'Sigma',Sigmah(:,:,i) + LtL(:,:,j));
             %Weights
             if optWeights == 1
                 dJhrdq(j) = dJhrdq(j) + wh(i)*mvnpdf(muh(:,i), prodPDFhr.mu, prodPDFhr.Sigma);
             end
             %Means
-            dJhrdmu(:,j) = dJhrdmu(:,j) + wh(i)*inv(Sigmah(:,:,i)...
-                + L(:,:,j)'*L(:,:,j))*(mu(:,j)-muh(:,i))*mvnpdf(muh(:,i), prodPDFhr.mu, prodPDFhr.Sigma);
+            dJhrdmu(:,j) = dJhrdmu(:,j) + wh(i)*SigmahLijinv(:,:,i,j)*...
+                (mu(:,j)-muh(:,i))*mvnpdf(muh(:,i), prodPDFhr.mu, prodPDFhr.Sigma);
             %Covariances
             dJhrdL(:,:,j) = dJhrdL(:,:,j) + wh(i)*q(j)^2*mvnpdf(muh(:,i), prodPDFhr.mu, prodPDFhr.Sigma)...
-                *inv(Sigmah(:,:,i) + L(:,:,j)'*L(:,:,j))*((muh(:,i)-mu(:,j))*...
-                (muh(:,i)-mu(:,j))' - (Sigmah(:,:,i)+ L(:,:,j)'*L(:,:,j)))...
-                *inv(Sigmah(:,:,i) + L(:,:,j)'*L(:,:,j))*L(:,:,j);
+                *SigmahLijinv(:,:,i,j)*((muh(:,i)-mu(:,j))*...
+                (muh(:,i)-mu(:,j))' - (Sigmah(:,:,i)+ LtL(:,:,j)))...
+                *SigmahLijinv(:,:,i,j)*L(:,:,j);
         end
         %Weights
         if optWeights == 1
@@ -96,21 +110,26 @@ for k=1:NOptSteps
         %No need
     end
     
+    LtLijinv = zeros(dr,dr,Nr,Nr);
+    for i=1:Nr
+        for j=1:Nr
+            LtLijinv(:,:,i,j) = inv(LtL(:,:,i) + LtL(:,:,j));
+        end
+    end
+    
     for j=1:Nr
         for i=1:Nr
-            prodPDFrr = struct('w',1,'mu',mu(:,j),'Sigma',L(:,:,i)'*L(:,:,i) + L(:,:,j)'*L(:,:,j));
+            prodPDFrr = struct('w',1,'mu',mu(:,j),'Sigma',LtL(:,:,i) + LtL(:,:,j));
             %Weights
             if optWeights == 1
                 dJrrdq(j) = dJrrdq(j) + (q(i)^2)*mvnpdf(mu(:,i)', prodPDFrr.mu', prodPDFrr.Sigma);
             end
             %Means
-            dJrrdmu(:,j) = dJrrdmu(:,j) + (q(i)^2)*inv(L(:,:,i)'*L(:,:,i)...
-                + L(:,:,j)'*L(:,:,j))*(mu(:,j)-mu(:,i))*mvnpdf(mu(:,i)', prodPDFrr.mu', prodPDFrr.Sigma);
+            dJrrdmu(:,j) = dJrrdmu(:,j) + (q(i)^2)*LtLijinv(:,:,i,j)*(mu(:,j)-mu(:,i))*mvnpdf(mu(:,i)', prodPDFrr.mu', prodPDFrr.Sigma);
             %Covariances
             dJrrdL(:,:,j) = dJrrdL(:,:,j) + (q(i)^2)*(q(j)^2)*mvnpdf(mu(:,i)', prodPDFrr.mu', prodPDFrr.Sigma)...
-                *inv(L(:,:,i)'*L(:,:,i) + L(:,:,j)'*L(:,:,j))*((mu(:,i)-mu(:,j))*(mu(:,i)-mu(:,j))'...
-                -(L(:,:,i)'*L(:,:,i) + L(:,:,j)'*L(:,:,j)))*inv(L(:,:,i)'*L(:,:,i)...
-                +L(:,:,j)'*L(:,:,j))*L(:,:,j);
+                *LtLijinv(:,:,i,j)*((mu(:,i)-mu(:,j))*(mu(:,i)-mu(:,j))'...
+                -(LtL(:,:,i) + LtL(:,:,j)))*LtLijinv(:,:,i,j)*L(:,:,j);
         end
         %Weights
         if optWeights == 1
@@ -182,7 +201,7 @@ for k=1:NOptSteps
 end
 
 if optWeights==1
-    renormalizeWeights(gmr_Opt);
+   gmr_Opt = renormalizeWeights(gmr_Opt);
 end
 
     

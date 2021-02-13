@@ -8,7 +8,7 @@ function UTKLDVal = UTKLD(gmh,gmr,k)
 % This function implements the UT approximation of the KLD between two
 % Gaussian Mixtures.
 if nargin < 3
-    k = 5;
+    k = 1;
 end
 SPs = kRingUT(gmh,k);
 

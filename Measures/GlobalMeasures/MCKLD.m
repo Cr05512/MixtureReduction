@@ -1,5 +1,5 @@
-function MCKLDs = ApproxMCKLD(gmh,gmrVec,nSamples)
-% MCKLD = ApproxMCKLD(gmh,gmr,nSamples):
+function MCKLDs = MCKLD(gmh,gmrVec,nSamples)
+% MCKLD = MCKLD(gmh,gmr,nSamples):
 % INPUTS:
 % - gmh, proposal density f (Gaussian Mixture),
 % - gmrVec, cell array containing Gaussian mixtures to evaluate (g),

@@ -141,11 +141,11 @@ function [pruneParamsBlock,algoParamsBlock,refParamsBlock,testParamsBlock] = pro
                         refParamsBlock{i}.('I') = 20;
                     end
 
-                elseif strcmpi(refParamsBlock{i}.('costMeas'),'GJSD')
-                    if any(strcmpi(userRefFields,'alphaGJSD'))
-                        refParamsBlock{i}.('alphaGJSD') = userRefParams{i}.alphaGJSD;
+                elseif any(strcmpi(refParamsBlock{i}.('costMeas'),{'GJSD','chernoffAlphaD','RenyiAlphaDiv'}))
+                    if any(strcmpi(userRefFields,'alpha'))
+                        refParamsBlock{i}.('alpha') = userRefParams{i}.alpha;
                     else
-                        refParamsBlock{i}.('alphaGJSD') = 0.5;
+                        refParamsBlock{i}.('alpha') = 0.5;
                     end
                 end
            end
