@@ -94,6 +94,8 @@ function [pruneParamsBlock,algoParamsBlock,refParamsBlock,testParamsBlock] = pro
                 refParamsBlock{i}.('NOptSteps') = 30;
                 refParamsBlock{i}.('optWeights') = 1;
                 refParamsBlock{i}.('accThresh') = 1e-06;
+            elseif strcmpi(refs(i),'ISEOptUncMBI')
+                refParamsBlock{i}.('NOptSteps') = 50;
             elseif strcmpi(refs(i),'CTDGMRA')
                 refParamsBlock{i}.('costMeas') = 'KLD';
                 refParamsBlock{i}.('lambda') = 0.05;
