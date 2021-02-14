@@ -1,9 +1,13 @@
-function gmr = ISEOptUncMBI(gmr,gmh,NOptSteps)
+function gmr = ISEOptUnc(gmr,gmh,NOptSteps,accThresh)
+% gmr = ISEOptUnc(gmr,gmh,NOptSteps):
+% - gmr, gmh, two Gaussian Mixtures,
+% - NOptSteps
 % This function performs the ISE Optimization on the parameters of the
 % reduced mixture by using the builtin Matlab function fminunc.
 
 if nargin < 3
     NOptSteps = 50;
+    accThresh = 1e-05;
 end
 
 Nr = numel(gmr);
@@ -13,17 +17,17 @@ q = sqrt([gmr.w]');
 mur = [gmr.mu];
 Sigmar = cat(3,gmr.Sigma);
 L = zeros(size(Sigmar));
-LVec = zeros(dr*dr*Nr,1);
 for i=1:Nr
-    L(:,:,i) = chol(Sigmar(:,:,i));
-    LVec((i-1)*dr*dr+1:i*dr*dr) = reshape(L(:,:,i),dr*dr,1);
+    L(:,:,i) = chol(gmr(i).Sigma);
 end
 
-x0 = [q;reshape(mur,dr*Nr,1);LVec];
+x0 = [q;reshape(mur,dr*Nr,1);reshape(L,dr*dr*Nr,1)];
 
 f = @(x) funGradComp(x,gmh,Nr);
 
-options = optimoptions('fminunc','Algorithm','trust-region','SpecifyObjectiveGradient',true,'MaxFunctionEvaluations',NOptSteps,'display','none');
+options = optimoptions('fminunc','OptimalityTolerance',accThresh,...
+                       'MaxFunctionEvaluations',NOptSteps,...
+                       'Algorithm','trust-region','SpecifyObjectiveGradient',true,'display','none');
 
 x = fminunc(f,x0,options);
 
@@ -40,7 +44,7 @@ for i=1:Nr
     gmr(i).Sigma = L(:,:,i)'*L(:,:,i);
 end
 
-gmr = renormalizeWeights(gmr);
+gmr = refine('weightISEOpt',gmr,gmh);
 
 end
 

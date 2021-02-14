@@ -13,4 +13,3 @@ plot(X,evalGM(gm,X),'LineWidth',1.5); hold on
 
 
 end
-
