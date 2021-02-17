@@ -1,4 +1,4 @@
-function gmr = newWilliams(gmh, Nr)
+function gmr = Williams(gmh, Nr)
 % gmr = Williams(gmh, Nr):
 % INPUTS:
 % - gmh, a Gaussian mixture,

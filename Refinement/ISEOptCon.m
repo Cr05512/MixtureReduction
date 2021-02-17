@@ -1,9 +1,8 @@
-function gmr = ISEOptCon(gmr,gmh,NOptSteps,optWeights,accThresh)
-% gmr = ISEOptUnc(gmr,gmh,NOptSteps):
+function gmr = ISEOptCon(gmr,gmh,NOptSteps,accThresh)
+% gmr = ISEOptCon(gmr,gmh,NOptSteps,optWeights,accThresh):
 % - gmr, gmh, two Gaussian Mixtures,
-% - NOptSteps
-% - optWeights
-% - accThresh.
+% - NOptSteps, maximum number of optimization steps,
+% - accThresh, accuracy threshold.
 % This function performs the ISE Optimization on the parameters of the
 % reduced mixture by using the builtin Matlab function fminunc.
 
@@ -25,14 +24,14 @@ end
 
 x0 = [wr;reshape(mur,dr*Nr,1);reshape(L,dr*dr*Nr,1)];
 
-f = @(x) funGradComp(x,gmh,Nr,optWeights);
+f = @(x) funGradComp(x,gmh,Nr);
 
 A = [-eye(Nr),zeros(Nr,Nr*dr + dr*dr*Nr);...
     zeros(Nr*dr + dr*dr*Nr,length(x0))];
 B = zeros(length(x0),1);
 
 Aeq = [ones(1,Nr),zeros(1,Nr*dr + dr*dr*Nr)];
-Beq = 1;
+Beq = sum([gmr.w]);
 
 options = optimoptions('fmincon','OptimalityTolerance',accThresh,...
                        'MaxFunctionEvaluations',NOptSteps,'MaxIterations',NOptSteps,...
@@ -55,7 +54,7 @@ end
 
 end
 
-function [f,grad] = funGradComp(x,gmh,Nr,optWeights)
+function [f,grad] = funGradComp(x,gmh,Nr)
     %We rebuild back the gmr in order to evaluate the ISE
     dr = size(gmh(1).mu,1);
     
@@ -78,9 +77,6 @@ function [f,grad] = funGradComp(x,gmh,Nr,optWeights)
     Sigmah = cat(3,gmh.Sigma);
     
     [gfw,gfmu,gfL] = gradISECon(w,mu,L,wh,muh,Sigmah);
-    if optWeights == 0
-        gfw = zeros(Nr,1);
-    end
     
     grad = [gfw; reshape(gfmu,dr*Nr,1); reshape(gfL,dr*dr*Nr,1)];
 
