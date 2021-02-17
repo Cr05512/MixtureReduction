@@ -14,16 +14,16 @@ if nargin < 3
     sk = 0.01;
     NOptSteps = 50;
     optWeights = 1;
-    accThresh = 1e-06;
+    accThresh = 1e-12;
 elseif nargin < 4
     NOptSteps = 50;
     optWeights = 1;
-    accThresh = 1e-06;
+    accThresh = 1e-12;
 elseif nargin < 5
     optWeights = 1;
-    accThresh = 1e-06;
+    accThresh = 1e-12;
 elseif nargin < 6
-    accThresh = 1e-06;
+    accThresh = 1e-12;
 end
 assert(numel(gmh)>=numel(gmr) && ~isempty(gmr),'The mixtures have to contain at least on element and N must be greater or equal to R.');
 assert(sk>0,'The gradient step has to be greater than zero.');
@@ -38,7 +38,6 @@ gmr_Opt = gmr;
 
 dr = size(gmr_Opt(1).mu,1);
 Nr = numel(gmr_Opt);
-Nh = numel(gmh);
 
 wh = [gmh.w]';
 muh = [gmh.mu];
@@ -66,100 +65,42 @@ J_prev = J;
 Jhh = selfLikeness(gmh);
 for k=1:NOptSteps
     
-    dJrrdq = zeros(length(q),1);
-    dJhrdq = dJrrdq;
-    dJhrdmu = zeros(dr,Nr);
-    dJrrdmu = dJhrdmu;
-    dJhrdL = zeros(dr,dr,Nr);
-    dJrrdL = dJhrdL;
-    
-    
-    LtL = zeros(dr,dr,Nr);
-    for i=1:Nr
-        LtL(:,:,i) = L(:,:,i)'*L(:,:,i);
-    end
-    
-    SigmahLijinv = zeros(dr,dr,Nh,Nr);
-    for i=1:Nh
-        for j=1:Nr
-            SigmahLijinv(:,:,i,j) = inv(Sigmah(:,:,i) + LtL(:,:,j));
-        end
-    end
-    
-   
-    for j=1:Nr
-        for i=1:Nh
-            prodPDFhr = struct('w',1,'mu',mu(:,j),'Sigma',Sigmah(:,:,i) + LtL(:,:,j));
-            %Weights
-            dJhrdq(j) = dJhrdq(j) + wh(i)*mvnpdf(muh(:,i), prodPDFhr.mu, prodPDFhr.Sigma);
-            %Means
-            dJhrdmu(:,j) = dJhrdmu(:,j) + wh(i)*SigmahLijinv(:,:,i,j)*...
-                (mu(:,j)-muh(:,i))*mvnpdf(muh(:,i), prodPDFhr.mu, prodPDFhr.Sigma);
-            %Covariances
-            dJhrdL(:,:,j) = dJhrdL(:,:,j) + wh(i)*q(j)^2*mvnpdf(muh(:,i), prodPDFhr.mu, prodPDFhr.Sigma)...
-                *SigmahLijinv(:,:,i,j)*((muh(:,i)-mu(:,j))*...
-                (muh(:,i)-mu(:,j))' - (Sigmah(:,:,i)+ LtL(:,:,j)))...
-                *SigmahLijinv(:,:,i,j)*L(:,:,j);
-        end
-        %Weights
-        dJhrdq(j) = 2*q(j)*dJhrdq(j);
-        %Means
-        dJhrdmu(:,j) = -(q(j)^2)*dJhrdmu(:,j);
-        %Covariances
-        %No need
-    end
-    
-    LtLijinv = zeros(dr,dr,Nr,Nr);
-    for i=1:Nr
-        for j=1:Nr
-            LtLijinv(:,:,i,j) = inv(LtL(:,:,i) + LtL(:,:,j));
-        end
-    end
-    
-    for j=1:Nr
-        for i=1:Nr
-            prodPDFrr = struct('w',1,'mu',mu(:,j),'Sigma',LtL(:,:,i) + LtL(:,:,j));
-            %Weights
-            dJrrdq(j) = dJrrdq(j) + (q(i)^2)*mvnpdf(mu(:,i)', prodPDFrr.mu', prodPDFrr.Sigma);
-            %Means
-            dJrrdmu(:,j) = dJrrdmu(:,j) + (q(i)^2)*LtLijinv(:,:,i,j)*(mu(:,j)-mu(:,i))*mvnpdf(mu(:,i)', prodPDFrr.mu', prodPDFrr.Sigma);
-            %Covariances
-            dJrrdL(:,:,j) = dJrrdL(:,:,j) + (q(i)^2)*(q(j)^2)*mvnpdf(mu(:,i)', prodPDFrr.mu', prodPDFrr.Sigma)...
-                *LtLijinv(:,:,i,j)*((mu(:,i)-mu(:,j))*(mu(:,i)-mu(:,j))'...
-                -(LtL(:,:,i) + LtL(:,:,j)))*LtLijinv(:,:,i,j)*L(:,:,j);
-        end
-        %Weights
-        dJrrdq(j) = 4*q(j)*dJrrdq(j);
-        %Means
-        dJrrdmu(:,j) = -2*(q(j)^2)*dJrrdmu(:,j);
-        %Covariances
-        dJrrdL(:,:,j) = 2*dJrrdL(:,:,j);
-    end
+    [gfq,gfmu,gfL] = gradISEUnc(q,mu,L,wh,muh,Sigmah);
    
     %Weights
-    gfq = dJrrdq - 2*dJhrdq;
+
+    
     if optWeights == 1
-        if norm(gfq)>0
-            gfq = gfq/norm(gfq);
+%         normgfq = norm(gfq);
+%         if normgfq>toll
+%             gfq = gfq/normgfq;
             q = q - sk*gfq;
-        end
+%         end
     end
     
     %Means
-    gfmu = dJrrdmu - 2*dJhrdmu;
-    if norm(gfmu)>0
-        gfmu = gfmu/norm(gfmu);
+    
+    
+%     normgfmu = norm(reshape(gfmu,dr*Nr,1));
+%     if normgfmu>0
+%         gfmu = gfmu./normgfmu;
         mu = mu - sk*gfmu;
-    end
+%     end
     
     
     %Covariances
-    gfL = dJrrdL - 2*dJhrdL;
     
-    for i=1:size(gfL,3)
-        gfL(:,:,i) = gfL(:,:,i)./norm(gfL(:,:,i));
-    end
-    L = L - sk*gfL;
+    
+%     normgfLTot = norm(reshape(gfL,dr*dr*Nr,1));
+%     
+%     if normgfLTot>0
+%         for i=1:Nr
+%             gfL(:,:,i) = gfL(:,:,i)./normgfLTot;
+%         end
+        L = L - sk*gfL;
+%     end
+    
+    %sk = sk - sk*(k-1)/NOptSteps;
     
     if optWeights == 1
         p = q.^2;

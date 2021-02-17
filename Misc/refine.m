@@ -1,6 +1,6 @@
 function varargout = refine(ref,gmr,gmh,varargin)
             
-    availableRefinements = getAvailableRefinements();
+    availableRefinements = Experiment.getAvailableRefinements();
     assert(ismember(lower(ref),lower(availableRefinements)), strcat(['Unknown refinement algorithm. The available algorithms are:',' ',strjoin(availableRefinements,', '),'.']));
 
     varargout = cell(1,nargout(ref));

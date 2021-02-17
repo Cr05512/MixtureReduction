@@ -1,4 +1,4 @@
-function gmr = ISEOptUnc(gmr,gmh,NOptSteps,optWeights,accThresh)
+function gmr = ISEOptCon(gmr,gmh,NOptSteps,optWeights,accThresh)
 % gmr = ISEOptUnc(gmr,gmh,NOptSteps):
 % - gmr, gmh, two Gaussian Mixtures,
 % - NOptSteps
@@ -15,7 +15,7 @@ end
 Nr = numel(gmr);
 dr = size(gmr(1).mu,1);
 
-q = sqrt([gmr.w]');
+wr = [gmr.w]';
 mur = [gmr.mu];
 Sigmar = cat(3,gmr.Sigma);
 L = zeros(size(Sigmar));
@@ -23,30 +23,35 @@ for i=1:Nr
     L(:,:,i) = chol(gmr(i).Sigma);
 end
 
-x0 = [q;reshape(mur,dr*Nr,1);reshape(L,dr*dr*Nr,1)];
+x0 = [wr;reshape(mur,dr*Nr,1);reshape(L,dr*dr*Nr,1)];
 
 f = @(x) funGradComp(x,gmh,Nr,optWeights);
 
-options = optimoptions('fminunc','OptimalityTolerance',accThresh,...
+A = [-eye(Nr),zeros(Nr,Nr*dr + dr*dr*Nr);...
+    zeros(Nr*dr + dr*dr*Nr,length(x0))];
+B = zeros(length(x0),1);
+
+Aeq = [ones(1,Nr),zeros(1,Nr*dr + dr*dr*Nr)];
+Beq = 1;
+
+options = optimoptions('fmincon','OptimalityTolerance',accThresh,...
                        'MaxFunctionEvaluations',NOptSteps,'MaxIterations',NOptSteps,...
-                       'Algorithm','trust-region','SpecifyObjectiveGradient',true,'display','none');
+                       'Algorithm','sqp','SpecifyObjectiveGradient',true,'display','none');
 
-x = fminunc(f,x0,options);
+x = fmincon(f,x0,A,B,Aeq,Beq,[],[],[],options);
 
 
-q = x(1:Nr);
+w = x(1:Nr);
 muLen = dr*Nr;
 mu = reshape(x(Nr+1:Nr+muLen),dr,Nr);
 L = reshape(x(Nr+muLen+1:end),[dr dr Nr]);
 
 gmr(Nr,1) = struct('w',[],'mu',[],'Sigma',[]);
 for i=1:Nr
-    gmr(i).w = q(i)^2;
+    gmr(i).w = w(i);
     gmr(i).mu = mu(:,i);
     gmr(i).Sigma = L(:,:,i)'*L(:,:,i);
 end
-
-gmr = refine('weightISEOpt',gmr,gmh);
 
 end
 
@@ -54,14 +59,14 @@ function [f,grad] = funGradComp(x,gmh,Nr,optWeights)
     %We rebuild back the gmr in order to evaluate the ISE
     dr = size(gmh(1).mu,1);
     
-    q = x(1:Nr);
+    w = x(1:Nr);
     muLen = dr*Nr;
     mu = reshape(x(Nr+1:Nr+muLen),dr,Nr);
     L = reshape(x(Nr+muLen+1:end),[dr dr Nr]);
     
     gmr(Nr,1) = struct('w',[],'mu',[],'Sigma',[]);
     for i=1:Nr
-        gmr(i).w = q(i)^2;
+        gmr(i).w = w(i);
         gmr(i).mu = mu(:,i);
         gmr(i).Sigma = L(:,:,i)'*L(:,:,i);
     end
@@ -72,12 +77,12 @@ function [f,grad] = funGradComp(x,gmh,Nr,optWeights)
     muh = [gmh.mu];
     Sigmah = cat(3,gmh.Sigma);
     
-    [gfq,gfmu,gfL] = gradISEUnc(q,mu,L,wh,muh,Sigmah);
+    [gfw,gfmu,gfL] = gradISECon(w,mu,L,wh,muh,Sigmah);
     if optWeights == 0
-        gfq = zeros(Nr,1);
+        gfw = zeros(Nr,1);
     end
     
-    grad = [gfq; reshape(gfmu,dr*Nr,1); reshape(gfL,dr*dr*Nr,1)];
+    grad = [gfw; reshape(gfmu,dr*Nr,1); reshape(gfL,dr*dr*Nr,1)];
 
 
 end

@@ -5,10 +5,12 @@ clear
 %INSTRUCTIONS:
 
 %To retrieve available choices type:
-% - getAvailablePrunings(), for pruning algorithms,
-% - getAvailableAlgorithms(), for greedy reduction algorithms,
-% - getAvailableRefinements(), for refinement algorithms,
-% - Experiment.getAvailableTests(), for tests.
+% - Experiment.getAvailablePrunings(), for pruning algorithms,
+% - Experiment.getAvailableAlgorithms(), for greedy reduction algorithms,
+% - Experiment.getAvailableRefinements(), for refinement algorithms,
+% - Experiment.getAvailableTests(), for tests,
+% - Experiment.getAvailableLocalMeasures(), for local measures,
+% - Experiment.getAvailableGlobalMeasures(), for global measures.
 
 % In order to create an experiment it is necessary to provide ordered
 % parameters:
@@ -36,7 +38,7 @@ rngSeed = randi(1000000);
 Nh = 20;
 %%
 close all
-d = 1;
+d = 3;
 alpha = 4;
 beta = 0.1;
 showPlot = 1;
@@ -44,7 +46,7 @@ showPlot = 1;
 test = 'random';
 Nr = 5;
 
-exp1 = Experiment('',           {struct('rho',0.3)},...
+exp1 = Experiment('',           {struct('rho',0.99)},...
                   'Runnalls',    struct('Nr',Nr),...
                   '',           {struct('costMeas','RenyiAlphaD','lambda',0.3,'alpha',0.5)},...
                   test,          struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));              
@@ -57,12 +59,12 @@ exp2 = Experiment('',           {},...
 
 exp3 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  'ISEOptUnc',  {struct('NOptSteps',100,'sk',5),struct()},...
+                  'ISEOptUnc',  {struct('NOptSteps',50,'sk',0.5,'accThresh',1e-15,'optWeights',1),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
               
 exp4 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  '',  {struct('NOptSteps',50)},...
+                  'ISEOptCon',  {struct('NOptSteps',200,'accThresh',1e-12,'optWeights',1)},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
 
               
@@ -70,7 +72,7 @@ exp4 = Experiment('',           {},...
               
               
 
-experiments = [exp1;exp3];
+experiments = [exp1;exp4];
 numTests = numel(experiments);
 
 gm_vector = cell(numTests,1);
@@ -82,7 +84,7 @@ time_vector = zeros(numTests,1);
 for i=1:numTests
     [gmr_vector{i},gm_vector{i},time_vector(i)] = experiments(i).execute();
 end
-
+%%
 plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot);
 
 

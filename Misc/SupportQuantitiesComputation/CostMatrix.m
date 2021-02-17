@@ -9,7 +9,7 @@ function C = CostMatrix(gmh,gmr,costMeas,varargin)
 % This function computes the cost matrix based on the following cost
 % functions provided by getAvailableLocalMeasures()
 
-availableMeasVec = getAvailableLocalMeasures(); %Vector of available dissimilarity measures
+availableMeasVec = Experiment.getAvailableLocalMeasures(); %Vector of available dissimilarity measures
 assert(any(strcmpi(availableMeasVec,costMeas)), strcat(['Unknown cost measure. The available measures are:',' ',strjoin(availableMeasVec,', '),'.']));
 assert(numel(gmh)>0 && numel(gmr)>0,'The mixtures have to contain at least one element.');
 

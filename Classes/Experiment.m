@@ -15,8 +15,8 @@ classdef Experiment < handle
 % 4. The structure containing the algorithm parameters (struct).
 % 5. The chosen refinement algorithm (char array); can be left empty or it
 %    is possible to stack several subsequent refinements by using the '+'
-%    sign, e.g. 'ISEOpt+COWAOpt' will perform the ISEOpt at first and the
-%    COWAOpt at last.
+%    sign, e.g. 'ISEOptLegacy+weightISEOpt' will perform the ISEOpt at first and the
+%    weightISEOpt at last.
 % 6. The structure containing the necessary refinement parameters for all
 %    the chosen algorithms (struct).
 % 7. The chosen test (char array); if it is left empty the experiment won't
@@ -233,9 +233,34 @@ classdef Experiment < handle
      
     methods (Static)
         
+        function pruningList = getAvailablePrunings()
+            tmp = split({dir(strcat(what('Pruning').path,'/*.m')).name}','.m');
+            pruningList = tmp(:,1);
+        end
+        
+        function algoList = getAvailableAlgorithms()
+            tmp = split({dir(strcat(what('GreedyReduction').path,'/*.m')).name}','.m');
+            algoList = tmp(:,1);
+        end
+        
+        function refList = getAvailableRefinements()
+            tmp = split({dir(strcat(what('Refinement').path,'/*.m')).name}','.m');
+            refList = tmp(:,1);
+        end
+        
         function testList = getAvailableTests()
             tmp = split({dir(strcat(what('TestsList').path,'/*.m')).name}','.m');
             testList = tmp(:,1);
+        end
+        
+        function globMeasList = getAvailableGlobalMeasures()
+           tmp = split({dir(strcat(what('GlobalMeasures').path,'/*.m')).name}','.m');
+           globMeasList = tmp(:,1);
+        end
+        
+        function locMeasList = getAvailableLocalMeasures()
+           tmp = split({dir(strcat(what('LocalMeasures').path,'/*.m')).name}','.m');
+           locMeasList = tmp(:,1);
         end
     end
 end

@@ -108,7 +108,7 @@ else
 end
 str = [str,strPrune];
 
-str = [str,strcat('\textbf{NISE}:',' ',num2str(nISE(gmh,gmr)),', \textbf{UTKLD}:',' ',num2str(UTKLD(gmh,gmr)),', \textbf{Time}:',' ',num2str(time),'s')];
+str = [str,strcat('\textbf{ISE}:',' ',num2str(ISE(gmh,gmr)),', \textbf{UTKLD}:',' ',num2str(UTKLD(gmh,gmr)),', \textbf{Time}:',' ',num2str(time),'s')];
 
 
 
