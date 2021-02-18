@@ -1,8 +1,8 @@
-function [gfq,gfmu,gfL] = gradISEUnc(q,mu,L,wh,muh,Sigmah)
-% [gfq,gfmu,gfL] = gradISEUnc(q,mu,L,wh,muh,Sigmah):
+function [gfq,gfmu,gfL] = gradISEq(q,mur,L,wh,muh,Sigmah)
+% [gfq,gfmu,gfL] = gradISEq(q,mu,L,wh,muh,Sigmah):
 % INPUT:
 % - q, reduced mixture square-root weights,
-% - mu, reduced mixture means,
+% - mur, reduced mixture means,
 % - L, reduced mixture cholesky factorizations of covariance matrices,
 % - wh, original mixture weights,
 % - muh, original mixture means,
@@ -18,8 +18,8 @@ function [gfq,gfmu,gfL] = gradISEUnc(q,mu,L,wh,muh,Sigmah)
 
 
 
-dr = size(mu,1);
-Nr = size(mu,2);
+dr = size(mur,1);
+Nr = size(mur,2);
 Nh = size(muh,2);
 dJrrdq = zeros(length(q),1);
 dJhrdq = dJrrdq;
@@ -29,32 +29,32 @@ dJhrdL = zeros(dr,dr,Nr);
 dJrrdL = dJhrdL;
 
 
-LtL = zeros(dr,dr,Nr);
+Sigmar = zeros(dr,dr,Nr);
 for i=1:Nr
-    LtL(:,:,i) = L(:,:,i)'*L(:,:,i);
+    Sigmar(:,:,i) = L(:,:,i)'*L(:,:,i);
 end
 
-SigmahLijinv = zeros(dr,dr,Nh,Nr);
+Sigmahrijinv = zeros(dr,dr,Nh,Nr);
 for i=1:Nh
     for j=1:Nr
-        SigmahLijinv(:,:,i,j) = inv(Sigmah(:,:,i) + LtL(:,:,j));
+        Sigmahrijinv(:,:,i,j) = inv(Sigmah(:,:,i) + Sigmar(:,:,j));
     end
 end
 
 
 for j=1:Nr
     for i=1:Nh
-        prodPDFhr = struct('w',1,'mu',mu(:,j),'Sigma',Sigmah(:,:,i) + LtL(:,:,j));
+        prodPDFhr = struct('w',1,'mu',mur(:,j),'Sigma',Sigmah(:,:,i) + Sigmar(:,:,j));
         %Weights
         dJhrdq(j) = dJhrdq(j) + wh(i)*mvnpdf(muh(:,i), prodPDFhr.mu, prodPDFhr.Sigma);
         %Means
-        dJhrdmu(:,j) = dJhrdmu(:,j) + wh(i)*SigmahLijinv(:,:,i,j)*...
-            (mu(:,j)-muh(:,i))*mvnpdf(muh(:,i), prodPDFhr.mu, prodPDFhr.Sigma);
+        dJhrdmu(:,j) = dJhrdmu(:,j) + wh(i)*Sigmahrijinv(:,:,i,j)*...
+            (mur(:,j)-muh(:,i))*mvnpdf(muh(:,i), prodPDFhr.mu, prodPDFhr.Sigma);
         %Covariances
         dJhrdL(:,:,j) = dJhrdL(:,:,j) + wh(i)*q(j)^2*mvnpdf(muh(:,i), prodPDFhr.mu, prodPDFhr.Sigma)...
-            *SigmahLijinv(:,:,i,j)*((muh(:,i)-mu(:,j))*...
-            (muh(:,i)-mu(:,j))' - (Sigmah(:,:,i)+ LtL(:,:,j)))...
-            *SigmahLijinv(:,:,i,j)*L(:,:,j);
+            *Sigmahrijinv(:,:,i,j)*((muh(:,i)-mur(:,j))*...
+            (muh(:,i)-mur(:,j))' - (Sigmah(:,:,i)+ Sigmar(:,:,j)))...
+            *Sigmahrijinv(:,:,i,j)*L(:,:,j);
     end
     %Weights
     dJhrdq(j) = 2*q(j)*dJhrdq(j);
@@ -64,24 +64,24 @@ for j=1:Nr
     %No need
 end
 
-LtLijinv = zeros(dr,dr,Nr,Nr);
+Sigmarijinv = zeros(dr,dr,Nr,Nr);
 for i=1:Nr
     for j=1:Nr
-        LtLijinv(:,:,i,j) = inv(LtL(:,:,i) + LtL(:,:,j));
+        Sigmarijinv(:,:,i,j) = inv(Sigmar(:,:,i) + Sigmar(:,:,j));
     end
 end
 
 for j=1:Nr
     for i=1:Nr
-        prodPDFrr = struct('w',1,'mu',mu(:,j),'Sigma',LtL(:,:,i) + LtL(:,:,j));
+        prodPDFrr = struct('w',1,'mu',mur(:,j),'Sigma',Sigmar(:,:,i) + Sigmar(:,:,j));
         %Weights
-        dJrrdq(j) = dJrrdq(j) + (q(i)^2)*mvnpdf(mu(:,i)', prodPDFrr.mu', prodPDFrr.Sigma);
+        dJrrdq(j) = dJrrdq(j) + (q(i)^2)*mvnpdf(mur(:,i)', prodPDFrr.mu', prodPDFrr.Sigma);
         %Means
-        dJrrdmu(:,j) = dJrrdmu(:,j) + (q(i)^2)*LtLijinv(:,:,i,j)*(mu(:,j)-mu(:,i))*mvnpdf(mu(:,i)', prodPDFrr.mu', prodPDFrr.Sigma);
+        dJrrdmu(:,j) = dJrrdmu(:,j) + (q(i)^2)*Sigmarijinv(:,:,i,j)*(mur(:,j)-mur(:,i))*mvnpdf(mur(:,i)', prodPDFrr.mu', prodPDFrr.Sigma);
         %Covariances
-        dJrrdL(:,:,j) = dJrrdL(:,:,j) + (q(i)^2)*(q(j)^2)*mvnpdf(mu(:,i)', prodPDFrr.mu', prodPDFrr.Sigma)...
-            *LtLijinv(:,:,i,j)*((mu(:,i)-mu(:,j))*(mu(:,i)-mu(:,j))'...
-            -(LtL(:,:,i) + LtL(:,:,j)))*LtLijinv(:,:,i,j)*L(:,:,j);
+        dJrrdL(:,:,j) = dJrrdL(:,:,j) + (q(i)^2)*(q(j)^2)*mvnpdf(mur(:,i)', prodPDFrr.mu', prodPDFrr.Sigma)...
+            *Sigmarijinv(:,:,i,j)*((mur(:,i)-mur(:,j))*(mur(:,i)-mur(:,j))'...
+            -(Sigmar(:,:,i) + Sigmar(:,:,j)))*Sigmarijinv(:,:,i,j)*L(:,:,j);
     end
     %Weights
     dJrrdq(j) = 4*q(j)*dJrrdq(j);

@@ -65,7 +65,7 @@ J_prev = J;
 Jhh = selfLikeness(gmh);
 for k=1:NOptSteps
     
-    [gfq,gfmu,gfL] = gradISEUnc(q,mu,L,wh,muh,Sigmah);
+    [gfq,gfmu,gfL] = gradISEq(q,mu,L,wh,muh,Sigmah);
    
     %Weights
 

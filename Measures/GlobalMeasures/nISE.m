@@ -13,7 +13,7 @@ Jhh = selfLikeness(gmh);
 Jrr = selfLikeness(gmr);
 
 
-J = (Jhh -2*Jhr + Jrr) / (Jhh + Jrr);   
+J = 1 -2*Jhr/(Jhh + Jrr);   
 
 end
 

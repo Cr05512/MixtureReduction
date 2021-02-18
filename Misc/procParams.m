@@ -93,7 +93,7 @@ function [pruneParamsBlock,algoParamsBlock,refParamsBlock,testParamsBlock] = pro
                 refParamsBlock{i}.('NOptSteps') = 50;
                 refParamsBlock{i}.('optWeights') = 1;
                 refParamsBlock{i}.('accThresh') = 1e-09;
-            elseif strcmpi(refs(i),'ISEOptCon')
+            elseif any(strcmpi(refs(i),{'ISEOptCon','NISEOptCon'}))
                 refParamsBlock{i}.('NOptSteps') = 50;
                 refParamsBlock{i}.('accThresh') = 1e-09;
             elseif strcmpi(refs(i),{'ISEOptLegacy'})

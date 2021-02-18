@@ -15,12 +15,11 @@ end
 Nr = numel(gmr);
 dr = size(gmr(1).mu,1);
 
-q = sqrt([gmr.w]');
-mur = [gmr.mu];
-Sigmar = cat(3,gmr.Sigma);
+[wr,mur,Sigmar] = paramsFromMixture(gmr);
+q = sqrt(wr);
 L = zeros(size(Sigmar));
 for i=1:Nr
-    L(:,:,i) = chol(gmr(i).Sigma);
+    L(:,:,i) = chol(Sigmar(:,:,i));
 end
 
 x0 = [q;reshape(mur,dr*Nr,1);reshape(L,dr*dr*Nr,1)];
@@ -39,12 +38,12 @@ muLen = dr*Nr;
 mu = reshape(x(Nr+1:Nr+muLen),dr,Nr);
 L = reshape(x(Nr+muLen+1:end),[dr dr Nr]);
 
-gmr(Nr,1) = struct('w',[],'mu',[],'Sigma',[]);
+Sigma = zeros(dr,dr,Nr);
 for i=1:Nr
-    gmr(i).w = q(i)^2;
-    gmr(i).mu = mu(:,i);
-    gmr(i).Sigma = L(:,:,i)'*L(:,:,i);
+    Sigma(:,:,i) = L(:,:,i)'*L(:,:,i);
 end
+
+gmr = mixtureFromParams(q.^2,mu,Sigma);
 
 gmr = refine('weightISEOpt',gmr,gmh);
 
@@ -59,20 +58,18 @@ function [f,grad] = funGradComp(x,gmh,Nr,optWeights)
     mu = reshape(x(Nr+1:Nr+muLen),dr,Nr);
     L = reshape(x(Nr+muLen+1:end),[dr dr Nr]);
     
-    gmr(Nr,1) = struct('w',[],'mu',[],'Sigma',[]);
+    Sigma = zeros(dr,dr,Nr);
     for i=1:Nr
-        gmr(i).w = q(i)^2;
-        gmr(i).mu = mu(:,i);
-        gmr(i).Sigma = L(:,:,i)'*L(:,:,i);
+        Sigma(:,:,i) = L(:,:,i)'*L(:,:,i);
     end
+    
+    gmr = mixtureFromParams(q.^2,mu,Sigma);
     
     f = ISE(gmh,gmr);
     
-    wh = [gmh.w]';
-    muh = [gmh.mu];
-    Sigmah = cat(3,gmh.Sigma);
+    [wh,muh,Sigmah] = paramsFromMixture(gmh);
     
-    [gfq,gfmu,gfL] = gradISEUnc(q,mu,L,wh,muh,Sigmah);
+    [gfq,gfmu,gfL] = gradISEq(q,mu,L,wh,muh,Sigmah);
     if optWeights == 0
         gfq = zeros(Nr,1);
     end

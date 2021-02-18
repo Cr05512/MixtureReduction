@@ -1,14 +1,14 @@
-function gmr = ISEOptCon(gmr,gmh,NOptSteps,accThresh)
-% gmr = ISEOptCon(gmr,gmh,NOptSteps,optWeights,accThresh):
+function gmr = NISEOptCon(gmr,gmh,NOptSteps,accThresh)
+% gmr = NISEOptCon(gmr,gmh,NOptSteps,optWeights,accThresh):
 % - gmr, gmh, two Gaussian Mixtures,
 % - NOptSteps, maximum number of optimization steps,
 % - accThresh, accuracy threshold.
-% This function performs the ISE Optimization on the parameters of the
+% This function performs the NISE Optimization on the parameters of the
 % reduced mixture by using the builtin Matlab function fminunc.
 
 if nargin < 3
-    NOptSteps = 50;
-    accThresh = 1e-08;
+    NOptSteps = 100;
+    accThresh = 1e-12;
 end
 
 Nr = numel(gmr);
@@ -33,7 +33,7 @@ Beq = sum([gmr.w]);
 
 options = optimoptions('fmincon','OptimalityTolerance',accThresh,...
                        'MaxFunctionEvaluations',NOptSteps,'MaxIterations',NOptSteps,...
-                       'Algorithm','sqp','SpecifyObjectiveGradient',true,'display','none');
+                       'Algorithm','sqp-legacy','SpecifyObjectiveGradient',true,'display','none');
 
 x = fmincon(f,x0,A,B,Aeq,Beq,[],[],[],options);
 
@@ -68,11 +68,11 @@ function [f,grad] = funGradComp(x,gmh,Nr)
     
     gmr = mixtureFromParams(w,mu,Sigma);
     
-    f = ISE(gmh,gmr);
+    f = nISE(gmh,gmr);
     
     [wh,muh,Sigmah] = paramsFromMixture(gmh);
     
-    [gfw,gfmu,gfL] = gradISEw(w,mu,L,wh,muh,Sigmah);
+    [gfw,gfmu,gfL] = gradNISE(w,mu,L,wh,muh,Sigmah);
     
     grad = [gfw; reshape(gfmu,dr*Nr,1); reshape(gfL,dr*dr*Nr,1)];
 
