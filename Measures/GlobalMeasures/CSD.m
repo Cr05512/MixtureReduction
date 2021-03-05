@@ -1,5 +1,5 @@
-function dCS = CauchySchwarzGM(gmh,gmr)
-% dCS = CauchySchwarzGM(gmh,gmr):
+function dCS = CSD(gmh,gmr)
+% dCS = CSD(gmh,gmr):
 % INPUT:
 % - gmh, gmr, two Gaussian Mixtures.
 % OUTPUT:

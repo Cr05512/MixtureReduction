@@ -1,14 +1,14 @@
-function gmr = NISEOptCon(gmr,gmh,NOptSteps,accThresh)
-% gmr = NISEOptCon(gmr,gmh,NOptSteps,optWeights,accThresh):
+function gmr = CSDOptCon(gmr,gmh,NOptSteps,accThresh)
+% gmr = CSDOptCon(gmr,gmh,NOptSteps,accThresh):
 % - gmr, gmh, two Gaussian Mixtures,
 % - NOptSteps, maximum number of optimization steps,
 % - accThresh, accuracy threshold.
-% This function performs the NISE Optimization on the parameters of the
+% This function performs the Cauchy-Schwarz Optimization on the parameters of the
 % reduced mixture by using the builtin Matlab function fmincon.
 
 if nargin < 3
-    NOptSteps = 1000;
-    accThresh = 1e-21;
+    NOptSteps = 100;
+    accThresh = 1e-18;
 end
 
 Nr = numel(gmr);
@@ -21,9 +21,8 @@ for i=1:Nr
 end
 
 x0 = [wr;reshape(mur,dr*Nr,1);reshape(L,dr*dr*Nr,1)];
-[wh,muh,Sigmah] = paramsFromMixture(gmh);
 
-f = @(x) funGradComp(x,wh,muh,Sigmah,Nr);
+f = @(x) funGradComp(x,gmh,Nr);
 
 A = [-eye(Nr),zeros(Nr,Nr*dr + dr*dr*Nr);...
     zeros(Nr*dr + dr*dr*Nr,length(x0))];
@@ -34,7 +33,7 @@ Beq = sum([gmr.w]);
 
 options = optimoptions('fmincon','OptimalityTolerance',accThresh,...
                        'MaxFunctionEvaluations',NOptSteps,'MaxIterations',NOptSteps,...
-                       'Algorithm','sqp','SpecifyObjectiveGradient',true,'display','none');
+                       'Algorithm','interior-point','SpecifyObjectiveGradient',true,'display','none');
 
 x = fmincon(f,x0,A,B,Aeq,Beq,[],[],[],options);
 
@@ -53,27 +52,27 @@ gmr = mixtureFromParams(w,mu,Sigma);
 
 end
 
-function [f,grad] = funGradComp(x,wh,muh,Sigmah,Nr)
+function [f,grad] = funGradComp(x,gmh,Nr)
     %We rebuild back the gmr in order to evaluate the ISE
-    dr = size(muh(:,1),1);
+    dr = size(gmh(1).mu,1);
     
-    wr = x(1:Nr);
+    w = x(1:Nr);
     muLen = dr*Nr;
-    mur = reshape(x(Nr+1:Nr+muLen),dr,Nr);
+    mu = reshape(x(Nr+1:Nr+muLen),dr,Nr);
     L = reshape(x(Nr+muLen+1:end),[dr dr Nr]);
     
-    Sigmar = zeros(dr,dr,Nr);
+    Sigma = zeros(dr,dr,Nr);
     for i=1:Nr
-        Sigmar(:,:,i) = L(:,:,i)'*L(:,:,i);
+        Sigma(:,:,i) = L(:,:,i)'*L(:,:,i);
     end
     
-%     gmr = mixtureFromParams(w,mu,Sigma);
+    gmr = mixtureFromParams(w,mu,Sigma);
     
-    f = nISEparams(wh,muh,Sigmah,wr,mur,Sigmar);
+    f = CSD(gmh,gmr);
     
-%     [wh,muh,Sigmah] = paramsFromMixture(gmh);
+    [wh,muh,Sigmah] = paramsFromMixture(gmh);
     
-    [gfw,gfmu,gfL] = gradNISE(wr,mur,L,wh,muh,Sigmah);
+    [gfw,gfmu,gfL] = gradCSD(w,mu,L,wh,muh,Sigmah);
     
     grad = [gfw; reshape(gfmu,dr*Nr,1); reshape(gfL,dr*dr*Nr,1)];
 

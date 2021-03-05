@@ -2,7 +2,7 @@ function IB = ISEBarycenter(gmh)
 
 gmr = mpMerge(gmh);
 
-IB = refine('ISEOptCon',gmr,gmh,100,1e-12);
+IB = refine('ISEOptCon',gmr,gmh,600,1e-21);
 
 end
 

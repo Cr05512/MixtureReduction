@@ -8,7 +8,11 @@ function J = ISE(gmh,gmr)
 % can be used as performance metric in the reduction problem.
 assert(~isempty(gmh) && ~isempty(gmr),'Check input parameters, the Gaussian mixtures have to contain at least one element.');
 
-J = selfLikeness(gmh) -2*crossLikeness(gmh,gmr) + selfLikeness(gmr);
+Jhh = selfLikeness(gmh);
+Jhr = crossLikeness(gmh,gmr);
+Jrr = selfLikeness(gmr);
+
+J = Jhh - 2*Jhr + Jrr;
     
     
 end

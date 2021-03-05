@@ -8,8 +8,8 @@ function gmr = ISEOptUnc(gmr,gmh,NOptSteps,optWeights,accThresh)
 % reduced mixture by using the builtin Matlab function fminunc.
 
 if nargin < 3
-    NOptSteps = 50;
-    accThresh = 1e-08;
+    NOptSteps = 1000;
+    accThresh = 1e-18;
 end
 
 Nr = numel(gmr);
@@ -23,53 +23,48 @@ for i=1:Nr
 end
 
 x0 = [q;reshape(mur,dr*Nr,1);reshape(L,dr*dr*Nr,1)];
-
-f = @(x) funGradComp(x,gmh,Nr,optWeights);
+[wh,muh,Sigmah] = paramsFromMixture(gmh);
+f = @(x) funGradComp(x,wh,muh,Sigmah,Nr,optWeights);
 
 options = optimoptions('fminunc','OptimalityTolerance',accThresh,...
                        'MaxFunctionEvaluations',NOptSteps,'MaxIterations',NOptSteps,...
-                       'Algorithm','trust-region','SpecifyObjectiveGradient',true,'display','none');
+                       'Algorithm','quasi-newton','SpecifyObjectiveGradient',true,'display','none');
 
 x = fminunc(f,x0,options);
 
 
 q = x(1:Nr);
 muLen = dr*Nr;
-mu = reshape(x(Nr+1:Nr+muLen),dr,Nr);
+mur = reshape(x(Nr+1:Nr+muLen),dr,Nr);
 L = reshape(x(Nr+muLen+1:end),[dr dr Nr]);
 
-Sigma = zeros(dr,dr,Nr);
+%Sigmar = zeros(dr,dr,Nr);
 for i=1:Nr
-    Sigma(:,:,i) = L(:,:,i)'*L(:,:,i);
+    Sigmar(:,:,i) = L(:,:,i)'*L(:,:,i);
 end
 
-gmr = mixtureFromParams(q.^2,mu,Sigma);
+gmr = mixtureFromParams(q.^2,mur,Sigmar);
 
 gmr = refine('weightISEOpt',gmr,gmh);
 
 end
 
-function [f,grad] = funGradComp(x,gmh,Nr,optWeights)
-    %We rebuild back the gmr in order to evaluate the ISE
-    dr = size(gmh(1).mu,1);
+function [f,grad] = funGradComp(x,wh,muh,Sigmah,Nr,optWeights)
+    dr = size(muh(:,1),1);
     
     q = x(1:Nr);
     muLen = dr*Nr;
-    mu = reshape(x(Nr+1:Nr+muLen),dr,Nr);
+    mur = reshape(x(Nr+1:Nr+muLen),dr,Nr);
     L = reshape(x(Nr+muLen+1:end),[dr dr Nr]);
     
-    Sigma = zeros(dr,dr,Nr);
+    Sigmar = zeros(dr,dr,Nr);
     for i=1:Nr
-        Sigma(:,:,i) = L(:,:,i)'*L(:,:,i);
+        Sigmar(:,:,i) = L(:,:,i)'*L(:,:,i);
     end
     
-    gmr = mixtureFromParams(q.^2,mu,Sigma);
+    f = ISEparams(wh,muh,Sigmah,q.^2,mur,Sigmar);
     
-    f = ISE(gmh,gmr);
-    
-    [wh,muh,Sigmah] = paramsFromMixture(gmh);
-    
-    [gfq,gfmu,gfL] = gradISEq(q,mu,L,wh,muh,Sigmah);
+    [gfq,gfmu,gfL] = gradISEq(q,mur,L,wh,muh,Sigmah);
     if optWeights == 0
         gfq = zeros(Nr,1);
     end

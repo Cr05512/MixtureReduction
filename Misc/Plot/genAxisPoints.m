@@ -15,7 +15,7 @@ assert(~isempty(gm),'The Gaussian Mixture has to be non-empty.');
 errorEll = errorEllipses(offset,P,0.9999);
 alpha = max(max(abs(errorEll)));
 d = size(gm(1).mu,1);
-mult = 1.2;
+mult = 1.0;
 if d==1
     X = linspace(-mult*alpha+offset, mult*alpha+offset,nPoints);
     varargout{1} = X;

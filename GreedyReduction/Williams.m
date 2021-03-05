@@ -92,6 +92,7 @@ while numel(gmr)>Nr
     
     if idxs(1) == idxs(2)
         gmr(idxs(1)) = [];
+        gmr = renormalizeWeights(gmr);
         
     else
         gmr(idxs(1)) = mpMerge(gmr(idxs));

@@ -1,22 +1,21 @@
-function H = matrixUnwSelfLikeness(gmh)
-% H = matrixUnwSelfLikeness(gmh):
+function Hhh = matrixUnwSelfLikeness(mu,Sigma)
+% Hhh = matrixUnwSelfLikeness(mu,Sigma):
 % INPUTS:
-% - gmh, a Gaussian mixtures.
+% - mu, Sigma, Gaussian mixture means and covariances.
 % OUTPUTS:
-% - H, the matrix unweighted self likenesses (Nh x Nh matrix).
+% - matrixsl, the matrix unweighted self likeness (Nh x Nh matrix).
 % This function computes the matrix self likenesses of a Gaussian mixture. Summing up over all the elements of such matrix
 % returns the scalar self likeness of the mixture. 
-assert(~isempty(gmh),'The mixture have to contain at least one element.');
+assert(size(mu,2)>0 && size(mu,2)==size(Sigma,3) && size(mu,1)==size(Sigma,1),'The mixture parameters are inconsistent.');
 
-N = numel(gmh);
+N = size(mu,2);
 
-H = zeros(N,N);
+Hhh = Inf(N,N);
 
 for i=1:N
     for j=1:N
-         H(i,j) = mvnpdf(gmh(i).mu,gmh(j).mu,gmh(i).Sigma + gmh(j).Sigma);
+         Hhh(i,j) = mvnpdf(mu(:,i),mu(:,j),Sigma(:,:,i) + Sigma(:,:,j));
     end
 end
 
 end
-

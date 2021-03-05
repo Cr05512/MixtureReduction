@@ -1,16 +1,22 @@
-function [] = plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot,nPoints)
+function [] = plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot,globalMeas,nPoints)
 % plotResults(gmr_vector,gm_vector,gmr_times,experiments,costMeas):
 % INPUT:
 % - gmr_vector, vector containing reduced mixtures (numExperiments x 1 vector),
 % - gm_vector, vector containing original mixtures (numExperiments x 1 vector),
 % - gmr_times, vector containing execution times (numExperiments x 1 vector),
 % - experiments, vector containing the experiments (numExperiments x 1 vector),
-% - costMeas, cost measure used to evaluate the CTD in the results (char array).
+% - showPlot, flag equal to 1 to show the plot (binary variable),
+% - globalMeas, string cell array containing the global measures to evaluate the
+%   final results,
+% - nPoints, number of points for the 1D and 2D plots.
 % This function plots the results of each experiment in different windows.
 % Together with the plots, all the data used to generate such experiment
 % and result are reported in the title bar.
 
 if nargin < 6
+    globalMeas = {'ISE'};
+    nPoints = 500;
+elseif nargin < 7
     nPoints = 500;
 end
 
@@ -22,8 +28,8 @@ for i=1:numExperiments
     
     if ~isempty(experiments(i).getAlgo) && ~isempty(experiments(i).getTest)
         
-        str = buildParamString(experiments(i),gm_vector{i},gmr_vector{i},time_vector(i));
-
+        str = buildParamString(experiments(i),gm_vector{i},gmr_vector{i},time_vector(i),globalMeas);
+        %str = {''};
         if experiments(i).getTestParams.d == 1 && showPlot==1
             figure(i)
             
@@ -83,7 +89,7 @@ for i=1:numExperiments
             axis('square');
             grid minor
         end
-        disp(strcat(['Experiment: ',num2str(i),' ISE: ',num2str(ISE(gm_vector{i},gmr_vector{i})),', NISE: ',num2str(nISE(gm_vector{i},gmr_vector{i})),', UTKLD: ',num2str(UTKLD(gm_vector{i},gmr_vector{i})),', Time: ',num2str(time_vector(i)),'s']));
+        disp(strcat(['Experiment: ',num2str(i),', ',str{end}]));
         
     end
         

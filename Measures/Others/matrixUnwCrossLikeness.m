@@ -1,25 +1,24 @@
-
-function H = matrixUnwCrossLikeness(gmh,gmr)
-% H = matrixUnwCrossLikeness(gmh,gmr):
+function Hhr = matrixUnwCrossLikeness(muh,Sigmah,mur,Sigmar)
+% Hhr = matrixUnwCrossLikeness(muh,Sigmah,mur,Sigmar):
 % INPUTS:
-% - gmh, gmr, two Gaussian mixtures.
+% - muh, Sigmah, mur, Sigmar, two Gaussian mixture means and covariances.
 % OUTPUTS:
-% - H, the matrix cross likeness (Nh x Nr matrix).
-% This function computes the unweighted cross likenesses of each pair of components,
-% returning a matrix. Summing up over all the elements of such matrix
-% returns the scalar cross likeness between the mixtures.
-assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element.');
+% - Hhr, the matrix unweighted cross likeness (Nh x Nh matrix).
+% This function computes the matrix self likenesses of a Gaussian mixture. Summing up over all the elements of such matrix
+% returns the scalar self likeness of the mixture. 
+assert(size(muh,2)>0 && size(muh,2)==size(Sigmah,3) && size(muh,1)==size(Sigmah,1) &&...
+       size(mur,2)>0 && size(mur,2)==size(Sigmar,3) && size(mur,1)==size(Sigmar,1)...
+       ,'The mixture parameters are inconsistent.');
 
-N = numel(gmh);
-R = numel(gmr);
+Nh = size(muh,2);
+Nr = size(mur,2);
 
-H = zeros(N,R);
+Hhr = Inf(Nh,Nr);
 
-for i=1:N
-    for j=1:R
-         H(i,j) = mvnpdf(gmh(i).mu,gmr(j).mu,gmh(i).Sigma + gmr(j).Sigma);
+for i=1:Nh
+    for j=1:Nr
+         Hhr(i,j) = mvnpdf(muh(:,i),mur(:,j),Sigmah(:,:,i) + Sigmar(:,:,j));
     end
 end
 
 end
-

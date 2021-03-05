@@ -1,4 +1,4 @@
-function [] = plotGM1D(gm,X)
+function h = plotGM1D(gm,X)
 % [] = plotGM1D(gm,X):
 % INPUTS:
 % - gm, a Gaussian mixture,
@@ -9,7 +9,9 @@ assert(~isempty(gm),'The mixture has to contain at least one element.');
 assert(~isempty(X),'The evaluation points have to be at least one.');
 
 
-plot(X,evalGM(gm,X),'LineWidth',1.5); hold on
+h = plot(X,evalGM(gm,X),'LineWidth',1.5); hold on
+xlabel('x');
+ylabel('p(x)');
 
 
 end

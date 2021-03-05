@@ -1,5 +1,5 @@
 function UTKLDVal = UTKLD(gmh,gmr,k)
-% UTKLDVal = UTKLD(gmh,gmr,coeffs,order):
+% UTKLDVal = UTKLD(gmh,gmr,k):
 % INPUT:
 % - gmh, gmr, two Gaussian mixtures,
 % - k, number of sigma-point rings.

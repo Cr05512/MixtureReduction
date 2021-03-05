@@ -1,10 +1,11 @@
-function str = buildParamString(exp,gmh,gmr,time)
+function str = buildParamString(exp,gmh,gmr,time,globalMeas)
 % str = buildParamString(exp,gmh,gmr,time,costMeas):
 % INPUT:
 % - exp, the current experiment,
 % - gmh, gmr, two Gaussian Mixtures result of the experiment,
 % - time, execution time of the experiment,
-% - costMeas, cost measure used in the CTD computation.
+% - globalMeas, string cell array containing the global measures to use in
+%   the evaluation of the results.
 % OUTPUT:
 % - str, multiline string containing all the parameters relative to the
 % experiment.
@@ -14,7 +15,7 @@ function str = buildParamString(exp,gmh,gmr,time)
 str = {};
 
 test = exp.getTest;
-strTest = '\textbf{Test}$\rightarrow$';
+strTest = 'Test$\rightarrow$';
 if ~isempty(test)
     strTest = strcat([strTest,'\textbf{',test,'}',':']);
     testParams = exp.getTestParams;
@@ -33,7 +34,7 @@ end
 str = [str,strTest];
 
 algo = exp.getAlgo;
-strAlgo = '\textbf{Algorithm}$\rightarrow$';
+strAlgo = 'Algorithm$\rightarrow$';
 if ~isempty(algo)
     strAlgo = strcat([strAlgo,'\textbf{',algo,'}',':']);
     algoParams = exp.getAlgoParams;
@@ -51,7 +52,7 @@ end
 str = [str,strAlgo];
 
 
-strRef = '\textbf{Refinement}$\rightarrow$';
+strRef = 'Refinement$\rightarrow$';
 if ~isempty(exp.getRef)
     refs = split(exp.getRef,'+');
 else
@@ -80,7 +81,7 @@ end
 str = [str,strRef];
 
 
-strPrune = '\textbf{Pruning}$\rightarrow$';
+strPrune = 'Pruning$\rightarrow$';
 if ~isempty(exp.getPrune)
     prunings = split(exp.getPrune,'+');
 else
@@ -108,8 +109,28 @@ else
 end
 str = [str,strPrune];
 
-str = [str,strcat('\textbf{ISE}:',' ',num2str(ISE(gmh,gmr)),', \textbf{UTKLD}:',' ',num2str(UTKLD(gmh,gmr)),', \textbf{Time}:',' ',num2str(time),'s')];
 
+performanceStr = '';
+if ~isempty(globalMeas)
+
+    for i=1:numel(globalMeas)
+        if isstruct(globalMeas{i})
+            assert(any(strcmpi(Experiment.getAvailableGlobalMeasures,globalMeas{i}.globMeas)),'Wrong global measure. Check the available ones by typing Experiment.getAvailableGlobalMeasures.');
+            if strcmpi(globalMeas{i}.globMeas,'CTD')
+                performanceStr = strcat(performanceStr,strcat([' ',globalMeas{i}.globMeas,globalMeas{i}.costMeas,':',' ',num2str(feval(globalMeas{i}.globMeas,gmh,gmr,globalMeas{i}.costMeas)),',']));
+            elseif any(strcmpi(globalMeas{i}.globMeas,{'MCKLD','ISMCKLD'}))
+                performanceStr = strcat(performanceStr,strcat([' ',globalMeas{i}.globMeas,':',' ',num2str(feval(globalMeas{i}.globMeas,gmh,gmr,globalMeas{i}.nSamples)),',']));
+            elseif any(strcmpi(globalMeas{i}.globMeas,{'UTKLD','ISUTKLD'}))
+                performanceStr = strcat(performanceStr,strcat([' ',globalMeas{i}.globMeas,':',' ',num2str(feval(globalMeas{i}.globMeas,gmh,gmr,globalMeas{i}.nRings)),',']));
+            else
+                performanceStr = strcat(performanceStr,strcat([' ',globalMeas{i}.globMeas,':',' ',num2str(feval(globalMeas{i}.globMeas,gmh,gmr)),',']));
+            end
+        end
+    end
+end
+
+performanceStr = strcat(performanceStr(2:end),strcat(' Time:',' ',num2str(time),'s.'));
+str = [str,performanceStr];
 
 
 end

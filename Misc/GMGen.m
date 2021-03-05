@@ -56,7 +56,7 @@ for i=1:N
     %sigma = 0.5*(sigma+sigma');
     %sigma = sigma*sigma';
     %sigma = sigma + beta*eye(n);
-    sigma = wishrnd(beta*eye(d),d+3);
+    sigma = wishrnd(beta*eye(d),d+5);
     %sigma = eye(2);
     Sigma(:,:,i) = sigma;
 end

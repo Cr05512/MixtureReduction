@@ -7,14 +7,14 @@ function gmr = weightISEOpt(gmr,gmh)
 % This function implements a quadratic programming solver to optimize the
 % GM weights according to the ISE measure.
 Nr = numel(gmr);
-w = [gmh.w]';
+[~,mur,Sigmar] = paramsFromMixture(gmr);
+[wh,muh,Sigmah] = paramsFromMixture(gmh);
+H1 = matrixUnwSelfLikeness(mur,Sigmar);
 
-H1 = matrixUnwSelfLikeness(gmr);
-
-H2 = matrixUnwCrossLikeness(gmh,gmr);
+H2 = matrixUnwCrossLikeness(muh,Sigmah,mur,Sigmar);
 
 
-f = -H2'*w;
+f = -H2'*wh;
 
 beq = 1;
 Aeq = ones(1,Nr);

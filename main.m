@@ -34,37 +34,37 @@ clear
 % through the methos .execute(), e.g. exp1 = Experiment(...),
 % exp1.execute().
 
-rngSeed = randi(1000000);
-Nh = 20;
+rngSeed = randi(1000000);  %559999
 %%
+Nh = 20;
 close all
-d = 3;
-alpha = 4;
+d = 1;
+alpha = 5;
 beta = 0.1;
 showPlot = 1;
 
-test = 'random';
+test = 'testCrouse';
 Nr = 5;
 
 exp1 = Experiment('',           {struct('rho',0.99)},...
                   'Runnalls',    struct('Nr',Nr),...
-                  '',           {struct('costMeas','RenyiAlphaD','lambda',0.3,'alpha',0.5)},...
+                  'ISEOptUnc',           {struct('NOptSteps',600,'accThresh',1e-18)},...
                   test,          struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));              
 
               
 exp2 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  '',           {struct('NOptSteps',100),struct()},...
+                  'ISEOptCon',           {struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
 
 exp3 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  'ISEOptCon',  {struct('NOptSteps',400,'accThresh',1e-18,'optWeights',1)},...
+                  'NISEOptCon',  {struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
               
 exp4 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  'NISEOptCon',  {struct('NOptSteps',400,'accThresh',1e-18,'optWeights',1)},...
+                  'NISEOptCon',  {struct('NOptSteps',100,'accThresh',1e-18,'optWeights',1)},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
 
               
@@ -72,20 +72,18 @@ exp4 = Experiment('',           {},...
               
               
 
-experiments = [exp1;exp3;exp4];
+experiments = [exp1;exp2;exp3];
 numTests = numel(experiments);
 
 gm_vector = cell(numTests,1);
 gmr_vector = cell(numTests,1);
 time_vector = zeros(numTests,1);
-
-
-
 for i=1:numTests
     [gmr_vector{i},gm_vector{i},time_vector(i)] = experiments(i).execute();
 end
 %%
-plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot);
+globalMeas = {struct('globMeas','ISE'),struct('globMeas','nISE'),struct('globMeas','CSD')}';
+plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot,globalMeas);
 
 
 %ApproxMCKLD(gm_vector{1},gmr_vector,1000000)

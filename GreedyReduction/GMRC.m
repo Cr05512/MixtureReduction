@@ -81,7 +81,7 @@ gmr = refine('clusteringGMRC',gmr,gmh,1);
 
 %Iterative optimization
 if opt==1
-    gmr = refine('ISEOpt',gmr,gmh,sk,NOptSteps,optWeights,accThresh);
+    gmr = refine('ISEOptUnc',gmr,gmh,NOptSteps,optWeights,accThresh);
 end
 
 % Weight refinement
