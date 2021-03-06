@@ -56,7 +56,7 @@ function [gmr,setParMin] = BFGMRFull(gmh,Nr)
     if(Nh==Nr)
         return
     elseif(Nr==1)
-        gmr = mpMerge(gmh);
+        gmr = KLDBarycenter(gmh);
         return
     end
 
@@ -71,7 +71,7 @@ function [gmr,setParMin] = BFGMRFull(gmh,Nr)
             sel=(curSetPart==ind);
             w_sum = sum([gmh(sel).w]);
 
-            pdf_merged = mpMerge([gmh(sel)]);
+            pdf_merged = KLDBarycenter([gmh(sel)]);
             gmr(ind).w = w_sum;
             gmr(ind).mu = pdf_merged.mu;
             gmr(ind).Sigma = pdf_merged.Sigma;
@@ -93,7 +93,7 @@ function [gmr,setParMin] = BFGMRFull(gmh,Nr)
         sel=(setParMin==ind);
         w_sum = sum([gmh(sel).w]);
 
-        pdf_merged = mpMerge([gmh(sel)]);
+        pdf_merged = KLDBarycenter([gmh(sel)]);
 
         gmr(ind).w = w_sum;
         gmr(ind).mu = pdf_merged.mu;
@@ -123,7 +123,7 @@ function [gmr,setParMin] = BFGMRBy1(gmh)
     w_temp = zeros(Nh-1,1);
     for i=1:Nh
         for j=(i+1):Nh
-            pdfMerged = mpMerge(gmh([i;j]));
+            pdfMerged = KLDBarycenter(gmh([i;j]));
 
             w_temp(1:Nh-2) = [gmh(setdiff(1:Nh,[i;j])).w];
             w_temp(end) = pdfMerged.w;
@@ -185,7 +185,7 @@ function [gmr,setParMin] = BFGMRBy1(gmh)
         end
     end
                 
-    pdfMerged = mpMerge(gmh(minIdxs));
+    pdfMerged = KLDBarycenter(gmh(minIdxs));
     gmr = gmh;
     gmr(minIdxs(1)) = pdfMerged;
     gmr(minIdxs(2)) = [];

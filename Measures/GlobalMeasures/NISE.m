@@ -1,5 +1,5 @@
-function J = nISE(gmh,gmr)
-% J = nISE(gmh,gmr):
+function J = NISE(gmh,gmr)
+% J = NISE(gmh,gmr):
 % INPUTS:
 % - gmh, gmr, two Gaussian mixtures.
 % OUTPUTS:

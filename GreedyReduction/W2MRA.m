@@ -1,5 +1,5 @@
-function gmr = Wasserstein(gmh, Nr)
-% gmr = WassersteinMRA(gmh, Nr):
+function gmr = W2MRA(gmh, Nr)
+% gmr = W2MRA(gmh, Nr):
 % INPUTS:
 % - gmh, a Gaussian mixture,
 % - Nr, desired number of components for the reduced mixture (scalar).
@@ -20,7 +20,7 @@ Nh = numel(gmh);
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    gmr = WassersteinBarycenter(gmr,100);
+    gmr = W2Barycenter(gmr,100);
     return
 end
 
@@ -37,7 +37,7 @@ end
 while(numel(gmr)-Nr>0)
 
     [i,j] = find(WMatrix == min(WMatrix(WMatrix<Inf)),1);
-    pdf_merged = WassersteinBarycenter(gmr([i,j]),100);
+    pdf_merged = W2Barycenter(gmr([i,j]),100);
     gmr(i) = pdf_merged;
     gmr(j) = [];
     

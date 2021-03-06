@@ -1,10 +1,10 @@
-function [gfw,gfmu,gfL] = gradNISE(wr,mur,L,wh,muh,Sigmah)
+function [gfw,gfmu,gfL] = gradCM(wr,mur,L,wh,muh,Sigmah)
 
 [dJhrdw,dJrrdw,dJhrdmu,dJrrdmu,dJhrdL,dJrrdL,Jhh,Jhr,Jrr] = partialISE(wr,mur,L,wh,muh,Sigmah);
 
-a = -2*(Jhh + Jrr);
-b = 2*Jhr;
-c = (Jhh + Jrr)^2;
+a = -sqrt(Jhh*Jrr);
+b = Jhr*Jhh/(2*sqrt(Jhh*Jrr));
+c = Jhh*Jrr;
 
 gfw = 1/c*(a*dJhrdw + b*dJrrdw);
 

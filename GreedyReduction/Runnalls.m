@@ -21,7 +21,7 @@ Nh = numel(gmh);
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    gmr = mpMerge(gmh);
+    gmr = KLDBarycenter(gmh);
     return
 end
 
@@ -44,7 +44,7 @@ while(numel(gmr)-Nr>0)
     %We then find the action with the lowest KLD bound and we merge the
     %corresponding mixture components
     [i,j] = find(BMatrix == min(BMatrix(BMatrix<Inf)),1);
-    pdf_merged = mpMerge(gmr([i,j]));
+    pdf_merged = KLDBarycenter(gmr([i,j]));
     gmr(i) = pdf_merged;
     gmr(j) = [];
     
@@ -52,10 +52,11 @@ while(numel(gmr)-Nr>0)
     BMatrix(:,j) = [];
     upd_ind = setdiff(1:numel(gmr),i);
     for j=upd_ind
+        newBound = KLDBound(pdf_merged,gmr(j));
         if i<j
-            BMatrix(i,j) = KLDBound(pdf_merged,gmr(j));
+            BMatrix(i,j) = newBound;
         else
-            BMatrix(j,i) = KLDBound(pdf_merged,gmr(j));
+            BMatrix(j,i) = newBound;
         end
     end
 

@@ -1,5 +1,5 @@
-function mergedComp = mpMerge(comps)
-% mergedComp = mpMerge(w,comps):
+function mergedComp = KLDBarycenter(comps)
+% mergedComp = KLDBarycenter(comps):
 % INPUTS:
 % - comps, a vector of weighted Gaussian components (numComps x 1 vector).
 % OUTPUTS:
@@ -22,9 +22,10 @@ mu_merged = (1/w_merged)*mu_merged;
 Sigma_merged = zeros(d,d);
 
 for i=1:numel(comps)
-    Sigma_merged = Sigma_merged + (comps(i).w/w_merged)*(comps(i).Sigma...
+    Sigma_merged = Sigma_merged + comps(i).w*(comps(i).Sigma...
         + (comps(i).mu - mu_merged)*(comps(i).mu - mu_merged)');
 end
+Sigma_merged = Sigma_merged/w_merged;
           
 mergedComp = struct('w',w_merged,'mu',mu_merged,'Sigma',Sigma_merged);
 end

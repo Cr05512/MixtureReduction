@@ -20,9 +20,10 @@ mu1 = pdfi.mu;
 mu2 = pdfj.mu;
 Sigma1 = pdfi.Sigma;
 Sigma2 = pdfj.Sigma;
+d = size(mu1,1);
+I = eye(d);
 
-
-Sigma_a = inv((1-alpha)*inv(Sigma1) + alpha*inv(Sigma2));
+Sigma_a = I/((1-alpha)*I/Sigma1 + alpha*I/Sigma2);
 mu_a = Sigma_a*((1-alpha)*(Sigma1\mu1) + alpha*(Sigma2\mu2));
 
 dij = 0.5*((1-alpha)*mu1'*(Sigma1\mu1) + alpha*mu2'*(Sigma2\mu2) - mu_a'*(Sigma_a\mu_a) +...

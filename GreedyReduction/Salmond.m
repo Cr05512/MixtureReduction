@@ -6,8 +6,9 @@ function gmr = Salmond(gmh, Nr)
 % OUTPUTS:
 % - gmr, the reduced mixture.
 % This function implements the joining algorithms presented in
-% Mixture reduction algorithms for target tracking in clutter, D.J. Salmond
-assert(numel(gmh)>0,'The mixture has to contain at least one element.');
+% "Mixture reduction algorithms for target tracking in clutter", D.J. Salmond
+assert(~isempty(gmh),'The mixture has to contain at least one element.');
+assert(Nr>0,'The number of reduced components has to be greater than zero.');
 
 if numel(gmh)<Nr
     gmr = gmh;
@@ -18,7 +19,7 @@ Nh = numel(gmh);
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    gmr = mpMerge(gmh);
+    gmr = KLDBarycenter(gmh);
     return
 end
 
@@ -31,8 +32,7 @@ MMatrix = Inf(Nh,Nh);
 for i=1:Nh
     for j=1:Nh
         if(i<j)
-            MMatrix(i,j) = gmr(i).w*gmr(j).w/(gmr(i).w+gmr(j).w)...
-                            *mahalSquaredDist(gmr(i).mu,gmr(j).mu,P);
+            MMatrix(i,j) = mMSD(gmr(i),gmr(j),P);
         end
     end
 end
@@ -40,7 +40,7 @@ end
 while(numel(gmr)-Nr>0)
 
     [i,j] = find(MMatrix == min(MMatrix(MMatrix<Inf)),1);
-    pdf_merged = mpMerge(gmr([i,j]));
+    pdf_merged = KLDBarycenter(gmr([i,j]));
     gmr(i) = pdf_merged;
     gmr(j) = [];
     
@@ -49,12 +49,11 @@ while(numel(gmr)-Nr>0)
     [~,P] = getMixtureMoments(gmr);
     upd_ind = setdiff(1:numel(gmr),i);
     for j=upd_ind
+        newM = mMSD(pdf_merged,gmr(j),P);
         if i<j
-            MMatrix(i,j) = pdf_merged.w*gmr(j).w/(pdf_merged.w+gmr(j).w)...
-                            *mahalSquaredDist(pdf_merged.mu,gmr(j).mu,P);
+            MMatrix(i,j) = newM;
         else
-            MMatrix(j,i) = pdf_merged.w*gmr(j).w/(pdf_merged.w+gmr(j).w)...
-                            *mahalSquaredDist(pdf_merged.mu,gmr(j).mu,P);
+            MMatrix(j,i) = newM;
         end
     end
 

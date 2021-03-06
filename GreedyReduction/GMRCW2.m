@@ -1,5 +1,5 @@
-function gmr = GMRCWas(gmh,Nr,NKMeansSteps)
-% gmr = GMRCWas(gmh,Nr,NKMeansSteps):
+function gmr = GMRCW2(gmh,Nr,NKMeansSteps)
+% gmr = GMRCW2(gmh,Nr,NKMeansSteps):
 % INPUTS:
 % - gmh, a Gaussian mixture,
 % - Nr, the desired number of reduced components (scalar),
@@ -27,7 +27,7 @@ Nh = numel(gmh);
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    gmr = WassersteinBarycenter(gmr,100);
+    gmr = W2Barycenter(gmr,100);
     return
 end
 

@@ -1,10 +1,10 @@
-function pdf_merged = WassersteinBarycenter(gm,maxIter)
-% pdf_merged = WassersteinBarycenter(gm,maxIter):
+function pdf_merged = W2Barycenter(gm,maxIter)
+% pdf_merged = W2Barycenter(gm,maxIter):
 % INPUTS:
 % - gm, a Gaussian mixture (numComps x 1 vector),
 % - maxIter, maximum number of allowed iterations in the covariance computation (scalar).
 % OUTPUTS:
-% - pdf_merged, merged component according to W2 dist (Gaussian component)
+% - pdf_merged, merged component according to W2 dist (Gaussian component).
 % This function computes the Wasserstein barycenter of several Gaussian
 % components.
 if nargin < 2
@@ -15,13 +15,12 @@ assert(maxIter>0,'The number of iterations has to be greater than zero.');
 
 N = numel(gm);
 
-d = size(gm(1),1);
+d = size(gm(1).mu,1);
 S_prev = zeros(d,d);
 mu_bar = zeros(d,1);
-w_bar = 0;
+w_bar = sum([gm.w]);
 
 for i=1:N
-    w_bar = w_bar + gm(i).w;
     mu_bar = mu_bar + gm(i).w*gm(i).mu;
     S_prev = S_prev + gm(i).w*gm(i).Sigma;
 end

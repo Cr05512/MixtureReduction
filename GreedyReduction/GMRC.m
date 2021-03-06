@@ -52,6 +52,7 @@ elseif nargin < 9
 end
 assert(~isempty(gmh),'The mixture has to contain at least one element.');
 assert(Nr>0,'The reduced mixture has to contain at least one element.');
+assert(any(strcmpi(initMethod,{'Runnalls','West','Salmond','Williams','BF'})),'This init method is not allowed.');
 assert(NKMeansSteps>=0,'The number of Kmeans iterations has to be non-negative.');
 assert(opt==0 || opt==1,'The opt parameter can take values either 0 or 1.');
 assert(sk>0,'The gradient step has to be greater than zero.');
@@ -67,7 +68,7 @@ if(Nh==Nr)
     gmr = gmh;
     return
 elseif(Nr==1)
-    gmr = mpMerge(gmh);
+    gmr = KLDBarycenter(gmh);
     return
 end
 

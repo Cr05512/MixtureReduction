@@ -56,7 +56,7 @@ for k=1:maxiter
             if strcmpi(costMeas,'W2')
                 gmr(j) = WassersteinBarycenter(gmh_temp,maxiter);
             else
-                gmr(j) = mpMerge(gmh_temp);
+                gmr(j) = KLDBarycenter(gmh_temp);
             end
         end
 

@@ -1,6 +1,6 @@
 function [mu,Sigma] = getMixtureMoments(gm)
             
-pdf = mpMerge(gm);
+pdf = KLDBarycenter(gm);
 mu = pdf.mu;
 Sigma = pdf.Sigma;
 end

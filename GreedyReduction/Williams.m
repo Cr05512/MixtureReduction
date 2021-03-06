@@ -22,7 +22,7 @@ Nh = numel(gmh);
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    gmr = mpMerge(gmh);
+    gmr = KLDBarycenter(gmh);
     return
 end
 
@@ -55,7 +55,7 @@ while numel(gmr)>Nr
 
                 else
                     %Merging
-                    pdfMerged = mpMerge(gmr([i;j]));
+                    pdfMerged = KLDBarycenter(gmr([i;j]));
 
                     %CrossLikeness
                     newColhr = matrixCrossLikeness(gmr,pdfMerged);
@@ -95,7 +95,7 @@ while numel(gmr)>Nr
         gmr = renormalizeWeights(gmr);
         
     else
-        gmr(idxs(1)) = mpMerge(gmr(idxs));
+        gmr(idxs(1)) = KLDBarycenter(gmr(idxs));
         gmr(idxs(2)) = [];
     end
 end

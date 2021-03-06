@@ -1,4 +1,4 @@
-function J = nISEparams(wh,muh,Sigmah,wr,mur,Sigmar)
+function J = NISEparams(wh,muh,Sigmah,wr,mur,Sigmar)
 % J = nISEparams(wh,muh,Sigmah,wr,mur,Sigmar):
 % INPUTS:
 % - wh, muh, Sigmah, wr, mur, Sigmar, parameters of two Gaussian mixtures.

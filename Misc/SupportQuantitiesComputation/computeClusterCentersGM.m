@@ -23,9 +23,9 @@ end
 clusters = clusters(ind);
 for i=1:length(clusters) %We use length(clusters) because it can be smaller than Nr
     if strcmpi(costMeas,'W2')
-        clusters{i} = WassersteinBarycenter(clusters{i},100);
+        clusters{i} = W2Barycenter(clusters{i},100);
     else
-        clusters{i} = mpMerge(clusters{i});
+        clusters{i} = KLDBarycenter(clusters{i});
     end
 end
 

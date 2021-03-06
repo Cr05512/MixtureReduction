@@ -35,7 +35,7 @@ if(Nh==Nr)
     gmr = gmh;
     return
 elseif(Nr==1)
-    gmr = mpMerge(gmh);
+    gmr = KLDBarycenter(gmh);
     return
 end
 

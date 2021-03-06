@@ -8,7 +8,7 @@ function B = KLDBound(pdf1, pdf2)
 % This function computes the upper bound proposed by A. R. Runnals "Kullback-Leibler Approach to Gaussian Mixture
 % Reduction". IEEE Trans. Aerosp. Electron. Syst., vol. 43(3):989--999, 2007
 
-pdf_merge = mpMerge([pdf1;pdf2]);
+pdf_merge = KLDBarycenter([pdf1;pdf2]);
     
 B = 0.5*(pdf_merge.w*log(det(pdf_merge.Sigma))...
     - pdf1.w*log(det(pdf1.Sigma))...
