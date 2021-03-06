@@ -112,18 +112,21 @@ str = [str,strPrune];
 
 performanceStr = '';
 if ~isempty(globalMeas)
+    availableGlobMeas = Experiment.getAvailableGlobalMeasures();
 
     for i=1:numel(globalMeas)
         if isstruct(globalMeas{i})
-            assert(any(strcmpi(Experiment.getAvailableGlobalMeasures,globalMeas{i}.globMeas)),'Wrong global measure. Check the available ones by typing Experiment.getAvailableGlobalMeasures.');
-            if strcmpi(globalMeas{i}.globMeas,'CTD')
-                performanceStr = strcat(performanceStr,strcat([' ',globalMeas{i}.globMeas,globalMeas{i}.costMeas,':',' ',num2str(feval(globalMeas{i}.globMeas,gmh,gmr,globalMeas{i}.costMeas)),',']));
-            elseif any(strcmpi(globalMeas{i}.globMeas,{'MCKLD','ISMCKLD'}))
-                performanceStr = strcat(performanceStr,strcat([' ',globalMeas{i}.globMeas,':',' ',num2str(feval(globalMeas{i}.globMeas,gmh,gmr,globalMeas{i}.nSamples)),',']));
-            elseif any(strcmpi(globalMeas{i}.globMeas,{'UTKLD','ISUTKLD'}))
-                performanceStr = strcat(performanceStr,strcat([' ',globalMeas{i}.globMeas,':',' ',num2str(feval(globalMeas{i}.globMeas,gmh,gmr,globalMeas{i}.nRings)),',']));
+            res = strcmpi(globalMeas{i}.globMeas,availableGlobMeas);
+            meas = Experiment.getAvailableGlobalMeasures{res};
+            assert(any(strcmpi(availableGlobMeas,meas)),'Wrong global measure. Check the available ones by typing Experiment.getAvailableGlobalMeasures.');
+            if strcmpi(meas,'CTD')
+                performanceStr = strcat(performanceStr,strcat([' ',meas,globalMeas{i}.costMeas,':',' ',num2str(feval(meas,gmh,gmr,globalMeas{i}.costMeas)),',']));
+            elseif any(strcmpi(meas,{'MCKLD','ISMCKLD'}))
+                performanceStr = strcat(performanceStr,strcat([' ',meas,':',' ',num2str(feval(meas,gmh,gmr,globalMeas{i}.nSamples)),',']));
+            elseif any(strcmpi(meas,{'UTKLD','ISUTKLD'}))
+                performanceStr = strcat(performanceStr,strcat([' ',meas,':',' ',num2str(feval(meas,gmh,gmr,globalMeas{i}.nRings)),',']));
             else
-                performanceStr = strcat(performanceStr,strcat([' ',globalMeas{i}.globMeas,':',' ',num2str(feval(globalMeas{i}.globMeas,gmh,gmr)),',']));
+                performanceStr = strcat(performanceStr,strcat([' ',meas,':',' ',num2str(feval(meas,gmh,gmr)),',']));
             end
         end
     end

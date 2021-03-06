@@ -82,7 +82,7 @@ for i=1:numTests
     [gmr_vector{i},gm_vector{i},time_vector(i)] = experiments(i).execute();
 end
 %%
-globalMeas = {struct('globMeas','ISE'),struct('globMeas','nISE'),struct('globMeas','CSD')}';
+globalMeas = {struct('globMeas','ISE'),struct('globMeas','NISE'),struct('globMeas','CSD')}';
 plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot,globalMeas);
 
 

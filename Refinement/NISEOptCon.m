@@ -69,7 +69,7 @@ function [f,grad] = funGradComp(x,wh,muh,Sigmah,Nr)
     
 %     gmr = mixtureFromParams(w,mu,Sigma);
     
-    f = nISEparams(wh,muh,Sigmah,wr,mur,Sigmar);
+    f = NISEparams(wh,muh,Sigmah,wr,mur,Sigmar);
     
 %     [wh,muh,Sigmah] = paramsFromMixture(gmh);
     
