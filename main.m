@@ -38,33 +38,33 @@ rngSeed = randi(1000000);  %559999
 %%
 Nh = 10;
 close all
-d = 7;
-alpha = 7;
+d = 1;
+alpha = 8;
 beta = 0.1;
 showPlot = 1;
 
-test = 'testCrouse';
-Nr = 5;
+test = 'userDefMixture2';
+Nr = 1;
 
 exp1 = Experiment('',           {struct('rho',0.99)},...
                   'Runnalls',    struct('Nr',Nr),...
-                  'ISEOptCon',           {struct()},...
+                  'NISEOptCon+ISEOptCon',           {struct(),struct()},...
                   test,          struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));              
 
               
 exp2 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  'NISEOptCon',           {struct()},...
+                  'NISEOptCon',           {struct(),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
 
 exp3 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  'CSDOptCon',  {struct()},...
+                  'NISEOptCon+CSDOptCon',  {struct(),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
               
 exp4 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  '',  {struct()},...
+                  'NISEOptCon+TSLOptCon',  {struct(),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
 
               
@@ -72,7 +72,7 @@ exp4 = Experiment('',           {},...
               
               
 
-experiments = [exp1;exp2;exp3];
+experiments = [exp1;exp2;exp3;exp4];
 numTests = numel(experiments);
 
 gm_vector = cell(numTests,1);
@@ -82,7 +82,7 @@ for i=1:numTests
     [gmr_vector{i},gm_vector{i},time_vector(i)] = experiments(i).execute();
 end
 %%
-globalMeas = {struct('globMeas','ISE'),struct('globMeas','NISE'),struct('globMeas','CSD')}';
+globalMeas = {struct('globMeas','ISE'),struct('globMeas','NISE'),struct('globMeas','CSD'),struct('globMeas','TSL')}';
 plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot,globalMeas);
 
 

@@ -103,7 +103,7 @@ end
 
 
 
-
+%gmr = renormalizeWeights(gmr);
 
 end
 
