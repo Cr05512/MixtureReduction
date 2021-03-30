@@ -1,5 +1,5 @@
-function gmr = ISEOptCon(gmr,gmh,NOptSteps,accThresh)
-% gmr = ISEOptCon(gmr,gmh,NOptSteps,optWeights,accThresh):
+function gmr = ISEOptConQ(gmr,gmh,NOptSteps,accThresh)
+% gmr = ISEOptConQ(gmr,gmh,NOptSteps,optWeights,accThresh):
 % - gmr, gmh, two Gaussian Mixtures,
 % - NOptSteps, maximum number of optimization steps,
 % - accThresh, accuracy threshold.
@@ -15,30 +15,28 @@ Nr = numel(gmr);
 dr = size(gmr(1).mu,1);
 
 [wr,mur,Sigmar] = paramsFromMixture(gmr);
+
+q = sqrt(wr);
 L = zeros(size(Sigmar));
 for i=1:Nr
     L(:,:,i) = chol(Sigmar(:,:,i),'lower');
 end
 
-x0 = [wr;reshape(mur,dr*Nr,1);reshape(L,dr*dr*Nr,1)];
+x0 = [q;reshape(mur,dr*Nr,1);reshape(L,dr*dr*Nr,1)];
+[wh,muh,Sigmah] = paramsFromMixture(gmh);
+f = @(x) funGradComp(x,wh,muh,Sigmah,Nr);
+g = @(x) weightCon(x,Nr);
 
-f = @(x) funGradComp(x,gmh,Nr);
-
-A = [-eye(Nr),zeros(Nr,Nr*dr + dr*dr*Nr);...
-    zeros(Nr*dr + dr*dr*Nr,length(x0))];
-B = zeros(length(x0),1);
-
-Aeq = [ones(1,Nr),zeros(1,Nr*dr + dr*dr*Nr)];
-Beq = sum(wr);
 
 options = optimoptions('fmincon','OptimalityTolerance',accThresh,...
                        'MaxFunctionEvaluations',NOptSteps,'MaxIterations',NOptSteps,...
-                       'Algorithm','sqp','SpecifyObjectiveGradient',true,'display','none');
+                       'Algorithm','sqp','SpecifyObjectiveGradient',true,'display','none',...
+                       'SpecifyConstraintGradient',true);
 
-x = fmincon(f,x0,A,B,Aeq,Beq,[],[],[],options);
+x = fmincon(f,x0,[],[],[],[],[],[],g,options);
 
 
-wr = x(1:Nr);
+wr = x(1:Nr).^2;
 muLen = dr*Nr;
 mur = reshape(x(Nr+1:Nr+muLen),dr,Nr);
 L = reshape(x(Nr+muLen+1:end),[dr dr Nr]);
@@ -52,27 +50,35 @@ gmr = mixtureFromParams(wr,mur,Sigmar);
 
 end
 
-function [f,grad] = funGradComp(x,gmh,Nr)
+function [f,grad] = funGradComp(x,wh,muh,Sigmah,Nr)
 
-    dr = size(gmh(1).mu,1);
+    dr = size(muh(:,1),1);
     
-    wr = x(1:Nr);
+    q = x(1:Nr);
     muLen = dr*Nr;
     mur = reshape(x(Nr+1:Nr+muLen),dr,Nr);
     L = reshape(x(Nr+muLen+1:end),[dr dr Nr]);
     
+    
     Sigmar = zeros(dr,dr,Nr);
     for i=1:Nr
-        Sigmar(:,:,i) = L(:,:,i)'*L(:,:,i);
+        Sigmar(:,:,i) = L(:,:,i)*L(:,:,i)';
     end
     
-    gmr = mixtureFromParams(wr,mur,Sigmar);
-    f = TSL(gmh,gmr);
+    f = ISEparams(wh,muh,Sigmah,q.^2,mur,Sigmar);
     
-    [wh,muh,Sigmah] = paramsFromMixture(gmh);
-    [gfw,gfmu,gfL] = gradTSL(wr,mur,L,wh,muh,Sigmah);
+    [gfw,gfmu,gfL] = gradISEq(q,mur,L,wh,muh,Sigmah);
     
     grad = [gfw; reshape(gfmu,dr*Nr,1); reshape(gfL,dr*dr*Nr,1)];
 
+
+end
+
+function [c, ceq, G, Geq] = weightCon(x,Nr)
+
+c = [];
+ceq = sum(x(1:Nr).^2) - 1;
+G = [];
+Geq = [2*x(1:Nr);zeros(length(x)-Nr,1)];
 
 end

@@ -75,7 +75,7 @@ end
 gmr = reduce(initMethod,gmh,Nr);
 
 %Initial clustering
-gmr = refine('GMKMeans',gmr,gmh,'KLD',NKMeansSteps);
+gmr = refine('GMKMeans',gmr,gmh,'KLDij',NKMeansSteps);
 
 %NISE clustering loop
 gmr = refine('clusteringGMRC',gmr,gmh,1);

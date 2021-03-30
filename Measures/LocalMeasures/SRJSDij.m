@@ -1,5 +1,5 @@
-function dSRJS = SRJSD(pdfh,pdfr)
-% dSRJS = SRJSD(pdfh,pdfr):
+function dSRJS = SRJSDij(pdfh,pdfr)
+% dSRJS = SRJSDij(pdfh,pdfr):
 % INPUTS:
 % - pdfh, pdfr, two Gaussian densities.
 % OUTPUTS:

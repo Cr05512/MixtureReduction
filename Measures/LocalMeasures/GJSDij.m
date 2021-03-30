@@ -1,5 +1,5 @@
-function dij = GJSD(pdfi,pdfj,alpha)
-% dij = GJSD(pdfi,pdfj,alpha):
+function dij = GJSDij(pdfi,pdfj,alpha)
+% dij = GJSDij(pdfi,pdfj,alpha):
 % INPUTS:
 % - pdfi, pdfj, two Gaussian densities,
 % - alpha, tuning parameter for the abstract means (scalar).

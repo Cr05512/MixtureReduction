@@ -1,5 +1,5 @@
-function L2dist = L2(pdfh,pdfr)
-% L2dist = L2(pdfh,pdfr):
+function L2dist = L2ij(pdfh,pdfr)
+% L2dist = L2ij(pdfh,pdfr):
 % INPUTS:
 % - pdfh, pdfr, two Gaussian densities.
 % OUTPUTS:
@@ -8,7 +8,7 @@ function L2dist = L2(pdfh,pdfr)
 
 Jhh = mvnpdf(pdfh.mu,pdfh.mu,2*pdfh.Sigma);
 Jrr = mvnpdf(pdfr.mu,pdfr.mu,2*pdfr.Sigma);
-Jhr = mvnpdf(pdfr.mu,pdfh.mu,pdfr.Sigma+pdfh.Sigma);
+Jhr = mvnpdf(pdfh.mu,pdfr.mu,pdfh.Sigma+pdfr.Sigma);
 
 L2dist = Jhh - 2*Jhr + Jrr;
 

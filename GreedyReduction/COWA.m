@@ -14,7 +14,7 @@ function gmr = COWA(gmh,Nr,costMeas,algo,gamma)
 % This function implements the COWA algorithm presented in
 % Constrained optimized weight adaption for Gaussian mixture reduction, H.Chen, K. C. Chang, C. Smith
 if nargin < 3
-    costMeas = 'L2';
+    costMeas = 'L2ij';
     algo = 0; %Classic West Algorithm
     gamma = Inf;
 elseif nargin < 4 

@@ -33,7 +33,7 @@ BMatrix = Inf(Nh,Nh);
 for i=1:Nh
     for j=1:Nh
         if(i<j)
-            BMatrix(i,j) = KLDBound(gmr(i),gmr(j));
+            BMatrix(i,j) = KLDBij(gmr(i),gmr(j));
         end
     end
 end
@@ -52,7 +52,7 @@ while(numel(gmr)-Nr>0)
     BMatrix(:,j) = [];
     upd_ind = setdiff(1:numel(gmr),i);
     for j=upd_ind
-        newBound = KLDBound(pdf_merged,gmr(j));
+        newBound = KLDBij(pdf_merged,gmr(j));
         if i<j
             BMatrix(i,j) = newBound;
         else

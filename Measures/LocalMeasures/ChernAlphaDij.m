@@ -1,5 +1,5 @@
-function dCalpha = ChernAlphaD(pdfi,pdfj,alpha)
-% dCalpha = ChernAlphaD(pdfi,pdfj,alpha):
+function dCalpha = ChernAlphaDij(pdfi,pdfj,alpha)
+% dCalpha = ChernAlphaDij(pdfi,pdfj,alpha):
 % INPUT:
 % - pdfi, pdfj, two Gaussian densities,
 % - alpha, the alpha determining the Chernoff divergence (scalar).

@@ -1,5 +1,5 @@
-function sKLD = symKLD(pdfh,pdfr)
-% sKLD = symKLD(pdfh,pdfr):
+function sKLD = SKLDij(pdfh,pdfr)
+% sKLD = SKLDij(pdfh,pdfr):
 % INPUTS:
 % - pdfh, pdfr, two Gaussian densities.
 % OUTPUTS:

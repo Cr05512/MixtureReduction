@@ -32,7 +32,7 @@ MMatrix = Inf(Nh,Nh);
 for i=1:Nh
     for j=1:Nh
         if(i<j)
-            MMatrix(i,j) = mMSD(gmr(i),gmr(j),P);
+            MMatrix(i,j) = mMSDij(gmr(i),gmr(j),P);
         end
     end
 end
@@ -49,7 +49,7 @@ while(numel(gmr)-Nr>0)
     [~,P] = getMixtureMoments(gmr);
     upd_ind = setdiff(1:numel(gmr),i);
     for j=upd_ind
-        newM = mMSD(pdf_merged,gmr(j),P);
+        newM = mMSDij(pdf_merged,gmr(j),P);
         if i<j
             MMatrix(i,j) = newM;
         else

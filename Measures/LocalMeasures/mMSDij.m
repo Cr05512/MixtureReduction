@@ -1,5 +1,5 @@
-function dmMS = mMSD(pdf1,pdf2,P)
-% dmMS = mMSD(pdf1,pdf2,P):
+function dmMS = mMSDij(pdf1,pdf2,P)
+% dmMS = mMSDij(pdf1,pdf2,P):
 % INPUT:
 % - pdf1, pdf2, two Gaussian densities,
 % - P, global covariance matrix required to weight the pairwise distances.

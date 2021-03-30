@@ -1,5 +1,5 @@
-function dKLij = KLD(pdfi,pdfj)
-% dKLij = KLD(pdfi,pdfj):
+function dKLij = KLDij(pdfi,pdfj)
+% dKLij = KLDij(pdfi,pdfj):
 % INPUTS:
 % - pdfi, pdfj, two Gaussian densities.
 % OUTPUTS:

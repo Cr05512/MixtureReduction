@@ -1,5 +1,5 @@
-function normL2dist = normL2(pdfh,pdfr)
-% normL2dist = normL2(pdfh,pdfr):
+function normL2dist = NL2ij(pdfh,pdfr)
+% normL2dist = NL2ij(pdfh,pdfr):
 % INPUTS:
 % - pdfh, pdfr, two Gaussian densities.
 % OUTPUTS:
@@ -7,7 +7,7 @@ function normL2dist = normL2(pdfh,pdfr)
 % This function computes the L2 distance between two Gaussian components.
 Jhh = mvnpdf(pdfh.mu,pdfh.mu,2*pdfh.Sigma);
 Jrr = mvnpdf(pdfr.mu,pdfr.mu,2*pdfr.Sigma);
-Jhr = mvnpdf(pdfr.mu,pdfh.mu,pdfr.Sigma+pdfh.Sigma);
+Jhr = mvnpdf(pdfh.mu,pdfr.mu,pdfh.Sigma+pdfr.Sigma);
 
 normL2dist = 1 - 2*Jhr/(Jhh + Jrr);
 

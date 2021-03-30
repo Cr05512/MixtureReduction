@@ -1,5 +1,5 @@
-function DRE = DREntropy(pdf1, pdf2)
-% DRE = DREntropy(pdf1, pdf2):
+function DRE = DREij(pdf1, pdf2)
+% DRE = DREij(pdf1, pdf2):
 % INPUTS:
 % - pdf1, pdf2, two Gaussian densities.
 % OUTPUTS:

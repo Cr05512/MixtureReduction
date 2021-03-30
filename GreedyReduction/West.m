@@ -16,7 +16,7 @@ function gmr = West(gmh,Nr,costMeas,algo,gamma)
 % - Approximating Posterior Distributions by Mixture, M. West
 % - Constrained optimized weight adaption for Gaussian mixture reduction, H.Chen, K. C. Chang, C. Smith
 if nargin < 3
-    costMeas = 'L2';
+    costMeas = 'L2ij';
     algo = 0; %Classic West Algorithm
     gamma = Inf;
 elseif nargin < 4 
@@ -42,7 +42,7 @@ gmr = gmh;
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    if strcmpi(costMeas,'W2')
+    if strcmpi(costMeas,'W2ij')
         gmr = W2Barycenter(gmh,100);
     else
         gmr = KLDBarycenter(gmh);

@@ -29,7 +29,7 @@ WMatrix = Inf(Nh,Nh);
 for i=1:Nh
     for j=1:Nh
         if i<j
-            WMatrix(i,j) = W2(gmr(i),gmr(j));
+            WMatrix(i,j) = W2ij(gmr(i),gmr(j));
         end
     end
 end
@@ -45,7 +45,7 @@ while(numel(gmr)-Nr>0)
     WMatrix(:,j) = [];
     upd_ind = setdiff(1:numel(gmr),i);
     for j=upd_ind
-        dist = W2(pdf_merged,gmr(j));
+        dist = W2ij(pdf_merged,gmr(j));
         if i<j
             WMatrix(i,j) = dist;
         else

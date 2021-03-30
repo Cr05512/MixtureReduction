@@ -1,5 +1,5 @@
-function d = MKLD(pdfi,pdfj,I)
-% d = MKLD(wj,pdfi,pdfj,I):
+function d = MKLDij(pdfi,pdfj,I)
+% d = MKLDij(wj,pdfi,pdfj,I):
 % INPUT: 
 % - pdfi, pdfj, two Gaussian Densities,
 % - I, number of virtual samples (scalar).

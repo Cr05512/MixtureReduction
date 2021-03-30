@@ -17,7 +17,7 @@ dr = size(gmr(1).mu,1);
 [wr,mur,Sigmar] = paramsFromMixture(gmr);
 L = zeros(size(Sigmar));
 for i=1:Nr
-    L(:,:,i) = chol(Sigmar(:,:,i));
+    L(:,:,i) = chol(Sigmar(:,:,i),'lower');
 end
 
 x0 = [wr;reshape(mur,dr*Nr,1);reshape(L,dr*dr*Nr,1)];
@@ -46,7 +46,7 @@ L = reshape(x(Nr+muLen+1:end),[dr dr Nr]);
 
 Sigma = zeros(dr,dr,Nr);
 for i=1:Nr
-    Sigma(:,:,i) = L(:,:,i)'*L(:,:,i);
+    Sigma(:,:,i) = L(:,:,i)*L(:,:,i)';
 end
 
 gmr = mixtureFromParams(w,mu,Sigma);
@@ -64,7 +64,7 @@ function [f,grad] = funGradComp(x,wh,muh,Sigmah,Nr)
     
     Sigmar = zeros(dr,dr,Nr);
     for i=1:Nr
-        Sigmar(:,:,i) = L(:,:,i)'*L(:,:,i);
+        Sigmar(:,:,i) = L(:,:,i)*L(:,:,i)';
     end
     
 %     gmr = mixtureFromParams(w,mu,Sigma);

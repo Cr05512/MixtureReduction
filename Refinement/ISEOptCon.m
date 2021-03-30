@@ -17,7 +17,7 @@ dr = size(gmr(1).mu,1);
 [wr,mur,Sigmar] = paramsFromMixture(gmr);
 L = zeros(size(Sigmar));
 for i=1:Nr
-    L(:,:,i) = chol(Sigmar(:,:,i));
+    L(:,:,i) = chol(Sigmar(:,:,i),'lower');
 end
 
 x0 = [wr;reshape(mur,dr*Nr,1);reshape(L,dr*dr*Nr,1)];
@@ -31,9 +31,9 @@ B = zeros(length(x0),1);
 Aeq = [ones(1,Nr),zeros(1,Nr*dr + dr*dr*Nr)];
 Beq = sum(wr);
 
-options = optimoptions('fmincon','OptimalityTolerance',accThresh,...
+options = optimoptions('fmincon','OptimalityTolerance',accThresh,'StepTolerance',accThresh,...
                        'MaxFunctionEvaluations',NOptSteps,'MaxIterations',NOptSteps,...
-                       'Algorithm','sqp','SpecifyObjectiveGradient',true,'display','none');
+                       'Algorithm','interior-point','SpecifyObjectiveGradient',true,'display','none');
 
 x = fmincon(f,x0,A,B,Aeq,Beq,[],[],[],options);
 
@@ -44,7 +44,7 @@ mur = reshape(x(Nr+1:Nr+muLen),dr,Nr);
 L = reshape(x(Nr+muLen+1:end),[dr dr Nr]);
 
 for i=1:Nr
-    Sigmar(:,:,i) = L(:,:,i)'*L(:,:,i);
+    Sigmar(:,:,i) = L(:,:,i)*L(:,:,i)';
 end
 
 gmr = mixtureFromParams(wr,mur,Sigmar);
@@ -63,7 +63,7 @@ function [f,grad] = funGradComp(x,wh,muh,Sigmah,Nr)
     
     Sigmar = zeros(dr,dr,Nr);
     for i=1:Nr
-        Sigmar(:,:,i) = L(:,:,i)'*L(:,:,i);
+        Sigmar(:,:,i) = L(:,:,i)*L(:,:,i)';
     end
     
     f = ISEparams(wh,muh,Sigmah,wr,mur,Sigmar);

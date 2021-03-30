@@ -36,19 +36,19 @@ clear
 
 rngSeed = randi(1000000);  %559999
 %%
-Nh = 10;
+Nh = 4;
 close all
 d = 1;
-alpha = 8;
+alpha = 3;
 beta = 0.1;
 showPlot = 1;
 
-test = 'userDefMixture2';
-Nr = 1;
+test = 'random';
+Nr = 2;
 
 exp1 = Experiment('',           {struct('rho',0.99)},...
                   'Runnalls',    struct('Nr',Nr),...
-                  'NISEOptCon+ISEOptCon',           {struct(),struct()},...
+                  'ISEOptCon',           {struct(),struct()},...
                   test,          struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));              
 
               
@@ -59,12 +59,12 @@ exp2 = Experiment('',           {},...
 
 exp3 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  'NISEOptCon+CSDOptCon',  {struct(),struct()},...
+                  'CSDOptCon',  {struct(),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
               
 exp4 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  'NISEOptCon+TSLOptCon',  {struct(),struct()},...
+                  'JR2DOptCon',  {struct(),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
 
               
@@ -72,7 +72,7 @@ exp4 = Experiment('',           {},...
               
               
 
-experiments = [exp1;exp2;exp3;exp4];
+experiments = [exp1;exp2;exp3];
 numTests = numel(experiments);
 
 gm_vector = cell(numTests,1);
@@ -82,7 +82,7 @@ for i=1:numTests
     [gmr_vector{i},gm_vector{i},time_vector(i)] = experiments(i).execute();
 end
 %%
-globalMeas = {struct('globMeas','ISE'),struct('globMeas','NISE'),struct('globMeas','CSD'),struct('globMeas','TSL')}';
+globalMeas = {struct('globMeas','ISE'),struct('globMeas','NISE'),struct('globMeas','CSD'),struct('globMeas','JR2D')}';
 plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot,globalMeas);
 
 

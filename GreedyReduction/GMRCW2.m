@@ -32,7 +32,7 @@ elseif(Nr==1)
 end
 
 gmr = reduce('Wasserstein',gmh,Nr);
-gmr = refine('GMKMeans',gmr,gmh,'W2',NKMeansSteps);
+gmr = refine('GMKMeans',gmr,gmh,'W2ij',NKMeansSteps);
 
 end
 

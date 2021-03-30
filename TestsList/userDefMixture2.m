@@ -4,7 +4,7 @@ function [gm,newParams] = userDefMixture2()
 
 w = [0.45 0.55]';
    
-mu = [-1 1];
+mu = [-1 4];
    
    
 Sigma = 1*[0.15 0.15];

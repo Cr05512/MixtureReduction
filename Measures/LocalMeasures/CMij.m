@@ -1,5 +1,5 @@
-function C = CM(pdfh,pdfr)
-% C = CM(pdfh,pdfr):
+function C = CMij(pdfh,pdfr)
+% C = CMij(pdfh,pdfr):
 % INPUTS:
 % - pdfh, pdfr, two Gaussian Densities.
 % OUTPUTS:

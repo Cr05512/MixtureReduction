@@ -4,7 +4,7 @@ Nr = numel(wr);
 dr = size(mur(:,1),1);
 Sigmar = zeros(dr,dr,Nr);
 for i=1:Nr
-    Sigmar(:,:,i) = L(:,:,i)'*L(:,:,i);
+    Sigmar(:,:,i) = L(:,:,i)*L(:,:,i)';
 end
 
 Sigmarijinv = zeros(dr,dr,Nr,Nr);
@@ -14,10 +14,10 @@ for i=1:Nr
     end
 end
 
-SigmahLijinv = zeros(dr,dr,Nh,Nr);
+Sigmahrijinv = zeros(dr,dr,Nh,Nr);
 for i=1:Nh
     for j=1:Nr
-        SigmahLijinv(:,:,i,j) = inv(Sigmah(:,:,i) + Sigmar(:,:,j));
+        Sigmahrijinv(:,:,i,j) = inv(Sigmah(:,:,i) + Sigmar(:,:,j));
     end
 end
 
@@ -38,13 +38,13 @@ dJhrdw = (wh'*Hcross)';
 for j=1:Nr
     for i=1:Nh
         %Means
-        dJhrdmu(:,j) = dJhrdmu(:,j) + wh(i)*SigmahLijinv(:,:,i,j)*...
+        dJhrdmu(:,j) = dJhrdmu(:,j) + wh(i)*Sigmahrijinv(:,:,i,j)*...
             (mur(:,j)-muh(:,i))*Hcross(i,j);
         %Covariances
         dJhrdL(:,:,j) = dJhrdL(:,:,j) + wh(i)*wr(j)*Hcross(i,j)...
-            *SigmahLijinv(:,:,i,j)*((muh(:,i)-mur(:,j))*...
+            *Sigmahrijinv(:,:,i,j)*((muh(:,i)-mur(:,j))*...
             (muh(:,i)-mur(:,j))' - (Sigmah(:,:,i)+ Sigmar(:,:,j)))...
-            *SigmahLijinv(:,:,i,j)*L(:,:,j);
+            *Sigmahrijinv(:,:,i,j)*L(:,:,j);
     end
     %Weights
     

@@ -17,7 +17,7 @@ dr = size(gmr(1).mu,1);
 [wr,mur,Sigmar] = paramsFromMixture(gmr);
 L = zeros(size(Sigmar));
 for i=1:Nr
-    L(:,:,i) = chol(Sigmar(:,:,i));
+    L(:,:,i) = chol(Sigmar(:,:,i),'lower');
 end
 
 x0 = [wr;reshape(mur,dr*Nr,1);reshape(L,dr*dr*Nr,1)];

@@ -1,5 +1,5 @@
-function B = KLDBound(pdf1, pdf2)
-% B = KLDBound(pdf1,pdf2):
+function B = KLDBij(pdf1, pdf2)
+% B = KLDBij(pdf1,pdf2):
 % INPUTS:
 % - pdf1, pdf2, two Gaussian densities.
 % OUTPUTS:

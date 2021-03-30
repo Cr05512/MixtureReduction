@@ -1,4 +1,5 @@
-function R_alpha = RenyiAlphaD(pdfi,pdfj,alpha)
+function R_alpha = RAlphaDij(pdfi,pdfj,alpha)
+% Renyi Alpha Divergence
 if nargin < 3
     alpha = 0.5; 
 end

@@ -1,5 +1,5 @@
-function dJS = JSD(pdfh,pdfr)
-% JSD = JSD(pdfh,pdfr):
+function dJS = JSDij(pdfh,pdfr)
+% JSD = JSDij(pdfh,pdfr):
 % INPUTS:
 % - pdfh, pdfr, two Gaussian densities.
 % OUTPUTS:
