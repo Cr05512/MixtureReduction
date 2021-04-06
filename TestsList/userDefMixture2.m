@@ -2,12 +2,12 @@ function [gm,newParams] = userDefMixture2()
 % This function generates a user defined mixture by providing respectively
 % the weights, the means and the covariance matrices.
 
-w = [0.45 0.55]';
+w = [0.35 0.65]';
    
-mu = [-1 4];
+mu = [-1 2];
    
    
-Sigma = 1*[0.15 0.15];
+Sigma = 1*[0.1 0.3];
 
 Nh = numel(w);
 d = size(mu,1);

@@ -3,9 +3,9 @@ function CSDB =  CSDBarycenter(gm,NOptSteps,accThresh)
 
 if nargin < 2
     NOptSteps = 100;
-    accThresh = 1e-21;
+    accThresh = 1e-25;
 elseif nargin < 3
-    accThresh = 1e-15;
+    accThresh = 1e-25;
 end
 
 
@@ -17,11 +17,11 @@ L = chol(CSDB0.Sigma,'lower');
 x0 = [CSDB0.mu;reshape(L,d*d,1)];
 f = @(x) barFunGradComp(x,wh,muh,Sigmah);
 
-options = optimoptions('fmincon','OptimalityTolerance',accThresh,...
+options = optimoptions('fminunc','OptimalityTolerance',accThresh,...
                        'MaxFunctionEvaluations',NOptSteps,'MaxIterations',NOptSteps,...
-                       'Algorithm','sqp','SpecifyObjectiveGradient',true,'display','none');
+                       'Algorithm','quasi-newton','SpecifyObjectiveGradient',true,'display','none');
 
-x = fmincon(f,x0,[],[],[],[],[],[],[],options);
+x = fminunc(f,x0,options);
 
 
 mu = x(1:d);

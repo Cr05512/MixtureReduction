@@ -195,33 +195,17 @@ classdef Experiment < handle
             
             %We can perform pruning
             tic;
-            if ~isempty(obj.prune)
-                prunings = split(obj.prune,'+');
-                
-                for k=1:numel(prunings)
-                    pruneArgVector = struct2cell(obj.pruneParams{k});
-                    gmr = pruning(prunings{k},gmr,pruneArgVector{:});
-                end
-            end
+            gmr = pruning(obj.prune,gmr,obj.pruneParams);
             timeVec(1) = toc;
             
             %We apply the greedy reduction
             
-            algoArgVector = struct2cell(obj.algoParams);
-            
             tic;
-            gmr =reduce(obj.algorithm,gmr,algoArgVector{:});
+            gmr = reduce(obj.algorithm,gmr,obj.algoParams);
             timeVec(2) = toc;
             
             tic;
-            if ~isempty(obj.refinement)
-                refinements = split(obj.refinement,'+');
-                
-                for k=1:numel(refinements)
-                    refArgVector = struct2cell(obj.refParams{k});
-                    gmr = refine(refinements{k},gmr,gm,refArgVector{:});
-                end
-            end
+            gmr = refine(obj.refinement,gmr,gm,obj.refParams);
             timeVec(3) = toc;
 
             

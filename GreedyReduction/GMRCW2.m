@@ -31,8 +31,8 @@ elseif(Nr==1)
     return
 end
 
-gmr = reduce('Wasserstein',gmh,Nr);
-gmr = refine('GMKMeans',gmr,gmh,'W2ij',NKMeansSteps);
+gmr = reduce('W2MRA',gmh,struct('Nr',Nr));
+gmr = refine('GMKMeans',gmr,gmh,struct('costMeas','W2ij','NKMeansSteps',NKMeansSteps));
 
 end
 

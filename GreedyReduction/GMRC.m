@@ -1,15 +1,12 @@
-function gmr= GMRC(gmh,Nr,initMethod,NKMeansSteps,opt,sk,NOptSteps,optWeights,accThresh)
+function gmr = GMRC(gmh,Nr,initMethod,NKMeansSteps,NOptSteps,accThresh)
 % gmr = GMRC(gmh,Nr,initMethod,NKMeansSteps,opt,sk,NOptSteps,optWeights):
 % INPUTS:
 % - gmh, a Gaussian mixture,
 % - Nr, the desired number of reduced components (scalar),
 % - initMethod, the greedy init algorithm (char array),
 % - NKMeansSteps, the maximum number of allowed steps in the Kmeans algorithm (scalar),
-% - opt, paramter which enables the optimization over the ISE (opt=1) or skips it (opt=0) (binary variable),
-% - sk, the gradient descent step in the ISE optimization (scalar),
 % - NOptSteps, optimization iterations (scalar),
-% - optWeights, parameter which enables the weight optimization in the
-%   ISEOpt; set it to 1 to optimize the weights or to 0 to skip it (binary variable).
+% - accThresh, accuracy threshold for the ISE optimization.
 % OUTPUTS:
 % - gmr, the reduced Gaussian mixture,
 % This function implements the Gaussian Mixture Reduction via Clustering
@@ -18,46 +15,24 @@ function gmr= GMRC(gmh,Nr,initMethod,NKMeansSteps,opt,sk,NOptSteps,optWeights,ac
 if nargin < 3
     initMethod = 'Runnalls';
     NKMeansSteps = 1;
-    opt = 1;
-    sk = 0.01;
-    NOptSteps = 30;
-    optWeights = 1;
-    accThresh = 1e-06;
+    NOptSteps = 200;
+    accThresh = 1e-09;
 elseif nargin < 4
     NKMeansSteps = 1;
-    opt = 1;
-    sk = 0.01;
-    NOptSteps = 30;
-    optWeights = 1;
-    accThresh = 1e-06;
+    NOptSteps = 200;
+    accThresh = 1e-09;
 elseif nargin < 5
-    opt = 1;
-    sk = 0.01;
-    NOptSteps = 30;
-    optWeights = 1;
-    accThresh = 1e-06;
+    NOptSteps = 200;
+    accThresh = 1e-09;
 elseif nargin < 6
-    sk = 0.01;
-    NOptSteps = 30;
-    optWeights = 1;
-elseif nargin < 7
-    NOptSteps = 30;
-    optWeights = 1;
-    accThresh = 1e-06;
-elseif nargin < 8
-    optWeights = 1;
-    accThresh = 1e-06;
-elseif nargin < 9
-    accThresh = 1e-06;
+    accThresh = 1e-09;
 end
 assert(~isempty(gmh),'The mixture has to contain at least one element.');
 assert(Nr>0,'The reduced mixture has to contain at least one element.');
 assert(any(strcmpi(initMethod,{'Runnalls','West','Salmond','Williams','BF'})),'This init method is not allowed.');
 assert(NKMeansSteps>=0,'The number of Kmeans iterations has to be non-negative.');
-assert(opt==0 || opt==1,'The opt parameter can take values either 0 or 1.');
-assert(sk>0,'The gradient step has to be greater than zero.');
 assert(NOptSteps>=0,'The number of optimization steps has to be non-negative.');
-assert(optWeights==0 || optWeights==1,'The optWeights parameter can take values either 0 or 1.');
+assert(accThresh>0,'The accuracy has to be greater than zero.');
 
 if numel(gmh)<Nr
     gmr = gmh;
@@ -72,23 +47,19 @@ elseif(Nr==1)
     return
 end
 
-gmr = reduce(initMethod,gmh,Nr);
+gmr = reduce(initMethod,gmh,struct('Nr',Nr));
 
 %Initial clustering
-gmr = refine('GMKMeans',gmr,gmh,'KLDij',NKMeansSteps);
+gmr = refine('GMKMeans',gmr,gmh,struct('costMeas','KLDij','NKmeansSteps',NKMeansSteps));
 
 %NISE clustering loop
-gmr = refine('clusteringGMRC',gmr,gmh,1);
+gmr = refine('clusteringGMRC',gmr,gmh,struct('NSteps',1));
 
 %Iterative optimization
-if opt==1
-    gmr = refine('ISEOptUnc',gmr,gmh,NOptSteps,optWeights,accThresh);
-end
+gmr = refine('ISEOptUnc',gmr,gmh,struct('NOptSteps',NOptSteps,'optWeights',1,'accThresh',accThresh));
 
 % Weight refinement
-if opt==1 && optWeights == 1
-    gmr = refine('weightISEOpt',gmr,gmh);
-end
+gmr = refine('weightISEOpt',gmr,gmh);
 
 end
 

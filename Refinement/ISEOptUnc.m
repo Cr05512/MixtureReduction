@@ -44,8 +44,11 @@ for i=1:Nr
 end
 
 gmr = mixtureFromParams(q.^2,mur,Sigmar);
+if optWeights==1
+    gmr = renormalizeWeights(gmr);
+end
 
-gmr = refine('weightISEOpt',gmr,gmh);
+%gmr = refine('weightISEOpt',gmr,gmh);
 
 end
 

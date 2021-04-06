@@ -18,7 +18,7 @@ Nh = numel(gmh);
 Nr = numel(gmr);
 cost_vector = Inf(1,Nr);
 Jhh = selfLikeness(gmh);
-Rnk = computeAssignMatrix(gmh,gmr,'KLD');
+Rnk = computeAssignMatrix(gmh,gmr,'KLDij');
 
 for k=1:NSteps
 
@@ -28,7 +28,7 @@ for k=1:NSteps
             Rnk(i,:) = zeros(1,Nr);
             Rnk(i,j) = 1;
             %2. recompute temporary centroids with such association matrix
-            gmr = computeClusterCentersGM(gmh,Rnk,'KLD');
+            gmr = computeClusterCentersGM(gmh,Rnk,'KLDij');
             Jhr = crossLikeness(gmh,gmr);
             Jrr = selfLikeness(gmr);
             cost_vector(j) = (Jhh - 2*Jhr + Jrr)/(Jhh + Jrr); %we compute the cost of such association
@@ -40,7 +40,7 @@ for k=1:NSteps
         Rnk(i,:) = zeros(1,Nr);
         Rnk(i,ind) = 1;
         %4. Recompute the centers
-        gmr = computeClusterCentersGM(gmh,Rnk,'KLD');
+        gmr = computeClusterCentersGM(gmh,Rnk,'KLDij');
     end  
 
 end

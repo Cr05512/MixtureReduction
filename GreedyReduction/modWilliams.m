@@ -1,11 +1,11 @@
-function gmr = Williams(gmh, Nr)
-% gmr = Williams(gmh, Nr):
+function gmr = modWilliams(gmh, Nr)
+% gmr = modWilliams(gmh, Nr):
 % INPUTS:
 % - gmh, a Gaussian mixture,
 % - Nr, desired number of components for the reduced mixture (scalar).
 % OUTPUTS:
 % - gmr, the reduced mixture.
-% This function implements the greedy reduction algorithm proposed in
+% This function implements the ISE-Consistent version of the greedy reduction algorithm proposed in
 % Williams -> Cost-Function-Based Gaussian Mixture Reduction for Target
 % Tracking, J.L. Williams, P.S. Maybeck.
 
@@ -22,7 +22,7 @@ Nh = numel(gmh);
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    gmr = KLDBarycenter(gmh);
+    gmr = ISEBSGA(gmh);
     return
 end
 
@@ -55,7 +55,7 @@ while numel(gmr)>Nr
 
                 else
                     %Merging
-                    pdfMerged = KLDBarycenter(gmr([i;j]));
+                    pdfMerged = ISEBSGA(gmr([i;j]));
 
                     %CrossLikeness
                     newColhr = matrixCrossLikeness(gmr,pdfMerged);
@@ -95,7 +95,7 @@ while numel(gmr)>Nr
         gmr = renormalizeWeights(gmr);
         
     else
-        gmr(idxs(1)) = KLDBarycenter(gmr(idxs));
+        gmr(idxs(1)) = ISEBSGA(gmr(idxs));
         gmr(idxs(2)) = [];
     end
 end

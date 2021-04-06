@@ -55,19 +55,16 @@ function [pruneParamsBlock,algoParamsBlock,refParamsBlock,testParamsBlock] = pro
     if ~isempty(algo)
         algoParamsBlock.('Nr') = 5;
         if ismember(lower(algo),{'west','cowa'})
-            algoParamsBlock.('costMeas') = 'L2';
+            algoParamsBlock.('costMeas') = 'L2ij';
             algoParamsBlock.('algo') = 0;
             algoParamsBlock.('gamma') = Inf;
         elseif strcmpi(algo,'gmrc')
             algoParamsBlock.('initMethod') = 'Runnalls';
             algoParamsBlock.('NKmeansSteps') = 1;
-            algoParamsBlock.('ISEOpt') = 1;
-            algoParamsBlock.('sk') = 0.01;
-            algoParamsBlock.('NOptSteps') = 30;
-            algoParamsBlock.('optWeights') = 1;
-            algoParamsBlock.('accThresh') = 1e-06;
+            algoParamsBlock.('NOptSteps') = 100;
+            algoParamsBlock.('accThresh') = 1e-09;
         elseif strcmpi(algo,'gmrcwas')
-            algoParamsBlock.('NKMeansSteps') = 50;
+            algoParamsBlock.('NKMeansSteps') = 100;
         elseif strcmpi(algo,'bf')
             algoParamsBlock.('seq') = 1;
         end

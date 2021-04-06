@@ -40,7 +40,7 @@ elseif(Nr==1)
 end
 
 
-gmr = reduce('West',gmh,Nr,costMeas,algo,gamma);
+gmr = reduce('West',gmh,struct('Nr',Nr,'costMeas',costMeas,'algo',algo,'gamma',gamma));
 
 gmr = refine('weightISEOpt',gmr, gmh);
 

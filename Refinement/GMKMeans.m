@@ -33,13 +33,7 @@ for k=1:NKMeansSteps
 
     gmr = computeClusterCentersGM(gmh,Rnk,costMeas);
 
-
-    if k<NKMeansSteps
-        Rnk = zeros(size(C)); %Reset of the associations
-    end
 end
-% if k<NKMeansSteps
-%     disp(horzcat('KMeans converged after ',num2str(k),' steps'));
-% end
+
 
 end

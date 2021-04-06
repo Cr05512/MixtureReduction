@@ -43,18 +43,18 @@ alpha = 3;
 beta = 0.1;
 showPlot = 1;
 
-test = 'random';
-Nr = 2;
+test = 'testCrouse';
+Nr = 5;
 
-exp1 = Experiment('',           {struct('rho',0.99)},...
-                  'Runnalls',    struct('Nr',Nr),...
-                  'ISEOptCon',           {struct(),struct()},...
+exp1 = Experiment('',           {struct('rho',0.99),struct('k',2)},...
+                  'GMRCW2',        struct('Nr',Nr),...
+                  '',           {struct('NOptSteps',100),struct()},...
                   test,          struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));              
 
               
 exp2 = Experiment('',           {},...
-                  'Runnalls',       struct('Nr',Nr),...
-                  'NISEOptCon',           {struct(),struct()},...
+                  'Salmond',       struct('Nr',Nr),...
+                  '',           {struct(),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
 
 exp3 = Experiment('',           {},...
@@ -72,7 +72,7 @@ exp4 = Experiment('',           {},...
               
               
 
-experiments = [exp1;exp2;exp3];
+experiments = [exp1];
 numTests = numel(experiments);
 
 gm_vector = cell(numTests,1);
@@ -82,7 +82,7 @@ for i=1:numTests
     [gmr_vector{i},gm_vector{i},time_vector(i)] = experiments(i).execute();
 end
 %%
-globalMeas = {struct('globMeas','ISE'),struct('globMeas','NISE'),struct('globMeas','CSD'),struct('globMeas','JR2D')}';
+globalMeas = {struct('globMeas','ISE'),struct('globMeas','NISE')}';
 plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot,globalMeas);
 
 

@@ -2,7 +2,7 @@ function IB = ISEBSGA(gmh)
 
 gmr = KLDBarycenter(gmh);
 %gmr = refine('NISEOptCon',gmr,gmh,100,1e-06);
-IB = refine('ISEOptCon',gmr,gmh,100,1e-12);
+IB = refine('ISEOptUnc',gmr,gmh,struct('NOptSteps',100,'optWeights',0,'accThresh',1e-12));
 
 end
 

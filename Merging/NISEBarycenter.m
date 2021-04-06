@@ -1,4 +1,4 @@
-function NIB =  NISENumBar(gm,NOptSteps,accThresh)
+function NIB =  NISEBarycenter(gm,NOptSteps,accThresh)
 %This function computes the ISE Barycenter through gradient descent
 
 if nargin < 2
