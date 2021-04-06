@@ -95,7 +95,7 @@ function [pruneParamsBlock,algoParamsBlock,refParamsBlock,testParamsBlock] = pro
                 refParamsBlock{i}.('NOptSteps') = 1000;
                 refParamsBlock{i}.('accThresh') = 1e-21;
             elseif strcmpi(refs(i),'CTDGMRA')
-                refParamsBlock{i}.('costMeas') = 'KLD';
+                refParamsBlock{i}.('costMeas') = 'KLDij';
                 refParamsBlock{i}.('lambda') = 0.05;
                 refParamsBlock{i}.('maxiter') = 50;
             elseif strcmpi(refs(i),'DPHEM')
@@ -105,7 +105,7 @@ function [pruneParamsBlock,algoParamsBlock,refParamsBlock,testParamsBlock] = pro
                 refParamsBlock{i}.('nSamples') = 1500;
                 refParamsBlock{i}.('maxiter') = 30;
             elseif strcmpi(refs(i),'GMKMeans')
-                refParamsBlock{i}.('costMeas') = 'KLD';
+                refParamsBlock{i}.('costMeas') = 'KLDij';
                 refParamsBlock{i}.('NKMeansSteps') = 50;
             elseif strcmpi(refs(i),'clusteringGMRC')
                 refParamsBlock{i}.('NSteps') = 1;
@@ -134,14 +134,14 @@ function [pruneParamsBlock,algoParamsBlock,refParamsBlock,testParamsBlock] = pro
             %Additional parameter case
             
             if isfield(refParamsBlock{i},'costMeas')
-                if strcmpi(refParamsBlock{i}.('costMeas'),'MKLD')
+                if strcmpi(refParamsBlock{i}.('costMeas'),'MKLDij')
                     if any(strcmpi(userRefFields,'I'))
                         refParamsBlock{i}.('I') = userRefParams{i}.I;
                     else
                         refParamsBlock{i}.('I') = 20;
                     end
 
-                elseif any(strcmpi(refParamsBlock{i}.('costMeas'),{'GJSD','chernoffAlphaD','RenyiAlphaDiv'}))
+                elseif any(strcmpi(refParamsBlock{i}.('costMeas'),{'GJSDij','chernoffAlphaD','RenyiAlphaDiv'}))
                     if any(strcmpi(userRefFields,'alpha'))
                         refParamsBlock{i}.('alpha') = userRefParams{i}.alpha;
                     else

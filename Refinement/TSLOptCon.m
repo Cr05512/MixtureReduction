@@ -63,7 +63,7 @@ function [f,grad] = funGradComp(x,gmh,Nr)
     
     Sigmar = zeros(dr,dr,Nr);
     for i=1:Nr
-        Sigmar(:,:,i) = L(:,:,i)'*L(:,:,i);
+        Sigmar(:,:,i) = L(:,:,i)*L(:,:,i)';
     end
     
     gmr = mixtureFromParams(wr,mur,Sigmar);

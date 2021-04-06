@@ -47,8 +47,8 @@ test = 'testCrouse';
 Nr = 5;
 
 exp1 = Experiment('',           {struct('rho',0.99),struct('k',2)},...
-                  'GMRCW2',        struct('Nr',Nr),...
-                  '',           {struct('NOptSteps',100),struct()},...
+                  'Runnalls',        struct('Nr',Nr),...
+                  'CTDGMRA',           {struct('costMeas','KLDij'),struct()},...
                   test,          struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));              
 
               
@@ -82,7 +82,7 @@ for i=1:numTests
     [gmr_vector{i},gm_vector{i},time_vector(i)] = experiments(i).execute();
 end
 %%
-globalMeas = {struct('globMeas','ISE'),struct('globMeas','NISE')}';
+globalMeas = {struct('globMeas','ISE'),struct('globMeas','NISE'),struct('globMeas','CTD','costMeas','W2ij')}';
 plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot,globalMeas);
 
 

@@ -12,7 +12,7 @@ function [gmr,C,pi_star] = CTDGMRA(gmr,gmh,costMeas,lambda,maxiter,varargin)
 % Q. Zhang and J. Chen. "A unified framework for gaussian mixture reduction
 % with  composite  transportation  distance".arXiv:2002.08410v1  [stat.ML.],2020.
 if nargin < 3
-    costMeas = 'KLD';
+    costMeas = 'KLDij';
     lambda = 0.1;
     maxiter = 100;
 elseif nargin < 4
@@ -53,11 +53,7 @@ for k=1:maxiter
     for j=1:Nr
         if wG(j)>0
             [gmh_temp.w] = w_temp{:,j};
-            if strcmpi(costMeas,'W2')
-                gmr(j) = WassersteinBarycenter(gmh_temp,maxiter);
-            else
-                gmr(j) = KLDBarycenter(gmh_temp);
-            end
+            gmr(j) = computeBarycenter(gmh_temp,costMeas);
         end
 
     end

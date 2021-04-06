@@ -19,7 +19,7 @@ assert(NSteps>0,'The number of iteration steps has to be greater than zero.');
 Nh = numel(gmh);
 Nr = numel(gmr);
 cost_vector = Inf(1,Nr);
-Rnk = computeAssignMatrix(gmh,gmr,'KLD');
+Rnk = computeAssignMatrix(gmh,gmr,'CSij');
 
 Jhh = selfLikeness(gmh);
 
@@ -32,7 +32,7 @@ for k=1:NSteps
             Rnk(i,j) = 1;
             
             %2. recompute temporary centroids with such association matrix
-            gmr = computeClusterCentersGM(gmh,Rnk,'KLD');
+            gmr = computeClusterCentersGM(gmh,Rnk,'CSij');
             
             
             Jhr = crossLikeness(gmh,gmr);
@@ -45,7 +45,7 @@ for k=1:NSteps
         Rnk(i,:) = zeros(1,Nr);
         Rnk(i,ind) = 1;
         %4. Recompute the centers
-        gmr = computeClusterCentersGM(gmh,Rnk,'KLD');
+        gmr = computeClusterCentersGM(gmh,Rnk,'CSij');
     end  
 
 end
