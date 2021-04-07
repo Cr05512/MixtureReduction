@@ -1,5 +1,5 @@
-function [gmr,Rnk] = GMKMeans(gmr,gmh,costMeas,NKMeansSteps)
-% [gmr,Rnk] = GMKMeans(gmr,gmh,costMeas,NKMeansSteps):
+function [gmr,Rnk] = GMKMeansRef(gmr,gmh,costMeas,NKMeansSteps)
+% [gmr,Rnk] = GMKMeansRef(gmr,gmh,costMeas,NKMeansSteps):
 % INPUTS:
 % - gmr, gmh, respectively the reduced and original mixtures,
 % - costMeas, the cost functio used to compute the distance between components (char array),
@@ -10,7 +10,7 @@ function [gmr,Rnk] = GMKMeans(gmr,gmh,costMeas,NKMeansSteps)
 % This function operates a K-Means refinement over the reduced mixture in
 % order to improve the corresponding parameters.
 if nargin < 3
-    costMeas = 'KLD';
+    costMeas = 'KLDij';
     NKMeansSteps = 100;
 elseif nargin < 4
     NKMeansSteps = 100;

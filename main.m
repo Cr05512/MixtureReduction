@@ -36,30 +36,30 @@ clear
 
 rngSeed = randi(1000000);  %559999
 %%
-Nh = 4;
+Nh = 10;
 close all
 d = 1;
 alpha = 3;
-beta = 0.1;
-showPlot = 1;
+beta = 0.09;
+showPlot = 0;
 
-test = 'testCrouse';
+test = 'random';
 Nr = 5;
 
 exp1 = Experiment('',           {struct('rho',0.99),struct('k',2)},...
                   'Runnalls',        struct('Nr',Nr),...
-                  'CTDGMRA',           {struct('costMeas','KLDij'),struct()},...
+                  'GMEM',           {struct('costMeas','KLDij'),struct()},...
                   test,          struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));              
 
               
 exp2 = Experiment('',           {},...
-                  'Salmond',       struct('Nr',Nr),...
-                  '',           {struct(),struct()},...
+                  'Runnalls',       struct('Nr',Nr),...
+                  'CTDGMRA',           {struct('costMeas','MKLDij','lambda',1,'I',10),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
 
 exp3 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr),...
-                  'CSDOptCon',  {struct(),struct()},...
+                  'DPHEM',  {struct('I',10),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
               
 exp4 = Experiment('',           {},...
@@ -72,7 +72,7 @@ exp4 = Experiment('',           {},...
               
               
 
-experiments = [exp1];
+experiments = [exp1;exp2;exp3];
 numTests = numel(experiments);
 
 gm_vector = cell(numTests,1);
@@ -82,7 +82,7 @@ for i=1:numTests
     [gmr_vector{i},gm_vector{i},time_vector(i)] = experiments(i).execute();
 end
 %%
-globalMeas = {struct('globMeas','ISE'),struct('globMeas','NISE'),struct('globMeas','CTD','costMeas','W2ij')}';
+globalMeas = {struct('globMeas','ISE'),struct('globMeas','NISE'),struct('globMeas','MCKLD','nSamples',1000000)}';
 plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot,globalMeas);
 
 

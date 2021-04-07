@@ -1,12 +1,12 @@
-function gmr = GMEM(gmr, gmh, nSamples, maxiter)
-% gm_ref = GMEM(gmr, samples, maxiter):
+function gmr = GMEMRef(gmr, gmh, nSamples, maxiter)
+% gmr = GMEMRef(gmr, samples, maxiter):
 % INPUTS:
 % - gmr, initial Gaussian mixture,
 % - gmh, reference Gaussian mixture,
 % - nSamples, number of samples to draw from the reference mixture (scalar),
 % - maxiter, maximum number of allowed iterations (scalar).
 % OUTPUTS:
-% - gm_ref, the refined mixture according to the EM algorithm.
+% - gmr, the refined mixture according to the EM algorithm.
 % This function implements EM refinement over the gm_init mixture by using samples from the full mixture
 % as presented in:
 % Maximum Likelihood from Incomplete Data via the EM Algorithm,  A. P. Dempster, N. M. Laird, D. B. Rubin
@@ -51,7 +51,7 @@ for k=1:maxiter
     end
     
     if ~mod(k,20)
-        llh = llhEM(gmr,samples);
+        llh = logLikelihoodGM(gmr,samples);
         if abs(llh-llh_prev)<log(1.105)
             break;
         end

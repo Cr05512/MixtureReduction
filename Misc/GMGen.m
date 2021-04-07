@@ -61,14 +61,7 @@ for i=1:N
     Sigma(:,:,i) = sigma;
 end
 
-gm = struct('w',[],'mu',[],'Sigma',[]);
-for i=1:N
-    gm(i).w = w_bar(i);
-    gm(i).mu = mu(:,i);
-    gm(i).Sigma = Sigma(:,:,i);
-end
-
-gm = gm';
+gm = genMixtureFromParams(w_bar,mu,Sigma);
 
 end
 
