@@ -40,9 +40,9 @@ elseif(Nr==1)
 end
 
 
-gmr = reduce('West',gmh,struct('Nr',Nr,'costMeas',costMeas,'algo',algo,'gamma',gamma));
+gmr = reduceGaussMix('West',gmh,struct('Nr',Nr,'costMeas',costMeas,'algo',algo,'gamma',gamma));
 
-gmr = refine('weightISEOpt',gmr, gmh);
+gmr = refineGaussMix('weightISEOpt',gmr, gmh);
 
 end
 

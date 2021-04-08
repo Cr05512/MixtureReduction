@@ -1,32 +1,34 @@
-function mergedComp = KLDBarycenter(comps)
-% mergedComp = KLDBarycenter(comps):
+function KLDBar = KLDBarycenter(comps)
+% KLDBar = KLDBarycenter(comps):
 % INPUTS:
 % - comps, a vector of weighted Gaussian components (numComps x 1 vector).
 % OUTPUTS:
-% - mergedComp, the moment preserving merge of the input components (weighted Gaussian density).
+% - KLDBar, the moment preserving merge of the input components (weighted Gaussian density).
 % This function takes as input a vecot of Gaussian components and returns
 % their moment-preseving merge (KLD-barycenter).
 
 assert(numel(comps)>0,'The number of components in the merge has to be greater than zero.');
 
+[w,mu,Sigma] = paramsFromMixture(comps);
+d = size(mu(:,1),1);
+N = numel(comps);
 
-w_merged = sum([comps.w]);
-d = size(comps(1).mu,1);
+wbar = sum(w);
 
-mu_merged = zeros(d,1);
-for i=1:numel(comps)
-    mu_merged = mu_merged + comps(i).w*comps(i).mu;
+mubar = zeros(d,1);
+for i=1:N
+    mubar = mubar + w(i)*mu(:,i);
 end
-mu_merged = (1/w_merged)*mu_merged;
+mubar = (1/wbar)*mubar;
 
-Sigma_merged = zeros(d,d);
+Sigmabar = zeros(d,d);
 
-for i=1:numel(comps)
-    Sigma_merged = Sigma_merged + comps(i).w*(comps(i).Sigma...
-        + (comps(i).mu - mu_merged)*(comps(i).mu - mu_merged)');
+for i=1:N
+    Sigmabar = Sigmabar + w(i)*(Sigma(:,:,i)+(mu(:,i) - mubar)*(mu(:,i) - mubar)');
 end
-Sigma_merged = Sigma_merged/w_merged;
-          
-mergedComp = struct('w',w_merged,'mu',mu_merged,'Sigma',Sigma_merged);
+Sigmabar = Sigmabar/wbar;
+
+KLDBar = mixtureFromParams(wbar,mubar,Sigmabar);
+
 end
 

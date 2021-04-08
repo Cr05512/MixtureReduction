@@ -47,19 +47,19 @@ elseif(Nr==1)
     return
 end
 
-gmr = reduce(initMethod,gmh,struct('Nr',Nr));
+gmr = reduceGaussMix(initMethod,gmh,struct('Nr',Nr));
 
 %Initial clustering
-gmr = refine('GMKMeans',gmr,gmh,struct('costMeas','KLDij','NKmeansSteps',NKMeansSteps));
+gmr = refineGaussMix('GMKMeansRef',gmr,gmh,struct('costMeas','KLDij','NKmeansSteps',NKMeansSteps));
 
 %NISE clustering loop
-gmr = refine('clusteringGMRC',gmr,gmh,struct('NSteps',1));
+gmr = refineGaussMix('clusteringGMRC',gmr,gmh,struct('NSteps',1));
 
 %Iterative optimization
-gmr = refine('ISEOptUnc',gmr,gmh,struct('NOptSteps',NOptSteps,'optWeights',1,'accThresh',accThresh));
+gmr = refineGaussMix('ISEOptUnc',gmr,gmh,struct('NOptSteps',NOptSteps,'optWeights',1,'accThresh',accThresh));
 
 % Weight refinement
-gmr = refine('weightISEOpt',gmr,gmh);
+gmr = refineGaussMix('weightISEOpt',gmr,gmh);
 
 end
 

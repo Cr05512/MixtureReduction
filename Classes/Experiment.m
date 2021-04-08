@@ -32,9 +32,9 @@ classdef Experiment < handle
         algorithm %The greedy reduction algorithm (char array)
         refinement %The refinement algorithm (char array)
         test %The test to execute (char array)
-        pruneParams %Parameters for the pruning algorithm (struct)
+        pruneParams %Parameters for the pruning algorithm (cell)
         algoParams %Parameters for the greedy reduction algorithm (struct)
-        refParams %Parameters for the refinement algorithm (struct)
+        refParams %Parameters for the refinement algorithm (cell)
         testParams %Parameters for the chosen test (struct)
     end
     
@@ -57,21 +57,20 @@ classdef Experiment < handle
                 
                 if ~isempty(prune)
                     obj.prune = prune;
+                    obj.pruneParams = pruneParams;
                 end
                 
-                %assert(~isempty(algo),'The algorithm has not been assigned. Returning...');
                 obj.algorithm = algo;
+                obj.algoParams = algoParams;
 
                 if ~isempty(ref)
-                   
                     obj.refinement = ref;
+                    obj.refParams = refParams;
                 end
                
-                availableTests = Experiment.getAvailableTests();
-                assert(ismember(lower(test),lower(availableTests)), strcat(['Unknown test. The available tests are:',' ',strjoin(availableTests,', '),'.']));
                 obj.test = test;
                 
-                [obj.pruneParams,obj.algoParams,obj.refParams,obj.testParams] = procParams(prune,pruneParams,algo,algoParams,ref,refParams,test,testParams);
+                obj.testParams = testParams;
             end
             
         end
@@ -124,11 +123,23 @@ classdef Experiment < handle
             obj.test = test;
         end
         
-        function setPruneParams(obj,pruneParams)
-            assert(isstruct(pruneParams),'Wrong input type. It has to be a struct.');
-            userPruneFields = fieldnames(pruneParams);
-            for i=1:length(userPruneFields)
-                obj.pruneParams.(userPruneFields{i}) = pruneParams.(userPruneFields{i});
+        function setPruneParams(obj,prune,pruneParams)
+            if ~isempty(obj.prune)
+                prunings = split(obj.prune,'+');
+                if any(strcmpi(prune,prunings))
+                    idx = find(strcmpi(prune,prunings));
+                    assert(isstruct(pruneParams),'Wrong input type. It has to be a struct.');
+                    userPruneFields = fieldnames(pruneParams);
+                    for i=1:length(userPruneFields)
+                        if any(strcmpi(userPruneFields{:},fieldnames(obj.pruneParams{idx})))
+                            obj.pruneParams{idx}.(userPruneFields{i}) = pruneParams.(userPruneFields{i});
+                        end
+                    end
+                else
+                    disp('The provided pruning algorithm is not proper of this experiment. Set it at first in case.');
+                end
+            else
+                disp('The experiment does not provide any pruning. Set it at first.');
             end
         end
 
@@ -140,11 +151,23 @@ classdef Experiment < handle
             end
         end
         
-        function setRefParams(obj,refParams)
-            assert(isstruct(refParams),'Wrong input type. It has to be a struct.');
-            userRefFields = fieldnames(refParams);
-            for i=1:length(userRefFields)
-                obj.refParams.(userRefFields{i}) = refParams.(userRefFields{i});
+        function setRefParams(obj,ref,refParams)
+            if ~isempty(obj.refinement)
+                refs = split(obj.refinement,'+');
+                if any(strcmpi(ref,refs))
+                    idx = find(strcmpi(ref,refs));
+                    assert(isstruct(refParams),'Wrong input type. It has to be a struct.');
+                    userRefFields = fieldnames(refParams);
+                    for i=1:length(userRefFields)
+                        if any(strcmpi(userRefFields{:},fieldnames(obj.refParams{idx})))
+                            obj.refParams{idx}.(userRefFields{i}) = refParams.(userRefFields{i});
+                        end
+                    end
+                else
+                    disp('The provided refinement algorithm is not proper of this experiment. Set it at first in case.');
+                end
+            else
+                disp('The experiment does not provide any refinement. Set it at first.');
             end
         end
         
@@ -157,31 +180,6 @@ classdef Experiment < handle
             end
         end
         
-        function gm = initGMGen(obj)
-            
-            availableTests = obj.getAvailableTests(); %Check the corresponding documentation for further details
-            assert(ismember(lower(obj.test),lower(availableTests)), strcat(['Unknown test. The available tests are:',' ',strjoin(availableTests,', '),'.']));
-            varargout = cell(1,nargout(obj.test));
-            
-            varargin = cell(nargin(obj.test),1);
-            if numel(varargin)>0
-                varargin = struct2cell(obj.testParams);
-            end
-            [varargout{:}] = feval(obj.test,varargin{:});
-            gm = varargout{1};
-            if numel(varargout)>1
-                newParams = varargout{2};
-                if isstruct(newParams)
-                    customFields = fieldnames(newParams);
-                    for i=1:length(customFields)
-                         obj.testParams.(customFields{i}) = newParams.(customFields{i});
-                    end
-                end
-                
-            end
-            
-        end
-        
         
         function [gmr,gm,time] = execute(obj)
            
@@ -189,23 +187,23 @@ classdef Experiment < handle
             assert(~isempty(obj.test),'The test has not been assigned. Returning...');
             
             %We get the init GM
-            gm = obj.initGMGen();
+            [gm,obj.testParams] = genGaussMixFromTest(obj.test,obj.testParams);
             gmr = gm;
             timeVec = zeros(1,3);
             
             %We can perform pruning
             tic;
-            gmr = pruning(obj.prune,gmr,obj.pruneParams);
+            [gmr,obj.pruneParams] = pruneGaussMix(obj.prune,gmr,obj.pruneParams);
             timeVec(1) = toc;
             
             %We apply the greedy reduction
-            
             tic;
-            gmr = reduce(obj.algorithm,gmr,obj.algoParams);
+            [gmr,obj.algoParams] = reduceGaussMix(obj.algorithm,gmr,obj.algoParams);
             timeVec(2) = toc;
             
+            %We can perform the refinement
             tic;
-            gmr = refine(obj.refinement,gmr,gm,obj.refParams);
+            [gmr,obj.refParams] = refineGaussMix(obj.refinement,gmr,gm,obj.refParams);
             timeVec(3) = toc;
 
             
