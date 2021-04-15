@@ -36,15 +36,15 @@ clear
 
 rngSeed = randi(1000000);  %926458
 %%
-Nh = 10;
+Nh = 20;
 
-d = 2;
+d = 1;
 alpha = 4;
 beta = 0.1;
 showPlot = 1;
 
-test = 'random';
-Nr = 5;
+test = 'testWilliams';
+Nr = 2;
 
 exp1 = Experiment('',           {struct('rho',0.7),struct('k',2)},...
                   'Runnalls',        struct('Nr',Nr,'seq',0),...
@@ -64,7 +64,7 @@ exp3 = Experiment('',           {},...
               
           
 
-experiments = [exp1;exp2;exp3];
+experiments = [exp1;exp2];
 numTests = numel(experiments);
 
 gms = cell(numTests,1);
