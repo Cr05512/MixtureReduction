@@ -29,22 +29,18 @@ end
 
 
 gmr = gmh;
-Jhrm = matrixCrossLikeness(gmr,gmr);
-Jrrm = matrixSelfLikeness(gmr);
-Jrrm_min = Jrrm;
 
 idxs = [0,0];
 
 while numel(gmr)>Nr
     ISEMin = Inf;
+    Jhhm = matrixSelfLikeness(gmr);
     for i=1:numel(gmr)
         for j=1:numel(gmr)
             if i<=j
-                Jhrm_temp = Jhrm;
-                Jrrm_temp = Jrrm;
-                if i==j
-
-                    %Pruning
+                Jhrm_temp = Jhhm;
+                Jrrm_temp = Jhhm;
+                if i==j %Pruning
 
                     %CrossLikeness
                     Jhrm_temp(:,i) = [];
@@ -53,19 +49,19 @@ while numel(gmr)>Nr
                     Jrrm_temp(i,:) = [];
                     Jrrm_temp(:,i) = [];
 
-                else
-                    %Merging
-                    pdfMerged = ISEBSGA(gmr([i;j]));
+                else %Merging
+                    
+                    bar = ISEBSGA(gmr([i;j]));
 
                     %CrossLikeness
-                    newColhr = matrixCrossLikeness(gmr,pdfMerged);
+                    newColhr = matrixCrossLikeness(gmr,bar);
                     Jhrm_temp(:,i) = newColhr;
                     Jhrm_temp(:,j) = [];
 
                     %Reduced SelfLikeness
 
-                    tempColrr = matrixCrossLikeness(gmr(setdiff(1:numel(gmr),[i,j])),pdfMerged);
-                    newValrr = selfLikeness(pdfMerged);
+                    tempColrr = matrixCrossLikeness(gmr(setdiff(1:numel(gmr),[i,j])),bar);
+                    newValrr = selfLikeness(bar);
                     newColrr = zeros(numel(gmr)-1,1);
                     newColrr(setdiff(1:numel(gmr)-1,i)) = tempColrr;
                     newColrr(i) = newValrr;
@@ -81,29 +77,19 @@ while numel(gmr)>Nr
                     ISEMin = ISECurr;
                     idxs(1) = i;
                     idxs(2) = j;
-                    Jrrm_min = Jrrm_temp;
                 end
            end
         end
     end
-    
-    Jhrm = Jrrm_min;
-    Jrrm = Jrrm_min;
-    
+
     if idxs(1) == idxs(2)
         gmr(idxs(1)) = [];
         gmr = renormalizeWeights(gmr);
         
     else
-        gmr(idxs(1)) = ISEBSGA(gmr(idxs));
+        gmr(idxs(1)) = ISEBSGA(gmr([idxs(1);idxs(2)]));
         gmr(idxs(2)) = [];
     end
 end
 
-
-
-
-%gmr = renormalizeWeights(gmr);
-
 end
-

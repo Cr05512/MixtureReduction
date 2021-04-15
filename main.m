@@ -36,15 +36,15 @@ clear
 
 rngSeed = randi(1000000);  %926458
 %%
-Nh = 20;
+Nh = 10;
 
-d = 1;
-alpha = 4;
+d = 2;
+alpha = 10;
 beta = 0.1;
 showPlot = 1;
 
-test = 'testWilliams';
-Nr = 2;
+test = 'random';
+Nr = 5;
 
 exp1 = Experiment('',           {struct('rho',0.7),struct('k',2)},...
                   'Runnalls',        struct('Nr',Nr,'seq',0),...
@@ -53,18 +53,18 @@ exp1 = Experiment('',           {struct('rho',0.7),struct('k',2)},...
 
               
 exp2 = Experiment('',           {},...
-                  'Williams',       struct('Nr',Nr),...
+                  'modWilliams',       struct('Nr',Nr),...
                   '',           {struct('costMeas','MKLDij','lambda',1),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
 
 exp3 = Experiment('',           {},...
-                  'G2RA',       struct('Nr',Nr,'costMeas','L2ij'),...
+                  'G2RA',       struct('Nr',Nr,'costMeas','CSDij'),...
                   '',  {struct('costMeas','CSDij','lambda',0.0),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
               
           
 
-experiments = [exp1;exp2];
+experiments = [exp1;exp3];
 numTests = numel(experiments);
 
 gms = cell(numTests,1);
@@ -75,7 +75,7 @@ for i=1:numTests
 end
 %%
 close all
-globalMeas = {struct('globMeas','ISE'),...
+globalMeas = {struct('globMeas','CSD'),...
               struct('globMeas','NISE'),...
               struct('globMeas','KLD12','nPoints',1000)}';
 plotResults(gmrs,gms,times,experiments,showPlot,globalMeas);

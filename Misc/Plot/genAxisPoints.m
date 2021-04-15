@@ -2,7 +2,7 @@ function varargout = genAxisPoints(gm,nPoints)
 % varargout = genAxisPoints(gm,params):
 % INPUT:
 % - gm, a Gaussian mixture,
-% - params, a struct containing parameters (struct).
+% - nPoints, a struct containing parameters (struct).
 % OUTPUT:
 % - varargout, variable number of outputs containing the axis points in the
 % 1D and 2D case.
@@ -12,7 +12,7 @@ assert(~isempty(gm),'The Gaussian Mixture has to be non-empty.');
 
 %At first we get an estimate of the GM center offset
 [offset,P] = getMixtureMoments(gm);
-errorEll = errorEllipses(offset,P,0.9999);
+errorEll = errorEllipses(offset,P,0.99999);
 alpha = max(max(abs(errorEll)));
 d = size(gm(1).mu,1);
 mult = 1.0;

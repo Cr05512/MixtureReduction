@@ -31,6 +31,8 @@ elseif d==2
     sRed = evalGM(gmr,X');
     
     f = sOrig.*log(sOrig./sRed);
+
+    f(isnan(f)) = 0;
     f = reshape(f,nPoints,nPoints);
     
     NKLD = trapz(x2,trapz(x1,f,2));
