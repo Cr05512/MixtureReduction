@@ -22,7 +22,7 @@ assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one
 Nh = numel(gmh);
 Nr = numel(gmr);
 cost_vector = Inf(1,Nr);
-Rnk = computeAssignMatrix(gmh,gmr,'KLD');
+Rnk = computeAssignMatrix(gmh,gmr,'KLDij');
 
 
 SPs = kRingUT(gmh,numRings);
@@ -36,7 +36,7 @@ for k=1:NSteps
             Rnk(i,j) = 1;
             
             %2. recompute temporary centroids with such association matrix
-            gmr = computeClusterCentersGM(gmh,Rnk,'KLD');
+            gmr = computeClusterCentersGM(gmh,Rnk,'KLDij');
             
             
             
@@ -54,7 +54,7 @@ for k=1:NSteps
         Rnk(i,:) = zeros(1,Nr);
         Rnk(i,ind) = 1;
         %4. Recompute the centers
-        gmr = computeClusterCentersGM(gmh,Rnk,'KLD');
+        gmr = computeClusterCentersGM(gmh,Rnk,'KLDij');
     end  
 
 end

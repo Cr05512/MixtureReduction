@@ -13,7 +13,7 @@ function gmr = DPHEM(gmr,gmh,I,numIter)
 % Simplifying gaussian mixture models for approximate inference.IEEE  Transactions
 % on  Pattern  Analysis  and  Machine  Intelligence,  vol.41(6), 2018.
 if nargin < 3
-    I = gmh.getSize;
+    I = numel(gmh);
     numIter = 100;
 elseif nargin < 4
     numIter = 100;
@@ -26,9 +26,7 @@ d = size(gmh(1).mu,1);
 Nh = numel(gmh);
 Nr = numel(gmr);
 
-wh = [gmh.w]';
-muh = [gmh.mu];
-Sigmah = cat(3,gmh.Sigma);
+[wh,muh,Sigmah] = paramsFromMixture(gmh);
 
 E = zeros(Nh,Nr);
 Z = E;
@@ -55,7 +53,7 @@ for k=1:numIter
         Z(i,:) = Z(i,:)./sum(Z(i,:));
     end
     
-    L = varLowerBoundDPHEM(gmh,gmr,E,Z,I);
+    L = varLowerBoundEllh(gmh,gmr,E,I);
     if abs(L-L_prev)<1e-15
         break;
     end

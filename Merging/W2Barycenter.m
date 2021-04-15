@@ -31,11 +31,10 @@ S_prev = S_prev./wbar;
 for k=1:maxIter
     S = zeros(d,d);
     S_prev = real(sqrtm(S_prev));
-    %S_prev_inv = inv(S_prev);
     for i=1:N
         S = S + (w(i)/wbar)*real(sqrtm(S_prev*Sigma(:,:,i)*S_prev));
     end
-    %S = S_prev_inv*S^2*S_prev_inv; %This multiplication can be avoided, but there is no result on the convergence
+    S = S_prev\(S^2/S_prev); %This multiplication can be avoided, but there is no result on the convergence
     if norm(real(sqrtm(S))-S_prev)<1e-10
         break;
     else

@@ -22,25 +22,32 @@ if ~isempty(ref)
             refParamsBlock{i}.('NOptSteps') = 500;
             refParamsBlock{i}.('optWeights') = 1;
             refParamsBlock{i}.('accThresh') = 1e-21;
+            
         elseif any(strcmpi(refs(i),{'ISEOptCon','ISEOptConQ','NISEOptCon','CSDOptCon',...
                                     'CMOptCon','TSLOptCon','JR2DOptCon'}))
             refParamsBlock{i}.('NOptSteps') = 1000;
             refParamsBlock{i}.('accThresh') = 1e-21;
-        elseif strcmpi(refs(i),'CTDGMRA')
+            
+        elseif strcmpi(refs(i),'ERCTDRef')
             refParamsBlock{i}.('costMeas') = 'KLDij';
             refParamsBlock{i}.('lambda') = 0.05;
             refParamsBlock{i}.('maxiter') = 50;
+            
         elseif strcmpi(refs(i),'DPHEM')
             refParamsBlock{i}.('I') = 20;
             refParamsBlock{i}.('maxiter') = 50;
+            
         elseif strcmpi(refs(i),'GMEMRef')
-            refParamsBlock{i}.('nSamples') = 1500;
+            refParamsBlock{i}.('nSamples') = 20000;
             refParamsBlock{i}.('maxiter') = 200;
+            
         elseif strcmpi(refs(i),'GMKMeansRef')
             refParamsBlock{i}.('costMeas') = 'KLDij';
             refParamsBlock{i}.('NKMeansSteps') = 50;
+            
         elseif strcmpi(refs(i),'clusteringGMRC')
             refParamsBlock{i}.('NSteps') = 1;
+            
         elseif strcmpi(refs(i),'clusteringUTKLD')
             refParamsBlock{i}.('NSteps') = 1;
             refParamsBlock{i}.('numRings') = 1;
@@ -66,10 +73,10 @@ if ~isempty(ref)
                 if any(strcmpi(userRefFields,'I'))
                     refParamsBlock{i}.('I') = refParams{i}.I;
                 else
-                    refParamsBlock{i}.('I') = 20;
+                    refParamsBlock{i}.('I') = 10;
                 end
 
-            elseif any(strcmpi(refParamsBlock{i}.('costMeas'),{'GJSDij','chernoffAlphaD','RenyiAlphaDiv'}))
+            elseif any(strcmpi(refParamsBlock{i}.('costMeas'),{'GJSDij','chernAlphaDij','RAlphaDij'}))
                 if any(strcmpi(userRefFields,'alpha'))
                     refParamsBlock{i}.('alpha') = refParams{i}.alpha;
                 else

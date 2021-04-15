@@ -16,8 +16,11 @@ end
 assert(~isempty(gmr) && ~isempty(gmh),'The Gaussian Mixtures have to contain at least one element.');
 assert(nSamples>0,'The number of samples has to be a non-negative integer.');
 assert(maxiter>0,'The number of iterations has to be non-negative.');
+assert(nSamples>numel(gmr),'The number of samples has to be greater than the number of starting componts.');
 
-gmr = EM(GMSamples(gmh,nSamples),numel(gmr),maxiter,gmr);
+samples = GMSamples(gmh,nSamples);
+
+gmr = EM(samples,numel(gmr),maxiter,gmr);
 
 end
 

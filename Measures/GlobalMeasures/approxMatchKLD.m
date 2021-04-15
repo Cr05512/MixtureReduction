@@ -1,5 +1,5 @@
-function AMKLD = ApproxMatchKLD(gmh,gmr)
-% AMKLD = ApproxMatchKLD(gmh,gmr):
+function AMKLD = approxMatchKLD(gmh,gmr)
+% AMKLD = approxMatchKLD(gmh,gmr):
 % INPUT:
 % - gmh, gmr, two Gaussian mixtures.
 % OUTPUT:
@@ -15,7 +15,7 @@ Nh = numel(gmh);
 pi = zeros(Nh,1);
 
 logWr = log([gmr.w]');
-C = CostMatrix(gmh,gmr,'KLD');
+C = CostMatrix(gmh,gmr,'KLDij');
 
 for i=1:Nh
     [~,pi(i)] = min(C(i,:)-logWr');

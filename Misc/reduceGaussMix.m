@@ -20,10 +20,12 @@ elseif strcmpi(algo,'gmrc')
     algoParamsBlock.('NKmeansSteps') = 1;
     algoParamsBlock.('NOptSteps') = 100;
     algoParamsBlock.('accThresh') = 1e-09;
-elseif strcmpi(algo,'gmrcwas')
+elseif strcmpi(algo,'gmrcw2')
     algoParamsBlock.('NKMeansSteps') = 100;
 elseif strcmpi(algo,'bf')
     algoParamsBlock.('seq') = 1;
+elseif strcmpi(algo,'g2ra')
+    algoParamsBlock.('costMeas') = 'KLDij';
 end
 
 if isstruct(algoParams)

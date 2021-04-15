@@ -11,7 +11,7 @@ end
 
 assert(det(S2)~=0,'The second argument matrix has to be non-singular.');
 d = size(S1,1);
-B = trace(S2\S1)-log(det(S2\S1))-d;
+B = trace(S2\S1)-log(det(S2)\(S1))-d;
 
 end
 

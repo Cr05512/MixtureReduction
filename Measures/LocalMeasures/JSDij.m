@@ -12,7 +12,7 @@ function dJS = JSDij(pdfh,pdfr)
 % 
 % dJS = 0.5*(KLD(pdfh,M) + KLD(pdfr,M));
 
-dJS = GJSD(pdfh,pdfr,0.5);
+dJS = GJSDij(pdfh,pdfr,0.5);
 
 %The two expressions above are equivalent
 

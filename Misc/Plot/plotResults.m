@@ -48,9 +48,9 @@ for i=1:numExperiments
             if ~isempty(experiments(i).getPrune)
                 legendStr = strcat(experiments(i).getPrune,'+');
             end
-            legendStr = strcat(legendStr,experiments(i).getAlgo);
+            legendStr = strcat(legendStr,upper(experiments(i).getAlgo));
             if ~isempty(experiments(i).getRef)
-                legendStr = strcat(legendStr,'+',experiments(i).getRef);
+                legendStr = strcat(legendStr,'+',upper(experiments(i).getRef));
             end
             
             legend('Original',legendStr,'FontSize',12,'interpreter','latex');

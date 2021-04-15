@@ -1,5 +1,5 @@
-function [gmr,C,pi_star] = CTDGMRA(gmr,gmh,costMeas,lambda,maxiter,varargin)
-% [gmr,C,pi_star] = CTDGMRA(gmh,gmr,costMeas,lambda,maxiter,I):
+function [gmr,C,pi_star] = ERCTDRef(gmr,gmh,costMeas,lambda,maxiter,varargin)
+% [gmr,C,pi_star] = ERCTDRef(gmh,gmr,costMeas,lambda,maxiter,I):
 % INPUTS:
 % - gmr,gmh, respectively the reduced and original mixtures,
 % - costMeas, desired cost measure (char array),
@@ -7,8 +7,8 @@ function [gmr,C,pi_star] = CTDGMRA(gmr,gmh,costMeas,lambda,maxiter,varargin)
 % - varargin, additional parameters needed by some measures (can be empty).
 % OUTPUTS:
 % - gmr, the refined mixture according to the CTDGMRA algorithm.
-% This function implements the Composite Transportation Distance Gaussian
-% mixture reduction algoirthm presented in:
+% This function implements the Entropic Regularized Composite Transportation Distance
+% refinement algoirthm as presented in:
 % Q. Zhang and J. Chen. "A unified framework for gaussian mixture reduction
 % with  composite  transportation  distance".arXiv:2002.08410v1  [stat.ML.],2020.
 if nargin < 3
@@ -58,10 +58,9 @@ for k=1:maxiter
 
     end
     
-    ind_keep = find(wG>0);
-    gmr = gmr(ind_keep);
-    w_temp = wG';
-    w_norm = num2cell(w_temp./sum(w_temp));
+    gmr = gmr(wG>0);
+    wG = wG(wG>0);
+    w_norm = num2cell(wG./sum(wG));
     [gmr.w] = w_norm{:};
     Nr = length(gmr);
     %wG = wG(ind_keep);

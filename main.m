@@ -34,57 +34,50 @@ clear
 % through the methos .execute(), e.g. exp1 = Experiment(...),
 % exp1.execute().
 
-rngSeed = randi(1000000);  %559999
+rngSeed = randi(1000000);  %926458
 %%
 Nh = 10;
-close all
-d = 1;
-alpha = 2;
-beta = 0.09;
+
+d = 2;
+alpha = 4;
+beta = 0.1;
 showPlot = 1;
 
-test = 'testCrouse';
+test = 'random';
 Nr = 5;
 
 exp1 = Experiment('',           {struct('rho',0.7),struct('k',2)},...
-                  'Williams',        struct('Nr',5),...
-                  '',           {struct('NOptSteps',1220),struct()},...
+                  'Runnalls',        struct('Nr',Nr,'seq',0),...
+                  '',           {struct('nRings',5),struct()},...
                   test,          struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));              
 
               
 exp2 = Experiment('',           {},...
-                  'modWilliams',       struct('Nr',Nr),...
-                  '',           {struct('costMeas','MKLDij','lambda',1,'I',10),struct()},...
+                  'Williams',       struct('Nr',Nr),...
+                  '',           {struct('costMeas','MKLDij','lambda',1),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
 
 exp3 = Experiment('',           {},...
-                  'Runnalls',       struct('Nr',Nr),...
-                  '',  {struct('I',10),struct()},...
+                  'G2RA',       struct('Nr',Nr,'costMeas','L2ij'),...
+                  '',  {struct('costMeas','CSDij','lambda',0.0),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
               
-exp4 = Experiment('',           {},...
-                  'Runnalls',       struct('Nr',Nr),...
-                  'JR2DOptCon',  {struct(),struct()},...
-                  test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d,'rngSeed',rngSeed));
+          
 
-              
-              
-              
-              
-
-experiments = [exp1;exp3];
+experiments = [exp1;exp2;exp3];
 numTests = numel(experiments);
 
-gm_vector = cell(numTests,1);
-gmr_vector = cell(numTests,1);
-time_vector = zeros(numTests,1);
+gms = cell(numTests,1);
+gmrs = cell(numTests,1);
+times = zeros(numTests,1);
 for i=1:numTests
-    [gmr_vector{i},gm_vector{i},time_vector(i)] = experiments(i).execute();
+    [gmrs{i},gms{i},times(i)] = experiments(i).execute();
 end
 %%
-globalMeas = {struct('globMeas','ISE'),struct('globMeas','NISE')}';
-plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot,globalMeas);
+close all
+globalMeas = {struct('globMeas','ISE'),...
+              struct('globMeas','NISE'),...
+              struct('globMeas','KLD12','nPoints',1000)}';
+plotResults(gmrs,gms,times,experiments,showPlot,globalMeas);
 
-
-%ApproxMCKLD(gm_vector{1},gmr_vector,1000000)
 

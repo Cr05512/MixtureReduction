@@ -14,7 +14,7 @@ function sKLD = SKLDij(pdfh,pdfr)
 % Phinv = inv(Ph);
 % Prinv = inv(Pr);
 
-sKLD = KLD(pdfh,pdfr) + KLD(pdfr,pdfh);
+sKLD = KLDij(pdfh,pdfr) + KLDij(pdfr,pdfh);
 % sKLD = 0.5*((muh-mur)'*(Phinv + Prinv)*(muh-mur) + trace((Prinv - Phinv)*(Ph - Pr)));
 
 end

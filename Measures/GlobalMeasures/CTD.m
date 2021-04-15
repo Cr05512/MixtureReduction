@@ -1,8 +1,9 @@
-function [d,C,pi_star] = CTD(gmh,gmr,costMeas)
+function [d,C,pi_star] = CTD(gmh,gmr,costMeas,varargin)
 % [d,C,pi_star] = CTD(gmh,gmr,costMeas):
 % INPUTS:
 % - gmh, gmr, two Gaussian mixtures,
-% - costMeas, cost function used in the computation of the cost matrix (char array).
+% - costMeas, cost function used in the computation of the cost matrix (char array),
+% - varargin, additional parameters needed by some measures (can be empty).
 % OUTPUTS:
 % - d, the composite transportation distance (scalar),
 % - C, the cost matrix (Nh x Nr matrix),
@@ -17,7 +18,7 @@ end
 
 assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element.');
 
-C = CostMatrix(gmh,gmr,costMeas);
+C = CostMatrix(gmh,gmr,costMeas,varargin{:});
 
 %assert(norm(sum([gmh.w])-1)<1e-12 && norm(sum([gmr.w])-1)<1e-12,'Weights are not normalized.');
 pi_star = EffEROTP(gmh,C,0);

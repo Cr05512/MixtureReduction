@@ -120,19 +120,21 @@ if ~isempty(globalMeas)
             meas = Experiment.getAvailableGlobalMeasures{res};
             assert(any(strcmpi(availableGlobMeas,meas)),'Wrong global measure. Check the available ones by typing Experiment.getAvailableGlobalMeasures.');
             if strcmpi(meas,'CTD')
-                performanceStr = strcat(performanceStr,strcat([' ',meas,globalMeas{i}.costMeas,':',' ',num2str(feval(meas,gmh,gmr,globalMeas{i}.costMeas)),',']));
+                performanceStr = strcat(performanceStr,strcat([' ',meas,globalMeas{i}.costMeas,':',' ',num2str(feval(meas,gmh,gmr,globalMeas{i}.costMeas),'%3.6f'),',']));
             elseif any(strcmpi(meas,{'MCKLD','ISMCKLD'}))
-                performanceStr = strcat(performanceStr,strcat([' ',meas,':',' ',num2str(feval(meas,gmh,gmr,globalMeas{i}.nSamples)),',']));
+                performanceStr = strcat(performanceStr,strcat([' ',meas,':',' ',num2str(feval(meas,gmh,gmr,globalMeas{i}.nSamples),'%3.6f'),',']));
             elseif any(strcmpi(meas,{'UTKLD','ISUTKLD'}))
-                performanceStr = strcat(performanceStr,strcat([' ',meas,':',' ',num2str(feval(meas,gmh,gmr,globalMeas{i}.nRings)),',']));
+                performanceStr = strcat(performanceStr,strcat([' ',meas,':',' ',num2str(feval(meas,gmh,gmr,globalMeas{i}.nRings),'%3.6f'),',']));
+            elseif strcmpi(meas,'KLD12')
+                performanceStr = strcat(performanceStr,strcat([' ',meas,':',' ',num2str(feval(meas,gmh,gmr,globalMeas{i}.nPoints),'%3.6f'),',']));
             else
-                performanceStr = strcat(performanceStr,strcat([' ',meas,':',' ',num2str(feval(meas,gmh,gmr)),',']));
+                performanceStr = strcat(performanceStr,strcat([' ',meas,':',' ',num2str(feval(meas,gmh,gmr),'%3.6f'),',']));
             end
         end
     end
 end
 
-performanceStr = strcat(performanceStr(2:end),strcat(' Time:',' ',num2str(time),'s.'));
+performanceStr = strcat(performanceStr(2:end),strcat(' Time:',' ',num2str(time,'%3.6f'),'s.'));
 str = [str,performanceStr];
 
 

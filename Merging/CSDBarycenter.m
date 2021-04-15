@@ -39,7 +39,7 @@ function [f,grad] = barFunGradComp(x,wh,muh,Sigmah)
     gm = mixtureFromParams(wh,muh,Sigmah);
     eta = struct('w',sum(wh),'mu',mu,'Sigma',L*L');
     
-    f = evalBarycenterFun(gm,eta,'CSij');
+    f = evalBarycenterFun(gm,eta,'CSDij');
     
     
     [Dfmu,DfL] = partialCSDBar(mu,L,wh,muh,Sigmah);

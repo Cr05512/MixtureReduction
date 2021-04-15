@@ -10,7 +10,7 @@ elseif strcmpi(costMeas,'L2ij')
     bar = ISEBSGA(gmh);
 % elseif strcmpi(costMeas,'NL2ij') % To do
 %     bar = NISEBarycenter(gmh);
-elseif strcmpi(costMeas,'CSij')
+elseif strcmpi(costMeas,'CSDij')
     bar = CSDBarycenter(gmh);
 else
     bar = KLDBarycenter(gmh);
