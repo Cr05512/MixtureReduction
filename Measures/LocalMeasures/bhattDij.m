@@ -12,8 +12,9 @@ mui = pdfi.mu;
 muj = pdfj.mu;
 Sigmai = pdfi.Sigma;
 Sigmaj = pdfj.Sigma;
-meanSigma = (Sigmai+Sigmaj)/2;
+d = size(mui,1);
 
-dBhatt = (1/8)*(muj-mui)'*((meanSigma)\(muj-mui)) + 0.5*log(det(meanSigma)/sqrt(det(Sigmai)*det(Sigmaj)));
+dBhatt = 0.5*(log(det(Sigmai+Sigmaj)) - 0.5*log(det(Sigmai)) - 0.5*log(det(Sigmaj)) - d*log(2) +...
+            0.5*(mui-muj)'*((Sigmai + Sigmaj)\(mui-muj)));
 end
 

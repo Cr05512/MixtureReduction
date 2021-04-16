@@ -38,10 +38,10 @@ rngSeed = randi(1000000);  %926458
 %%
 Nh = 10;
 
-d = 2;
+d = 1;
 alpha = 10;
 beta = 0.1;
-showPlot = 1;
+showPlot = 0;
 
 test = 'random';
 Nr = 5;
@@ -77,7 +77,7 @@ end
 close all
 globalMeas = {struct('globMeas','CSD'),...
               struct('globMeas','NISE'),...
-              struct('globMeas','KLD12','nPoints',1000)}';
+              struct('globMeas','BhattD12','nPoints',500)}';
 plotResults(gmrs,gms,times,experiments,showPlot,globalMeas);
 
 

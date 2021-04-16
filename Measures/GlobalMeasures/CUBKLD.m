@@ -1,9 +1,9 @@
-function CUBKLD = convUpperBoundKLD(gmh,gmr)
-% CUBKLD = convUpperBoundKLD(gmh,gmr):
+function dCUBKLD = CUBKLD(gmh,gmr)
+% CUBKLD = CUBKLD(gmh,gmr):
 % INPUTS:
 % - gmh, gmr, two Gaussian mixtures,
 % OUTPUTS:
-% - CUBKLD, numerically computed KLD (scalar).
+% - dCUBKLD, numerically computed KLD (scalar).
 % This function implements the computation of a convex upper bound on the KLD between two
 % mixtures as shown in:
 % "Approximating the Kullback Leibler Divergence Between Gaussian Mixture
@@ -13,7 +13,7 @@ function CUBKLD = convUpperBoundKLD(gmh,gmr)
 % approximation.
 
 C = CostMatrix(gmh,gmr,'KLD');
-CUBKLD = [gmh.w]*C*[gmr.w]';
+dCUBKLD = [gmh.w]*C*[gmr.w]';
 
 
 end

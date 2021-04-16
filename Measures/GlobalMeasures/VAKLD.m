@@ -1,5 +1,5 @@
-function varKLD = varApproxKLD(gmh,gmr)
-% varKLD = varApproxKLD(gmh,gmr):
+function varKLD = VAKLD(gmh,gmr)
+% varKLD = VAKLD(gmh,gmr):
 % INPUTS:
 % - gmh, gmr, two Gaussian mixtures.
 % OUTPUTS:

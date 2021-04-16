@@ -14,7 +14,7 @@ function [] = plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot,
 % and result are reported in the title bar.
 
 if nargin < 6
-    globalMeas = {'ISE'};
+    globalMeas = {struct('globMeas','ISE')};
     nPoints = 500;
 elseif nargin < 7
     nPoints = 500;

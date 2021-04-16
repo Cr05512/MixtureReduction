@@ -1,9 +1,9 @@
-function AMKLD = approxMatchKLD(gmh,gmr)
-% AMKLD = approxMatchKLD(gmh,gmr):
+function dAMKLD = AMKLD(gmh,gmr)
+% dAMKLD = AMKLD(gmh,gmr):
 % INPUT:
 % - gmh, gmr, two Gaussian mixtures.
 % OUTPUT:
-% - AMKLD, matching based approximation of the KLD.
+% - dAMKLD, matching based approximation of the KLD.
 % This function computes an approximation of the KLD as seen in:
 % "An Efficient Image Similarity Measure Based on Approximations of
 % KL-Divergence Between Two Gaussian Mixtures", J. Goldberger, S. Gordon,
@@ -21,10 +21,10 @@ for i=1:Nh
     [~,pi(i)] = min(C(i,:)-logWr');
 end
 
-AMKLD = 0;
+dAMKLD = 0;
 
 for i=1:Nh
-    AMKLD = AMKLD + gmh(i).w*(C(i,pi(i)) + log(gmh(i).w/gmr(pi(i)).w));
+    dAMKLD = dAMKLD + gmh(i).w*(C(i,pi(i)) + log(gmh(i).w/gmr(pi(i)).w));
 end
 
 end

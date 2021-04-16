@@ -12,6 +12,8 @@ elseif strcmpi(costMeas,'L2ij')
 %     bar = NISEBarycenter(gmh);
 elseif strcmpi(costMeas,'CSDij')
     bar = CSDBarycenter(gmh);
+elseif strcmpi(costMeas,'bhattDij')
+    bar = BhattDBarycenter(gmh);
 else
     bar = KLDBarycenter(gmh);
 end

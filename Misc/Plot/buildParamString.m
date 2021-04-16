@@ -112,25 +112,11 @@ str = [str,strPrune];
 
 performanceStr = '';
 if ~isempty(globalMeas)
-    availableGlobMeas = Experiment.getAvailableGlobalMeasures();
 
     for i=1:numel(globalMeas)
-        if isstruct(globalMeas{i})
-            res = strcmpi(globalMeas{i}.globMeas,availableGlobMeas);
-            meas = Experiment.getAvailableGlobalMeasures{res};
-            assert(any(strcmpi(availableGlobMeas,meas)),'Wrong global measure. Check the available ones by typing Experiment.getAvailableGlobalMeasures.');
-            if strcmpi(meas,'CTD')
-                performanceStr = strcat(performanceStr,strcat([' ',meas,globalMeas{i}.costMeas,':',' ',num2str(feval(meas,gmh,gmr,globalMeas{i}.costMeas),'%3.6f'),',']));
-            elseif any(strcmpi(meas,{'MCKLD','ISMCKLD'}))
-                performanceStr = strcat(performanceStr,strcat([' ',meas,':',' ',num2str(feval(meas,gmh,gmr,globalMeas{i}.nSamples),'%3.6f'),',']));
-            elseif any(strcmpi(meas,{'UTKLD','ISUTKLD'}))
-                performanceStr = strcat(performanceStr,strcat([' ',meas,':',' ',num2str(feval(meas,gmh,gmr,globalMeas{i}.nRings),'%3.6f'),',']));
-            elseif strcmpi(meas,'KLD12')
-                performanceStr = strcat(performanceStr,strcat([' ',meas,':',' ',num2str(feval(meas,gmh,gmr,globalMeas{i}.nPoints),'%3.6f'),',']));
-            else
-                performanceStr = strcat(performanceStr,strcat([' ',meas,':',' ',num2str(feval(meas,gmh,gmr),'%3.6f'),',']));
-            end
-        end
+        [val, strMeas] = evalGlobalMeas(gmh,gmr,globalMeas{i});
+        performanceStr = strcat(performanceStr,strcat([' ',strMeas,':',' ',num2str(val,'%3.6f'),',']));
+       
     end
 end
 
