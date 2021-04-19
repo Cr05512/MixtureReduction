@@ -2,7 +2,7 @@
 clear
 close all
 
-Nh = 10;
+Nh = 20;
 Nr = 5;
 d = 1;
 alpha = 5;
@@ -13,7 +13,7 @@ test = 'random';
 
 
 exp1 = Experiment('',           {struct('rho',0.7),struct('k',2)},...
-                  'gmrcw2',        struct('Nr',Nr,'seq',0),...
+                  'GMRCw2',        struct('Nr',Nr,'seq',0),...
                   '',           {struct('nRings',5),struct()},...
                   test,          struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));              
 
@@ -25,7 +25,7 @@ exp2 = Experiment('',           {},...
 
 exp3 = Experiment('',           {},...
                   'G2RA',       struct('Nr',Nr,'costMeas','W2ij'),...
-                  '',  {struct('costMeas','CSDij','lambda',0.0),struct()},...
+                  'ERCTDRef',  {struct('costMeas','W2ij','lambda',0.0),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));
               
 experiments = [exp1;exp3];
@@ -38,7 +38,7 @@ globalMeas = {struct('globMeas','ISE'),...
               struct('globMeas','CTD','costMeas','W2ij')}';
 
 numMCRuns = 100;
-perfMatrix = zeros(numExperiments,numMCRuns,numel(globalMeas));
+perfMatrix = zeros(numExperiments,numMCRuns,numel(globalMeas)+1);
 h = waitbar(0,'Processing...');
 gmr_vector = cell(numExperiments,1);
 %set(h,'Position', [550,350,280,70]);
@@ -55,27 +55,23 @@ for k=1:numMCRuns
         for j=1:numel(globalMeas)
             perfMatrix(i,k,j) = evalGlobalMeas(gm,gmr,globalMeas{j});
         end
+        perfMatrix(i,j,end) = time;
     end
 
     
 end
 
-
-close(h);
 %%
+close(h);
+perfMatrix = reshape(sum(perfMatrix,2)./numMCRuns,numExperiments,numel(globalMeas)+1);
 
-
-avgNISE = sum(NISEVector,2)./numMCRuns;
-avgTime = sum(timeVector,2)./numMCRuns;
-avgISE = sum(ISEVector,2)./numMCRuns;
-avgNKLD = sum(NKLDVector,2)./numMCRuns;
-% avgISUTKLD = sum(ISUTKLDVector,2)./numMCRuns;
-% avgISMCKLD = sum(ISMCKLDVector,2)./numMCRuns;
-
-T=table(num2str(avgNISE,'%2.6f'),num2str(avgISE,'%2.6f'),...
-        num2str(avgNKLD,'%2.6f'),num2str(avgTime,'%2.6f'));
+T=array2table(perfMatrix);
 rowNames = cell(numExperiments,1);
-colNames = {'avgNISE','avgISE','avgKLD','avgTime'};
+colNames = cell(numel(globalMeas,1));
+for i=1:numel(globalMeas)
+    colNames{i} = globalMeas{i}.globMeas;
+end
+colNames{end+1} = 'Time';
 for i=1:numExperiments
     rowNames{i} = strcat(experiments(i).getAlgo,'-',experiments(i).getRef);
 end

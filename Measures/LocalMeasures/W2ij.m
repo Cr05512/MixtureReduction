@@ -12,7 +12,7 @@ mu2 = pdf2.mu;
 P1 = pdf1.Sigma;
 P2 = pdf2.Sigma;
 
-P1sr = real(sqrtm((P1)));
+P1sr = chol(P1,'lower');
 
 w2Dist = norm(mu1-mu2)^2 + trace(P1 + P2 - 2*real(sqrtm((P1sr'*P2*P1sr))));
 end

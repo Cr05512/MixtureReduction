@@ -1,5 +1,5 @@
-function gmr = Williams(gmh, Nr)
-% gmr = Williams(gmh, Nr):
+function gmr = CCSRA(gmh, Nr)
+% gmr = CCSRA(gmh, Nr):
 % INPUTS:
 % - gmh, a Gaussian mixture,
 % - Nr, desired number of components for the reduced mixture (scalar).
@@ -33,7 +33,7 @@ gmr = gmh;
 idxs = [0,0];
 
 while numel(gmr)>Nr
-    ISEMin = Inf;
+    CSMin = Inf;
     Jhhm = matrixSelfLikeness(gmr);
     Jhh = sum(sum(Jhhm));
     for i=1:numel(gmr)
@@ -52,7 +52,7 @@ while numel(gmr)>Nr
 
                 else %Merging
                     
-                    bar = KLDBarycenter(gmr([i;j]));
+                    bar = CSDBarycenter(gmr([i;j]));
 
                     %CrossLikeness
                     newColhr = matrixCrossLikeness(gmr,bar);
@@ -73,9 +73,9 @@ while numel(gmr)>Nr
                     Jrrm_temp(:,i) = newColrr;
 
                 end
-                ISECurr = Jhh - 2*sum(sum(Jhrm_temp)) + sum(sum(Jrrm_temp));
-                if ISECurr < ISEMin
-                    ISEMin = ISECurr;
+                CSCurr = - log(sum(sum(Jhrm_temp))/sqrt(Jhh*sum(sum(Jrrm_temp))));
+                if CSCurr < CSMin
+                    CSMin = CSCurr;
                     idxs(1) = i;
                     idxs(2) = j;
                 end
@@ -88,7 +88,7 @@ while numel(gmr)>Nr
         gmr = renormalizeWeights(gmr);
         
     else
-        gmr(idxs(1)) = KLDBarycenter(gmr([idxs(1);idxs(2)]));
+        gmr(idxs(1)) = CSDBarycenter(gmr([idxs(1);idxs(2)]));
         gmr(idxs(2)) = [];
     end
 end

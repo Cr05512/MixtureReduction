@@ -1,9 +1,12 @@
-function f = evalBarycenterFun(gm, eta, costMeas)
+function f = evalBarycenterFun(gm, eta, costMeas, varargin)
 %This function evaluates the barycenter function value for a given eta
 
+if nargin < 3
+    costMeas = 'KLDij';
+end
 w = [gm.w]';
 
-f = w'*CostMatrix(gm,eta,costMeas);
+f = w'*CostMatrix(gm,eta,costMeas,varargin{:});
 
 end
 

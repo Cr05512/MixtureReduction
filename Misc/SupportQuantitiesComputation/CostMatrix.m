@@ -1,5 +1,5 @@
 function C = CostMatrix(gmh,gmr,costMeas,varargin)
-% C = CostMatrix(gmh,gmr,costMeas,I,alphaGJSD):
+% C = CostMatrix(gmh,gmr,costMeas,varargin):
 % INPUTS:
 % - gmh, gmr, two Gaussian mixtures,
 % - costMeas, desired cost function (char array),

@@ -33,7 +33,8 @@ for k=1:maxiter
     mu = sum(wSigmahinv,3)\muTmp;
     
     for i=1:N
-        A = A + wh(i)*2*d*(Sigmahinv(:,:,i) - Sigmahinv(:,:,i)*(mu-muh(:,i))*(mu-muh(:,i))'*Sigmahinv(:,:,i));
+        diff = (mu-muh(:,i));
+        A = A + wh(i)*2*d*(Sigmahinv(:,:,i) - Sigmahinv(:,:,i)*diff*diff'*Sigmahinv(:,:,i));
     end
     
     B = A + A' - diag(A);
