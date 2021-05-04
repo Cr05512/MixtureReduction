@@ -1,4 +1,4 @@
-function bar =  CSDBarycenter(gmh,maxiter,tol)
+function bar =  BhattDBarycenter(gmh,maxiter,tol)
 if nargin < 2
     maxiter = 100;
     tol = 1e-10;

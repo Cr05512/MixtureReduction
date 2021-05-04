@@ -34,11 +34,11 @@ for k=1:maxiter
     
     for i=1:N
         diff = (mu-muh(:,i));
-        A = A + wh(i)*2*d*(Sigmahinv(:,:,i) - Sigmahinv(:,:,i)*diff*diff'*Sigmahinv(:,:,i));
+        A = A + wh(i)*2*(Sigmahinv(:,:,i) - Sigmahinv(:,:,i)*diff*diff'*Sigmahinv(:,:,i));
     end
     
     B = A + A' - diag(A);
-    Sigma = 2*d*eye(d)/(B + diag(B));
+    Sigma = 2*eye(d)/(B + diag(B));
     
     if ~mod(k,10)
         if norm(mu-mu_prev)<tol && norm(Sigma-Sigma_prev)<tol

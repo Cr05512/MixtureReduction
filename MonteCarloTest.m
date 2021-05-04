@@ -1,11 +1,12 @@
 
 clear
 close all
-
-Nh = 20;
+%%
+Nh = 15;
 Nr = 5;
-d = 1;
-alpha = 5;
+numMCRuns = 100;
+d = 2;
+alpha = 6;
 beta = 0.1;
 
 test = 'random';
@@ -13,31 +14,31 @@ test = 'random';
 
 
 exp1 = Experiment('',           {struct('rho',0.7),struct('k',2)},...
-                  'GMRCw2',        struct('Nr',Nr,'seq',0),...
+                  'Runnalls',        struct('Nr',Nr,'seq',0),...
                   '',           {struct('nRings',5),struct()},...
                   test,          struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));              
 
               
 exp2 = Experiment('',           {},...
-                  'Williams',       struct('Nr',Nr),...
+                  'CTDCSDMRA',       struct('Nr',Nr),...
                   '',           {struct('costMeas','MKLDij','lambda',1),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));
 
 exp3 = Experiment('',           {},...
-                  'G2RA',       struct('Nr',Nr,'costMeas','W2ij'),...
-                  'ERCTDRef',  {struct('costMeas','W2ij','lambda',0.0),struct()},...
+                  'Runnalls',       struct('Nr',Nr,'costMeas','W2ij'),...
+                  'ERCTDRef',  {struct('costMeas','KLDij','lambda',0.0),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));
               
-experiments = [exp1;exp3];
+experiments = [exp1;exp2];
 numExperiments = numel(experiments);
 
 
 globalMeas = {struct('globMeas','ISE'),...
-              struct('globMeas','NISE'),...
-              struct('globMeas','KLD12','nPoints',10000),...
-              struct('globMeas','CTD','costMeas','W2ij')}';
+              struct('globMeas','CSD'),...
+              struct('globMeas','KLD12','nPoints',1000),...
+              struct('globMeas','CTD','costMeas','CSDij')}';
 
-numMCRuns = 100;
+
 perfMatrix = zeros(numExperiments,numMCRuns,numel(globalMeas)+1);
 h = waitbar(0,'Processing...');
 gmr_vector = cell(numExperiments,1);
@@ -55,7 +56,7 @@ for k=1:numMCRuns
         for j=1:numel(globalMeas)
             perfMatrix(i,k,j) = evalGlobalMeas(gm,gmr,globalMeas{j});
         end
-        perfMatrix(i,j,end) = time;
+        perfMatrix(i,k,end) = time;
     end
 
     

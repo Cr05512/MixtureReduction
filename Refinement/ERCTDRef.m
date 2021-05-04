@@ -35,11 +35,13 @@ Nr = numel(gmr);
 J = Inf;
 J_prev = J;
 
+[wF,~,~] = paramsFromMixture(gmh);
+
 
 for k=1:maxiter
     
     C = CostMatrix(gmh,gmr,costMeas,varargin{:});
-    pi_star = EffEROTP(gmh,C,lambda); %It works only in this context, we are solving the opt problem by considering only one constraint
+    pi_star = EffEROTP(wF,C,lambda); %It works only in this context, we are solving the opt problem by considering only one constraint
     
     J = trace(pi_star'*C) - lambda*MatrixEntropy(pi_star);
 

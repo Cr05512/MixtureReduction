@@ -16,6 +16,11 @@ assert(maxIter>0,'The number of iterations has to be greater than zero.');
 [w,mu,Sigma] = paramsFromMixture(gm);
 N = numel(gm);
 
+if N==1
+    W2Bar = gm;
+    return
+end
+
 d = size(gm(1).mu,1);
 S_prev = zeros(d,d);
 mubar = zeros(d,1);
@@ -23,22 +28,33 @@ wbar = sum(w);
 
 for i=1:N
     mubar = mubar + w(i)*mu(:,i);
-    S_prev = S_prev + w(i)*Sigma(:,:,i);
+    if N>2
+        S_prev = S_prev + w(i)*Sigma(:,:,i);
+    end
 end
 mubar = mubar./wbar;
-S_prev = S_prev./wbar;
 
-for k=1:maxIter
-    S = zeros(d,d);
-    S_prev = real(sqrtm(S_prev));
-    for i=1:N
-        S = S + (w(i)/wbar)*real(sqrtm(S_prev*Sigma(:,:,i)*S_prev));
-    end
-    S = S_prev\(S^2/S_prev); %This multiplication can be avoided, but there is no result on the convergence
-    if norm(real(sqrtm(S))-S_prev)<1e-10
-        break;
-    else
-        S_prev = S;
+if N==2
+    w1 = w(1)/wbar;
+    w2 = w(2)/wbar;
+    Sigma1 = Sigma(:,:,1);
+    Sigma2 = Sigma(:,:,2);
+    S = w1^2*Sigma1 + w2^2*Sigma2 + w1*w2*real(sqrtm(Sigma2*Sigma1) + sqrtm(Sigma1*Sigma2));
+else
+    S_prev = S_prev./wbar;
+
+    for k=1:maxIter
+        S = zeros(d,d);
+        S_prev = real(sqrtm(S_prev));
+        for i=1:N
+            S = S + (w(i)/wbar)*real(sqrtm(S_prev*Sigma(:,:,i)*S_prev));
+        end
+        S = S_prev\(S^2/S_prev); %This multiplication can be avoided, but there is no result on the convergence
+        if norm(real(sqrtm(S))-S_prev)<1e-10
+            break;
+        else
+            S_prev = S;
+        end
     end
 end
 

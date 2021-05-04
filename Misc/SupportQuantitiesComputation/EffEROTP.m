@@ -1,7 +1,7 @@
-function pi_star = EffEROTP(gmh,C,lambda)
-% pi_star = EffEROTP(gmh,C,lambda):
+function [pi_star,C] = EffEROTP(wF,C,lambda)
+% pi_star = EffEROTP(wF,C,lambda):
 % INPUTS:
-% - gmh, a Gaussian mixture,
+% - wF, original mixture weight vector,
 % - C, Cost Matrix (Nh x Nr matrix),
 % - lambda, regularization parameter (scalar).
 % OUTPUTS:
@@ -10,21 +10,20 @@ function pi_star = EffEROTP(gmh,C,lambda)
 % according to:
 %"A unified framework for GMR with composite transportation distance".
 
-assert(size(C,1)==numel(gmh),'Check input parameters, dimensions are inconsistent.');
-assert(~isempty(gmh),'The mixture has to contain at least one element.');
+assert(size(C,1)==numel(wF),'Check input parameters, dimensions are inconsistent.');
 assert(lambda>=0,'The parameter lambda has to be non-negative.');
-Nh = numel(gmh);
+Nh = numel(wF);
 Nr = size(C,2);
 pi_star = zeros(Nh,Nr);
 for i=1:Nh
     if lambda==0
         [~,Ci] = min(C(i,:));
-        pi_star(i,Ci) = gmh(i).w;
+        pi_star(i,Ci) = wF(i);
     else
         normFactor = sum(exp(-C(i,:)./lambda));
-        if normFactor>0
-            pi_star(i,:) = gmh(i).w*exp(-C(i,:)./lambda)./normFactor;
-        end
+        %if normFactor>0
+        pi_star(i,:) = wF(i)*exp(-C(i,:)./lambda)./normFactor;
+        %end
 
     end
 end

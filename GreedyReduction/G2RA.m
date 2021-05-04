@@ -1,4 +1,4 @@
-function gmr = G2RA(gmh, Nr, costMeas)
+function [gmr,pairs] = G2RA(gmh, Nr, costMeas)
 % gmr = GRA(gmh, Nr):
 % INPUTS:
 % - gmh, a Gaussian mixture to be reduced,
@@ -29,6 +29,7 @@ end
 
 
 fMatrix = Inf(Nh,Nh);
+pairs = zeros(Nh-Nr,2);
 
 for i=1:Nh
     for j=1:Nh
@@ -39,8 +40,7 @@ for i=1:Nh
     end
 end
 
-while(numel(gmr)-Nr>0)
-
+for k=1:Nh-Nr
 
     %We then find the action with the lowest KLD bound and we merge the
     %corresponding mixture components
@@ -48,7 +48,7 @@ while(numel(gmr)-Nr>0)
     bar = computeBarycenter(gmr([i,j]),costMeas);
     gmr(i) = bar;
     gmr(j) = [];
-    
+    pairs(k,:) = [i,j];
     fMatrix(j,:) = [];
     fMatrix(:,j) = [];
     upd_ind = setdiff(1:numel(gmr),i);

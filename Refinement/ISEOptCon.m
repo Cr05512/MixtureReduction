@@ -8,7 +8,7 @@ function gmr = ISEOptCon(gmr,gmh,NOptSteps,accThresh)
 
 if nargin < 3
     NOptSteps = 1000;
-    accThresh = 1e-21;
+    accThresh = 1e-12;
 end
 
 Nr = numel(gmr);

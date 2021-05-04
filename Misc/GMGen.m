@@ -23,11 +23,11 @@ function gm = GMGen(N,d,alpha,beta,delta)
 
 if nargin < 2
     d = 1;
-    alpha = N/3;
+    alpha = N/2;
     beta = 0.09;
     delta = zeros(d,1);
 elseif nargin < 3
-    alpha = N/3;
+    alpha = N/2;
     beta = 0.09;
     delta = zeros(d,1);
 elseif nargin < 4

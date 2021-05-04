@@ -35,6 +35,7 @@ idxs = [0,0];
 while numel(gmr)>Nr
     ISEMin = Inf;
     Jhhm = matrixSelfLikeness(gmr);
+    Jhh = sum(sum(Jhhm));
     for i=1:numel(gmr)
         for j=1:numel(gmr)
             if i<=j
@@ -72,7 +73,7 @@ while numel(gmr)>Nr
                     Jrrm_temp(:,i) = newColrr;
 
                 end
-                ISECurr = - 2*sum(sum(Jhrm_temp)) + sum(sum(Jrrm_temp));
+                ISECurr = Jhh - 2*sum(sum(Jhrm_temp)) + sum(sum(Jrrm_temp));
                 if ISECurr < ISEMin
                     ISEMin = ISECurr;
                     idxs(1) = i;

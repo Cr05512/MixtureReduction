@@ -1,5 +1,5 @@
-function gmr = ISEOptCon(gmr,gmh,NOptSteps,accThresh)
-% gmr = ISEOptCon(gmr,gmh,NOptSteps,optWeights,accThresh):
+function gmr = TSLOptCon(gmr,gmh,NOptSteps,accThresh)
+% gmr = TSLOptCon(gmr,gmh,NOptSteps,optWeights,accThresh):
 % - gmr, gmh, two Gaussian Mixtures,
 % - NOptSteps, maximum number of optimization steps,
 % - accThresh, accuracy threshold.
@@ -8,7 +8,7 @@ function gmr = ISEOptCon(gmr,gmh,NOptSteps,accThresh)
 
 if nargin < 3
     NOptSteps = 1000;
-    accThresh = 1e-21;
+    accThresh = 1e-12;
 end
 
 Nr = numel(gmr);

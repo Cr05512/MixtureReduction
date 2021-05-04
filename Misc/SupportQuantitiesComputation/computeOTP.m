@@ -22,9 +22,10 @@ beq = [wF;wG];
 A = -eye(Nh*Nr);
 b = zeros(Nh*Nr,1);
 
-options = optimoptions('linprog','Display','none');
+options = optimoptions('linprog','Algorithm','dual-simplex','Display','none');
 
-pi = reshape(linprog(f,A,b,Aeq,beq,[],[],options),Nh,Nr);
+pi = linprog(f,A,b,Aeq,beq,[],[],options);
+pi = reshape(pi,Nh,Nr);
 
 
 end

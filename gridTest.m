@@ -6,9 +6,9 @@ numPoints = 101;
 
 %rng(1001);
 
-gmh = GMGen(10,1);
+gmh = GMGen(6,1);
 
-gmr = struct('w',sum([gmh.w]),'mu',[],'Sigma',[]);
+gmr = KLDBarycenter(gmh);
 gmrKLD = gmr;
 
 %%
@@ -18,10 +18,10 @@ mu = linspace(-2,4,numPoints);
 sigma = linspace(0.001,15,numPoints);
 
 
-XISE = zeros(numPoints,numPoints);
-XBAR = zeros(size(XISE));
-% XCSD = zeros(size(XISE));
-% XCSD = zeros(size(XISE));
+XNISE = zeros(numPoints,numPoints);
+XBAR = zeros(size(XNISE));
+% XCSD = zeros(size(XNISE));
+% XCSD = zeros(size(XNISE));
 
 %Jhh = selfLikeness(gmh);
 
@@ -31,8 +31,8 @@ for i=1:numPoints
         gmr.Sigma = sigma(j);
 %         Jhr = crossLikeness(gmh,gmr);
 %         Jrr = selfLikeness(gmr);
-        XISE(i,j) = CSD(gmh,gmr);
-        XBAR(i,j) = evalBarycenterFun(gmh,gmr,'CSDij');
+        XNISE(i,j) = NISE(gmh,gmr);
+        XBAR(i,j) = evalBarycenterFun(gmh,gmr,'NL2ij');
 %        XNISE(i,j,k) = XISE(i,j)/(Jhh + Jrr);
 %         XCSD(i,j) = -log(Jhr) + 0.5*(log(Jhh*Jrr));
 %         XJR2D(i,j) = JR2D(gmh,gmr);
@@ -43,24 +43,24 @@ end
 
 figure(4)
 
-[iISE,jISE] = find(XISE==min(min(XISE)));
+[iNISE,jNISE] = find(XNISE==min(min(XNISE)));
 
-gmrISE = gmr;
-gmrISE.mu = mu(iISE);
-gmrISE.Sigma = sigma(jISE);
-optISE = min(min(XISE));
+gmrNISE = gmr;
+gmrNISE.mu = mu(iNISE);
+gmrNISE.Sigma = sigma(jNISE);
+optNISE = min(min(XNISE));
 
 subplot(1,2,1)
-mesh(mu,sigma,XISE'); hold on
+mesh(mu,sigma,XNISE'); hold on
 xlabel('\mu');
 ylabel('\Sigma');
-zlabel('ISE');
-title(strcat(['ISE BSGA: \mu=',num2str(gmrISE.mu),', ','\Sigma=',num2str(gmrISE.Sigma)]));
-scatter3(gmrISE.mu,gmrISE.Sigma,optISE,100,'r*','LineWidth',4); hold on
-plot3([gmrISE.mu gmrISE.mu],[gmrISE.Sigma gmrISE.Sigma],[0 optISE],'k-.','LineWidth',4); hold on
-plot3([min(mu) gmrISE.mu],[gmrISE.Sigma gmrISE.Sigma],[0 0],'b-.','LineWidth',4); hold on
-plot3([gmrISE.mu gmrISE.mu],[min(sigma) gmrISE.Sigma],[0 0],'g-.','LineWidth',4); hold on
-axis([min(mu) max(mu) min(sigma) max(sigma) 0 max(max(XISE))])
+zlabel('NISE');
+title(strcat(['NISE BSGA: \mu=',num2str(gmrNISE.mu),', ','\Sigma=',num2str(gmrNISE.Sigma)]));
+scatter3(gmrNISE.mu,gmrNISE.Sigma,optNISE,100,'r*','LineWidth',4); hold on
+plot3([gmrNISE.mu gmrNISE.mu],[gmrNISE.Sigma gmrNISE.Sigma],[0 optNISE],'k-.','LineWidth',4); hold on
+plot3([min(mu) gmrNISE.mu],[gmrNISE.Sigma gmrNISE.Sigma],[0 0],'b-.','LineWidth',4); hold on
+plot3([gmrNISE.mu gmrNISE.mu],[min(sigma) gmrNISE.Sigma],[0 0],'g-.','LineWidth',4); hold on
+axis([min(mu) max(mu) min(sigma) max(sigma) 0 max(max(XNISE))])
 set(gca,'FontSize',34)
 
 
@@ -75,7 +75,7 @@ mesh(mu,sigma,XBAR'); hold on
 xlabel('\mu');
 ylabel('\Sigma');
 zlabel('BARVal');
-title(strcat(['ISE Bar: \mu=',num2str(gmrBAR.mu),', ','\Sigma=',num2str(gmrBAR.Sigma)])); hold on
+title(strcat(['NISE Bar: \mu=',num2str(gmrBAR.mu),', ','\Sigma=',num2str(gmrBAR.Sigma)])); hold on
 scatter3(gmrBAR.mu,gmrBAR.Sigma,optBAR,100,'r*','LineWidth',4); hold on
 plot3([gmrBAR.mu gmrBAR.mu],[gmrBAR.Sigma gmrBAR.Sigma],[0 optBAR],'k-.','LineWidth',4); hold on
 plot3([min(mu) gmrBAR.mu],[gmrBAR.Sigma gmrBAR.Sigma],[0 0],'b-.','LineWidth',4); hold on

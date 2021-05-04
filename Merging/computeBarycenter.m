@@ -8,9 +8,9 @@ switch costMeas
     case 'W2ij'
         bar = W2Barycenter(gmh,100);
     case 'L2ij'
-        bar = ISEBSGA(gmh);
-% elseif strcmpi(costMeas,'NL2ij') % To do
-%     bar = NISEBarycenter(gmh);
+        bar = ISEBarycenter(gmh);
+    case 'NL2ij'
+        bar = NISEBarycenter(gmh);
     case 'CSDij'
         bar = CSDBarycenter(gmh);
     case 'bhattDij'

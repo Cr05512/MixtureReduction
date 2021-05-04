@@ -9,7 +9,7 @@ function gmr = ISEOptUnc(gmr,gmh,NOptSteps,optWeights,accThresh)
 
 if nargin < 3
     NOptSteps = 1000;
-    accThresh = 1e-18;
+    accThresh = 1e-12;
 end
 
 Nr = numel(gmr);

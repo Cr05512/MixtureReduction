@@ -8,7 +8,7 @@ function gmr = CSDOptCon(gmr,gmh,NOptSteps,accThresh)
 
 if nargin < 3
     NOptSteps = 100;
-    accThresh = 1e-18;
+    accThresh = 1e-12;
 end
 
 Nr = numel(gmr);

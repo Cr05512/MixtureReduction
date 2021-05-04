@@ -3,6 +3,7 @@ function f = evalBarycenterFun(gm, eta, costMeas, varargin)
 
 if nargin < 3
     costMeas = 'KLDij';
+    disp('Using the default measure (KLDij) for the f(\eta) function.');
 end
 w = [gm.w]';
 

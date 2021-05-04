@@ -1,4 +1,4 @@
-function IB = ISEBSGA(gmh)
+function IB = ISEBarycenter(gmh)
 %Note: ISE BSGA coincides with the ISE Barycenter
 gmr = KLDBarycenter(gmh);
 %gmr = refine('NISEOptCon',gmr,gmh,100,1e-06);
