@@ -1,4 +1,5 @@
-function NBar = NISEBarycenter(gmh,NOptSteps,accThresh)
+function CSDBar = CSDBarycenterGD(gmh,NOptSteps,accThresh)
+
 
 if nargin < 3
     NOptSteps = 1000;
@@ -7,8 +8,7 @@ end
 
 d = size(gmh(1).mu,1);
 
-[~,ind] = max([gmh.w]);
-gmr = struct('w',sum([gmh.w]),'mu',gmh(ind).mu,'Sigma',gmh(ind).Sigma);
+gmr = KLDBarycenter(gmh);
 
 [~,mur,Sigmar] = paramsFromMixture(gmr);
 L = chol(Sigmar,'lower');
@@ -28,7 +28,7 @@ mur = x(1:d);
 L = reshape(x(d+1:end),[d d]);
 Sigmar = L*L';
 
-NBar = mixtureFromParams(wr,mur,Sigmar);
+CSDBar = mixtureFromParams(wr,mur,Sigmar);
 
 end
 
@@ -41,9 +41,9 @@ function [f,grad] = funGradComp(x,gmh)
     Sigmar = L*L';
     
     gmr = mixtureFromParams(sum([gmh.w]),mur,Sigmar);
-    f = evalBarycenterFun(gmh,gmr,'NL2ij');
+    f = evalBarycenterFun(gmh,gmr,'CSDij');
     
-    [Dfmu,DfL] = partialNISEBar(mur,L,[gmh.w]',[gmh.mu],cat(3,gmh.Sigma));
+    [Dfmu,DfL] = partialCSDBar(mur,L,[gmh.w]',[gmh.mu],cat(3,gmh.Sigma));
     
     grad = [Dfmu; reshape(DfL,dr*dr,1)];
 

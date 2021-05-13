@@ -53,7 +53,7 @@ for k=1:numIter
         Z(i,:) = Z(i,:)./sum(Z(i,:));
     end
     
-    L = varLowerBoundEllh(gmh,gmr,E,I);
+    L = varLowerBoundEllh(gmh,gmr,I);
     if abs(L-L_prev)<1e-15
         break;
     end

@@ -1,4 +1,4 @@
-function NIB = NISEBSGA(gmh,NOptSteps,accThresh)
+function NIB = TSLBSGA(gmh,NOptSteps,accThresh)
 
 if nargin < 2
     NOptSteps = 100;
@@ -10,7 +10,7 @@ end
 [~,ind] = max([gmh.w]);
 gmr = struct('w',sum([gmh.w]),'mu',gmh(ind).mu,'Sigma',gmh(ind).Sigma);
 
-NIB = refineGaussMix('NISEOptCon',gmr,gmh,struct('NOptSteps',NOptSteps,'accThresh',accThresh));
+NIB = refineGaussMix('TSLOptCon',gmr,gmh,struct('NOptSteps',NOptSteps,'accThresh',accThresh));
 
 end
 

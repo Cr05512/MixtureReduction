@@ -1,4 +1,4 @@
-function bar =  CSDBarycenter(gmh,maxiter,tol)
+function bar =  CSDBarycenterCCCP(gmh,maxiter,tol)
 if nargin < 2
     maxiter = 100;
     tol = 1e-10;
@@ -6,14 +6,16 @@ elseif nargin < 3
     tol = 1e-10;
 end
 
+d = size(gmh(1).mu,1);
+N = numel(gmh);
 bar = KLDBarycenter(gmh);
-
+%bar = struct('w',sum([gmh.w]),'mu',sum([gmh.mu],2)/N,'Sigma',sum(cat(3,gmh.Sigma),3)/N);
 mu = bar.mu;
 Sigma = bar.Sigma;
 mu_prev = mu;
 Sigma_prev = Sigma;
-N = numel(gmh);
-d = size(mu,1);
+
+
 
 [wh,muh,Sigmah] = paramsFromMixture(gmh);
 
@@ -26,7 +28,7 @@ for k=1:maxiter
     muTmp = zeros(d,1);
     A = zeros(d,d);
     for i=1:N
-        Sigmahinv(:,:,i) = eye(d)/(Sigma+Sigmah(:,:,i));
+        Sigmahinv(:,:,i) = inv(Sigma+Sigmah(:,:,i));
         wSigmahinv(:,:,i) = wh(i)*Sigmahinv(:,:,i);
         muTmp = muTmp + wSigmahinv(:,:,i)*muh(:,i);
     end

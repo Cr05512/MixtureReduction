@@ -11,7 +11,7 @@ Sigmai = pdfi.Sigma;
 Sigmaj = pdfj.Sigma;
 alphaSigmaij = alpha*Sigmaj + (1-alpha)*Sigmai;
 
-R_alpha = 0.5*(mui-muj)'*(alphaSigmaij\(mui-muj)) - 0.5/(2*alpha*(alpha-1))*log(det(alphaSigmaij)/(det(Sigmai)^(1-alpha) * det(Sigmaj)^alpha));
+R_alpha = alpha/2 * (mui-muj)'*(alphaSigmaij\(mui-muj)) - 0.5/(alpha-1)*(log(det(alphaSigmaij)) - (1-alpha)*log(det(Sigmai)) - alpha*log(det(Sigmaj)));
 
 end
 

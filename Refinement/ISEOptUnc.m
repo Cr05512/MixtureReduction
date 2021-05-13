@@ -28,7 +28,7 @@ f = @(x) funGradComp(x,wh,muh,Sigmah,Nr,optWeights);
 
 options = optimoptions('fminunc','OptimalityTolerance',accThresh,...
                        'MaxFunctionEvaluations',NOptSteps,'MaxIterations',NOptSteps,...
-                       'Algorithm','quasi-newton','SpecifyObjectiveGradient',true,'display','none');
+                       'Algorithm','trust-region','SpecifyObjectiveGradient',true,'display','none');
 
 x = fminunc(f,x0,options);
 

@@ -11,9 +11,8 @@ assert(~isempty(gmh) && ~isempty(gmr),'The Gaussian mixtures have to contain at 
 [wh,muh,Sigmah] = paramsFromMixture(gmh);
 [wr,mur,Sigmar] = paramsFromMixture(gmr);
 
-weightMatrix = wh*wr';
 
-matrixcl = weightMatrix.*matrixUnwCrossLikeness(muh,Sigmah,mur,Sigmar);
+matrixcl = wh'*matrixUnwCrossLikeness(muh,Sigmah,mur,Sigmar)*wr;
 
 end
 

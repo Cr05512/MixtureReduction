@@ -72,7 +72,7 @@ function [f,grad] = funGradComp(x,wh,muh,Sigmah,Nr)
     f = JR2D(gmh,gmr);
     
     [gfw,gfmu,gfL] = gradJR2D(wr,mur,L,wh,muh,Sigmah);
-    
+    %gfL = zeros(dr,dr,Nr);
     grad = [gfw; reshape(gfmu,dr*Nr,1); reshape(gfL,dr*dr*Nr,1)];
 
 
