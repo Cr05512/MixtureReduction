@@ -1,6 +1,6 @@
 function dH2 = Hell2ij(pdf1,pdf2)
 
-dH2 = 1-bhattCij(pdf1,pdf2);
+dH2 = 1-BCij(pdf1,pdf2);
 
 % mu1 = pdf1.mu;
 % mu2 = pdf2.mu;

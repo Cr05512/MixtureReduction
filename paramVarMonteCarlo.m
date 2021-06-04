@@ -2,15 +2,15 @@ clc
 clear
 close all
 
-Nh = 15;
-Nr = 5;
-dVec = [1 2 4];
-alpha = Nh/3;
+Nh = 20;
+Nr = 4;
+dVec = [1 2 4 6 8 10];
+alpha = Nh/2;
 beta = 0.09;
 
 d = 1;
 
-numMCRuns = 50;
+numMCRuns = 1000;
 test = 'random';
               
 exp1 = Experiment('',           {struct('rho',0.3)},...

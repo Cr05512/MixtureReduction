@@ -6,16 +6,16 @@ numPoints = 101;
 
 %rng(1001);
 
-gmh = userDefMixture2;
+gmh = testWilliams;
 
 gmr = KLDBarycenter(gmh);
 gmrKLD = gmr;
 
 %%
 %mu = linspace(-4*max(abs([gmh.mu])),4*max(abs([gmh.mu])),numPoints);
-mu = linspace(-2,4,numPoints);
+mu = linspace(-6,6,numPoints);
 
-sigma = linspace(0.1,6,numPoints);
+sigma = linspace(0.00001,20,numPoints);
 
 
 XBSGA = zeros(numPoints,numPoints);
@@ -57,17 +57,17 @@ ylabel('\Sigma','FontSize',34);
 zlabel('BSGAVal','FontSize',34);
 title(strcat(['BSGA: \mu=',num2str(gmrBSGA.mu),', ','\Sigma=',num2str(gmrBSGA.Sigma)]),'FontSize',34);
 scatter3(gmrBSGA.mu,gmrBSGA.Sigma,optBSGA,100,'r*','LineWidth',4); hold on
-plot3([gmrBSGA.mu gmrBSGA.mu],[gmrBSGA.Sigma gmrBSGA.Sigma],[0 optBSGA],'k-.','LineWidth',4); hold on
-plot3([min(mu) gmrBSGA.mu],[gmrBSGA.Sigma gmrBSGA.Sigma],[0 0],'b-.','LineWidth',4); hold on
-plot3([gmrBSGA.mu gmrBSGA.mu],[min(sigma) gmrBSGA.Sigma],[0 0],'g-.','LineWidth',4); hold on
-axis([min(mu) max(mu) min(sigma) max(sigma) min([0;min(min(XBSGA))]) max(max(XBSGA))])
+%plot3([gmrBSGA.mu gmrBSGA.mu],[gmrBSGA.Sigma gmrBSGA.Sigma],[min([0;min(min(XBSGA))]) optBSGA],'k-.','LineWidth',4); hold on
+%plot3([min(mu) gmrBSGA.mu],[gmrBSGA.Sigma gmrBSGA.Sigma],[min([0;min(min(XBSGA))]) min([0;min(min(XBSGA))])],'b-.','LineWidth',4); hold on
+%plot3([gmrBSGA.mu gmrBSGA.mu],[min(sigma) gmrBSGA.Sigma],[min([0;min(min(XBSGA))]) min([0;min(min(XBSGA))])],'g-.','LineWidth',4); hold on
+axis([min(mu) max(mu) min(sigma) max(sigma) 0 max(max(XBSGA))])
 set(gca,'FontSize',34)
 
 
 [iBAR,jBAR] = find(XBAR==min(min(XBAR)));
 gmrBAR = gmr;
-gmrBAR.mu = mu(iBAR(1));
-gmrBAR.Sigma = sigma(jBAR(1));
+gmrBAR.mu = mu(iBAR);
+gmrBAR.Sigma = sigma(jBAR);
 optBAR = min(min(XBAR));
 
 subplot(1,2,2)
@@ -77,9 +77,9 @@ ylabel('\Sigma','FontSize',34);
 zlabel('BARVal','FontSize',34);
 title(strcat(['Bar: \mu=',num2str(gmrBAR.mu),', ','\Sigma=',num2str(gmrBAR.Sigma)]),'FontSize',34); hold on
 scatter3(gmrBAR.mu,gmrBAR.Sigma,optBAR,100,'r*','LineWidth',4); hold on
-plot3([gmrBAR.mu gmrBAR.mu],[gmrBAR.Sigma gmrBAR.Sigma],[0 optBAR],'k-.','LineWidth',4); hold on
-plot3([min(mu) gmrBAR.mu],[gmrBAR.Sigma gmrBAR.Sigma],[0 0],'b-.','LineWidth',4); hold on
-plot3([gmrBAR.mu gmrBAR.mu],[min(sigma) gmrBAR.Sigma],[0 0],'g-.','LineWidth',4); hold on
-axis([min(mu) max(mu) min(sigma) max(sigma)])
+%plot3([gmrBAR.mu gmrBAR.mu],[gmrBAR.Sigma gmrBAR.Sigma],[min([0;min(min(XBAR))]) optBAR],'k-.','LineWidth',4); hold on
+%plot3([min(mu) gmrBAR.mu],[gmrBAR.Sigma gmrBAR.Sigma],[min([0;min(min(XBAR))]) min([0;min(min(XBAR))])],'b-.','LineWidth',4); hold on
+%plot3([gmrBAR.mu gmrBAR.mu],[min(sigma) gmrBAR.Sigma],[min([0;min(min(XBAR))]) min([0;min(min(XBAR))])],'g-.','LineWidth',4); hold on
+axis([min(mu) max(mu) min(sigma) max(sigma) 0 max(max(XBAR))])
 set(gca,'FontSize',34)
 

@@ -7,8 +7,7 @@ elseif nargin < 3
     accThresh = 1e-12;
 end
 
-[~,ind] = max([gmh.w]);
-gmr = struct('w',sum([gmh.w]),'mu',gmh(ind).mu,'Sigma',gmh(ind).Sigma);
+gmr = KLDBarycenter(gmh);
 
 NIB = refineGaussMix('NISEOptCon',gmr,gmh,struct('NOptSteps',NOptSteps,'accThresh',accThresh));
 

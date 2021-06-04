@@ -22,21 +22,8 @@ end
 
 clusters = clusters(ind);
 for i=1:length(clusters) %We use length(clusters) because it can be smaller than Nr
-    switch costMeas
-        case 'W2ij'
-            bar = W2Barycenter(clusters{i},100);
-        case 'L2ij'
-            bar = ISEBSGA(clusters{i});
-    % elseif strcmpi(costMeas,'NL2ij') % To do
-    %     bar = NISEBarycenter(gmh);
-        case 'CSDij'
-            bar = CSDBarycenter(clusters{i});
-        case 'bhattDij'
-            bar = BhattDBarycenter(clusters{i});
-        otherwise
-            bar = KLDBarycenter(clusters{i});
-    end
-    clusters{i} = bar;
+    
+    clusters{i} = computeBarycenter(clusters{i},costMeas);
 end
 
 gmr = [clusters{:}]';

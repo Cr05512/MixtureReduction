@@ -3,6 +3,7 @@ function [res,str] = evalGlobalMeas(gmh,gmr,params)
 assert(isfield(params,'globMeas'),'The global measure has not been defined.');
 assert(any(strcmpi(params.globMeas,Experiment.getAvailableGlobalMeasures)),'The provided global measure is unknown.');
 meas = params.globMeas;
+d = size(gmh(1).mu,1);
 
 if strcmpi(meas,'CTD')
     if isfield(params,'costMeas')
@@ -34,11 +35,11 @@ elseif any(strcmpi(meas,{'UTKLD','ISUTKLD'}))
     res = feval(meas,gmh,gmr,nRings);
     str = strcat(meas,'-',num2str(nRings));
 
-elseif any(strcmpi(meas,{'KLD12','BhattD12','BhattC12','Hell112','Hell212'}))
+elseif any(strcmpi(meas,{'KLD12','BD12','BC12','Hell112','Hell212'}))
     if isfield(params,'nPoints')
         nPoints = params.nPoints;
     else
-        nPoints = 1000;
+        nPoints = 1000/(d^2);
         disp(strcat(['Points number not assigned for',' ',meas,', falling back to',' ',num2str(nPoints),' ','per dimension.']));
     end
     res = feval(meas,gmh,gmr,nPoints);

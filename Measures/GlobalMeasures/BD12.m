@@ -1,4 +1,4 @@
-function NBhattD = BhattD12(gmh,gmr,nPoints)
+function NBhattD = BD12(gmh,gmr,nPoints)
 % NBhattD = BhattD12(gmh,gmr,nPoints):
 % INPUT:
 % - gmh, gmr, two Gaussian Mixture,
@@ -8,10 +8,11 @@ function NBhattD = BhattD12(gmh,gmr,nPoints)
 % This function computes the numerical Bhattacharyya distance only for 1 and 2 dimensional
 % problems.
 
+d = size(gmh(1).mu,1);
 if nargin < 3
-    nPoints = 500;
+    nPoints = 1000/(d^2);
 end
 
-NBhattD = -log(BhattC12(gmh,gmr,nPoints));
+NBhattD = -log(BC12(gmh,gmr,nPoints));
 end
 

@@ -1,4 +1,4 @@
-function [Dfmu,DfL] = partialBhattDBar(mur,L,wh,muh,Sigmah)
+function [Dfmu,DfL] = partialBDBar(mur,L,wh,muh,Sigmah)
 
 N = numel(wh);
 d = size(muh(:,1),1);

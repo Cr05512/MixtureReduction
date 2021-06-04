@@ -2,11 +2,11 @@
 clear
 close all
 %%
-Nh = 15;
-Nr = 5;
-numMCRuns = 100;
-d = 2;
-alpha = 6;
+Nh = 20;
+Nr = 4;
+numMCRuns = 500;
+d = 6;
+alpha = 5;
 beta = 0.1;
 
 test = 'random';
@@ -14,29 +14,27 @@ test = 'random';
 
 
 exp1 = Experiment('',           {struct('rho',0.7),struct('k',2)},...
-                  'Runnalls',        struct('Nr',Nr,'seq',0),...
-                  '',           {struct('nRings',5),struct()},...
+                  'W2MRA',        struct('Nr',Nr,'seq',0),...
+                  '',           {struct('costMeas','KLDij','lambda',0),struct()},...
                   test,          struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));              
 
               
 exp2 = Experiment('',           {},...
-                  'CTDCSDMRA',       struct('Nr',Nr),...
-                  '',           {struct('costMeas','MKLDij','lambda',1),struct()},...
-                  test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));
+                  'IW2MRA',       struct('Nr',Nr,'costMeas','KLDij'),...
+                  '',           {struct('costMeas','KLDBij','lambda',0),struct()},...
+                  test,         struct('Nh',Nh,'alpha',alpha,'beta',beta,'d',d));
+
 
 exp3 = Experiment('',           {},...
                   'Runnalls',       struct('Nr',Nr,'costMeas','W2ij'),...
-                  'ERCTDRef',  {struct('costMeas','KLDij','lambda',0.0),struct()},...
+                  '',  {struct('costMeas','KLDij','lambda',0.0),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));
               
 experiments = [exp1;exp2];
 numExperiments = numel(experiments);
 
 
-globalMeas = {struct('globMeas','ISE'),...
-              struct('globMeas','CSD'),...
-              struct('globMeas','KLD12','nPoints',1000),...
-              struct('globMeas','CTD','costMeas','CSDij')}';
+globalMeas = {struct('globMeas','CTD','costMeas','W2ij')}';
 
 
 perfMatrix = zeros(numExperiments,numMCRuns,numel(globalMeas)+1);
@@ -64,7 +62,10 @@ end
 
 %%
 close(h);
+%%
 perfMatrix = reshape(sum(perfMatrix,2)./numMCRuns,numExperiments,numel(globalMeas)+1);
+
+%%
 
 T=array2table(perfMatrix);
 rowNames = cell(numExperiments,1);
@@ -74,7 +75,7 @@ for i=1:numel(globalMeas)
 end
 colNames{end+1} = 'Time';
 for i=1:numExperiments
-    rowNames{i} = strcat(experiments(i).getAlgo,'-',experiments(i).getRef);
+    rowNames{i} = strcat(num2str(i),'-',experiments(i).getAlgo,'-',experiments(i).getRef);
 end
 T.Properties.RowNames = rowNames;
 T.Properties.VariableNames = colNames;

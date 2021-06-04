@@ -10,9 +10,10 @@ assert(~isempty(X),'The evaluation points have to be at least one.');
 
 gmTot = reshape(evalGM(gm,X'),length(x1),length(x2));
 
-imagesc(x1,x2,gmTot);
-cb = colorbar();
-cb.Ruler.Exponent = 0;
+
+h = imagesc(x1,x2,gmTot);
+% cb = colorbar();
+% cb.Ruler.Exponent = 1;
 axis([min(x1) max(x1) min(x2) max(x2)]);
 
 

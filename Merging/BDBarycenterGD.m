@@ -1,4 +1,5 @@
-function IB = ISEBarycenter(gmh)
+function BDBar = BDBarycenterGD(gmh,NOptSteps,accThresh)
+
 
 if nargin < 3
     NOptSteps = 1000;
@@ -6,7 +7,6 @@ if nargin < 3
 end
 
 d = size(gmh(1).mu,1);
-
 
 gmr = KLDBarycenter(gmh);
 
@@ -28,7 +28,7 @@ mur = x(1:d);
 L = reshape(x(d+1:end),[d d]);
 Sigmar = L*L';
 
-IB = mixtureFromParams(wr,mur,Sigmar);
+BDBar = mixtureFromParams(wr,mur,Sigmar);
 
 end
 
@@ -41,13 +41,11 @@ function [f,grad] = funGradComp(x,gmh)
     Sigmar = L*L';
     
     gmr = mixtureFromParams(sum([gmh.w]),mur,Sigmar);
-    f = evalBarycenterFun(gmh,gmr,'L2ij');
+    f = evalBarycenterFun(gmh,gmr,'BDij');
     
-    [Dfmu,DfL] = partialISEBar(mur,L,[gmh.w]',[gmh.mu],cat(3,gmh.Sigma));
+    [Dfmu,DfL] = partialBDBar(mur,L,[gmh.w]',[gmh.mu],cat(3,gmh.Sigma));
     
     grad = [Dfmu; reshape(DfL,dr*dr,1)];
 
 
 end
-
-

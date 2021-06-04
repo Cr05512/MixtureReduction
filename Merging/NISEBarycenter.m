@@ -7,8 +7,8 @@ end
 
 d = size(gmh(1).mu,1);
 
-[~,ind] = max([gmh.w]);
-gmr = struct('w',sum([gmh.w]),'mu',gmh(ind).mu,'Sigma',gmh(ind).Sigma);
+
+gmr = KLDBarycenter(gmh);
 
 [~,mur,Sigmar] = paramsFromMixture(gmr);
 L = chol(Sigmar,'lower');

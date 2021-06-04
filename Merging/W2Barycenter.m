@@ -1,4 +1,4 @@
-function W2Bar = W2Barycenter(gm,maxIter)
+function W2Bar = W2Barycenter(gm,maxiter,tol)
 % W2Bar = W2Barycenter(gm,maxIter):
 % INPUTS:
 % - gm, a Gaussian mixture (numComps x 1 vector),
@@ -8,10 +8,14 @@ function W2Bar = W2Barycenter(gm,maxIter)
 % This function computes the Wasserstein barycenter of several Gaussian
 % components.
 if nargin < 2
-    maxIter = 100;
+    maxiter = 100;
+    tol = 1e-09;
+elseif nargin < 3
+    tol = 1e-09;
 end
 assert(~isempty(gm),'The mixture has to contain at least one element.');
-assert(maxIter>0,'The number of iterations has to be greater than zero.');
+assert(maxiter>0,'The number of iterations has to be greater than zero.');
+assert(tol>0,'The tolerance has to be greater than zero.');
 
 [w,mu,Sigma] = paramsFromMixture(gm);
 N = numel(gm);
@@ -22,44 +26,32 @@ if N==1
 end
 
 d = size(gm(1).mu,1);
-S_prev = zeros(d,d);
-mubar = zeros(d,1);
 wbar = sum(w);
-
-for i=1:N
-    mubar = mubar + w(i)*mu(:,i);
-    if N>2
-        S_prev = S_prev + w(i)*Sigma(:,:,i);
-    end
-end
-mubar = mubar./wbar;
+mubar = 1/wbar * sum(w'.*mu,2);
 
 if N==2
-    w1 = w(1)/wbar;
-    w2 = w(2)/wbar;
-    Sigma1 = Sigma(:,:,1);
-    Sigma2 = Sigma(:,:,2);
-    S = w1^2*Sigma1 + w2^2*Sigma2 + w1*w2*real(sqrtm(Sigma2*Sigma1) + sqrtm(Sigma1*Sigma2));
+    Sigmabar = 1/(w(1)+w(2))^2 * (w(1)^2*Sigma(:,:,1) + w(2)^2*Sigma(:,:,2) +...
+        w(1)*w(2)*(sqrtm(Sigma(:,:,1)*Sigma(:,:,2)) + sqrtm(Sigma(:,:,2)*Sigma(:,:,1))));
 else
-    S_prev = S_prev./wbar;
-
-    for k=1:maxIter
-        S = zeros(d,d);
-        S_prev = real(sqrtm(S_prev));
-        for i=1:N
-            S = S + (w(i)/wbar)*real(sqrtm(S_prev*Sigma(:,:,i)*S_prev));
-        end
-        S = S_prev\(S^2/S_prev); %This multiplication can be avoided, but there is no result on the convergence
-        if norm(real(sqrtm(S))-S_prev)<1e-10
-            break;
-        else
-            S_prev = S;
-        end
+    
+    Sigmabar = 1/N*sum(Sigma,3);
+    for k=1:maxiter
+       sqrtS = sqrtm(Sigmabar);
+       S = zeros(d,d);
+       for i=1:N
+          S = S + w(i)*sqrtm(sqrtS*Sigma(:,:,i)*sqrtS); 
+       end
+       Sigmabar = 1/wbar * S;
+       
+       if ~mod(k,10)
+           if norm(sqrtS-sqrtm(Sigmabar))<tol
+               break;
+           end
+       end
+       
     end
 end
 
+W2Bar = struct('w',wbar,'mu',mubar,'Sigma',Sigmabar);
 
-W2Bar = mixtureFromParams(wbar,mubar,S);
-    
 end
-

@@ -1,4 +1,4 @@
-function NBhattC = BhattC12(gmh,gmr,nPoints)
+function NBhattC = BC12(gmh,gmr,nPoints)
 % NBhattC = BhattC12(gmh,gmr,nPoints):
 % INPUT:
 % - gmh, gmr, two Gaussian Mixture,

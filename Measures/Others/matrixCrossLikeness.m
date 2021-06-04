@@ -12,7 +12,7 @@ assert(~isempty(gmh) && ~isempty(gmr),'The Gaussian mixtures have to contain at 
 [wr,mur,Sigmar] = paramsFromMixture(gmr);
 
 
-matrixcl = wh'*matrixUnwCrossLikeness(muh,Sigmah,mur,Sigmar)*wr;
+matrixcl = (wh*wr').*matrixUnwCrossLikeness(muh,Sigmah,mur,Sigmar);
 
 end
 

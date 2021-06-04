@@ -9,7 +9,7 @@ function matrixsl = matrixSelfLikeness(gm)
 assert(~isempty(gm),'The Gaussian mixture has to contain at least one element.');
 [w,mu,Sigma] = paramsFromMixture(gm);
 
-matrixsl = w'*matrixUnwSelfLikeness(mu,Sigma)*w;
+matrixsl = (w*w').*matrixUnwSelfLikeness(mu,Sigma);
 
 end
 

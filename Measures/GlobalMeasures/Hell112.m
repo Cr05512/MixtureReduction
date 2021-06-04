@@ -8,6 +8,6 @@ function NHell1 = Hell112(gmh,gmr,nPoints)
 % This function computes the numerical Hellinger distance only for 1 and 2 dimensional
 % problems.
 
-NHell1 = sqrt(1 - BhattC12(gmh,gmr,nPoints));
+NHell1 = sqrt(1 - BC12(gmh,gmr,nPoints));
 end
 

@@ -10,7 +10,7 @@ function [gmr,Rnk] = GMKMeansRef(gmr,gmh,costMeas,NKMeansSteps)
 % This function operates a K-Means refinement over the reduced mixture in
 % order to improve the corresponding parameters.
 if nargin < 3
-    costMeas = 'KLDij';
+    costMeas = 'KLDBij';
     NKMeansSteps = 100;
 elseif nargin < 4
     NKMeansSteps = 100;

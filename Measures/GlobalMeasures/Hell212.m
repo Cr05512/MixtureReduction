@@ -8,6 +8,6 @@ function NHell2 = Hell212(gmh,gmr,nPoints)
 % This function computes the numerical squared Hellinger distance only for 1 and 2 dimensional
 % problems.
 
-NHell2 = 1 - BhattC12(gmh,gmr,nPoints);
+NHell2 = 1 - BC12(gmh,gmr,nPoints);
 end
 

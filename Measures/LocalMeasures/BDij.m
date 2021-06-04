@@ -1,5 +1,5 @@
-function dBhatt = bhattDij(pdfi,pdfj)
-% dBhatt = bhattDij(pdfi,pdfj):
+function dBhatt = BDij(pdfi,pdfj)
+% dBhatt = BDij(pdfi,pdfj):
 % INPUT:
 % - pdfi, pdfj, two Gaussian densities.
 % OUTPUT:

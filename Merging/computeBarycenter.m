@@ -13,8 +13,10 @@ switch costMeas
         bar = NISEBarycenter(gmh);
     case 'CSDij'
         bar = CSDBarycenter(gmh);
-    case 'bhattDij'
-        bar = BhattDBarycenter(gmh);
+    case 'TSLij'
+        bar = TSLBarycenter(gmh);
+    case 'BDij'
+        bar = BDBarycenter(gmh);
     otherwise
         bar = KLDBarycenter(gmh);
 end
