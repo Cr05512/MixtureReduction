@@ -4,7 +4,6 @@ function gmr = testAlgo(gmh,Nr)
 gmr = gmh;
 Nh = numel(gmh);
 KBMatrix = Inf(Nh,Nh);
-a = 0.0;
 
 for k=1:Nh-Nr
     for i=1:numel(gmr)
@@ -16,7 +15,7 @@ for k=1:Nh-Nr
                 gmr_temp(i) = KLDBarycenter(gmr([i;j]));
                 gmr_temp(j) = [];
                 
-                KBMatrix(i,j) = tBDUB(gmh,gmr_temp);
+                KBMatrix(i,j) = VAKLD(gmh,gmr_temp);
 
                 
             end

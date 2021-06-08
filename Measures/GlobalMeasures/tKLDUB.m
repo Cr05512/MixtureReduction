@@ -4,7 +4,6 @@ na = numel(fa);
 nb = numel(gb);
 [wa,mua,Sigmaa] = paramsFromMixture(fa);
 wb = [gb.w]';
-d = size(fa(1).mu,1);
 C = CostMatrix(fa,gb,'KLDij');
 
 expC = exp(-1*C);
@@ -34,9 +33,9 @@ for i=1:na
         if isnan(c2)
             c2 = 0;
         end
-        if isnan(c3)
-            c3 = 0;
-        end
+%         if isnan(c3)
+%             c3 = 0;
+%         end
         V = V + c1 + c2 + c3;
     end
 end
@@ -48,7 +47,6 @@ for i=1:na
     D(i) = mvEntropy(fa(i));
 end
 hwa = - wa'*log(wa);
-
 tB = wa'*(B+D)+hwa+V;
 end
 

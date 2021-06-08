@@ -36,7 +36,8 @@ if ~isempty(ref)
         elseif strcmpi(refs(i),'DPHEM')
             refParamsBlock{i}.('I') = 20;
             refParamsBlock{i}.('maxiter') = 50;
-            
+        elseif strcmpi(refs(i),'VKLRef')
+            refParamsBlock{i}.('maxiter') = 100;
         elseif strcmpi(refs(i),'GMEMRef')
             refParamsBlock{i}.('nSamples') = 20000;
             refParamsBlock{i}.('maxiter') = 200;

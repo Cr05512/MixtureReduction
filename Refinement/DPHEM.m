@@ -53,10 +53,7 @@ for k=1:numIter
         Z(i,:) = Z(i,:)./sum(Z(i,:));
     end
     
-    L = varLowerBoundEllh(gmh,gmr,I);
-    if abs(L-L_prev)<1e-15
-        break;
-    end
+
     
     %Maximization
     for j=1:Nr
@@ -74,6 +71,11 @@ for k=1:numIter
         end
         newCov = (1/gmr(j).w)*newCov;
         gmr(j).Sigma = newCov;
+    end
+    
+    L = varLowerBoundEllh(gmh,gmr,I);
+    if abs(L-L_prev)<1e-15
+        break;
     end
     
     

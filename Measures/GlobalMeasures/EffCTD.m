@@ -12,7 +12,7 @@ function [d,C,pi_star] = EffCTD(gmh,gmr,costMeas,varargin)
 % Gaussian mixtures given a cost function. It uses 1 constraint TP.
 
 if nargin < 3
-    costMeas = 'KLD'; %By default
+    costMeas = 'KLDij'; %By default
     disp('Assuming KLD as cost function...');
 end
 

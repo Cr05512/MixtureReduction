@@ -1,21 +1,25 @@
-function dtBDUB = tBDUB(gmh,gmr)
+function dtBDUB = tBDUB(fa,gb)
 
-wh = [gmh.w]';
-wr = [gmr.w]';
-C = CostMatrix(gmh,gmr,'BDij');
-pi = abs(computeOTP(C,wh,wr));
+wa = [fa.w]';
+wb = [gb.w]';
+C = CostMatrix(fa,gb,'BDij');
+expC = exp(-C);
 
-dtBDUB = 0;
+na = numel(wa);
+nb = numel(wb);
+pi = zeros(na,nb);
 
-for i=1:numel(gmh)
-    for j=1:numel(gmr)
-        dtBDUB = dtBDUB + pi(i,j)*C(i,j);
-        tmp = pi(i,j)*log(wh(i)*wr(j)/pi(i,j));
-        if ~isnan(tmp)
-            dtBDUB = dtBDUB + tmp;
-        end
+for i=1:na
+    for j=1:nb
+        pi(i,j) = wa(i)*wb(j)*expC(i,j);
     end
 end
+pi = pi./sum(sum(pi));
+
+
+
+
+dtBDUB = trace(pi'*C) + matrixKLD(pi,wa*wb');
 
 end
 

@@ -33,7 +33,7 @@ else
     pi = Inf(Nh,Nr);
     pi_prev = pi;
     % intialize u and v
-    u = ones(Nr,1);
+    %u = ones(Nr,1);
     v = ones(Nh,1);
 
     % Sinkhorn-Knopp
