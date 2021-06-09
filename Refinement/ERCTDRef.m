@@ -35,19 +35,13 @@ Nr = numel(gmr);
 J = Inf;
 J_prev = J;
 
-[wF,~,~] = paramsFromMixture(gmh);
+wF = [gmh.w]';
 
 
 for k=1:maxiter
     
     C = CostMatrix(gmh,gmr,costMeas,varargin{:});
     pi_star = EffEROTP(wF,C,lambda); %It works only in this context, we are solving the opt problem by considering only one constraint
-    
-    J = trace(pi_star'*C) - lambda*MatrixEntropy(pi_star);
-
-    if abs(J-J_prev) < 1e-12
-        break;
-    end
 
     wG = sum(pi_star,1)';
 
@@ -65,7 +59,12 @@ for k=1:maxiter
     w_norm = num2cell(wG./sum(wG));
     [gmr.w] = w_norm{:};
     Nr = length(gmr);
-    %wG = wG(ind_keep);
+    
+    J = trace(pi_star'*C) - lambda*MatrixEntropy(pi_star);
+
+    if abs(J-J_prev) < 1e-12
+        break;
+    end
     J_prev = J;
     
 end

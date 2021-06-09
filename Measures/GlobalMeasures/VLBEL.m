@@ -1,5 +1,5 @@
-function L = varLowerBoundEllh(gmh,gmr,I)
-% L = varLowerBoundEllh(gmh,gmr,E,I):
+function L = VLBEL(gmh,gmr,I)
+% L = VLBEL(gmh,gmr,E,I):
 % INPUTS:
 % - gmh, gmr, two Gaussian mixtures,
 % - E, expected log-Gaussian matrix (Nh x Nr matrix),

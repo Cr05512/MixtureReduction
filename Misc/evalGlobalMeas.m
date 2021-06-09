@@ -35,7 +35,7 @@ elseif any(strcmpi(meas,{'UTKLD','ISUTKLD'}))
     res = feval(meas,gmh,gmr,nRings);
     str = strcat(meas,'-',num2str(nRings));
 
-elseif any(strcmpi(meas,{'KLD12','BD12','BC12','Hell112','Hell212'}))
+elseif any(strcmpi(meas,{'KLD12','BD12','BC12','Hell112','Hell212','CrossEntropy12'}))
     if isfield(params,'nPoints')
         nPoints = params.nPoints;
     else
@@ -44,6 +44,15 @@ elseif any(strcmpi(meas,{'KLD12','BD12','BC12','Hell112','Hell212'}))
     end
     res = feval(meas,gmh,gmr,nPoints);
     str = strcat(meas,'-',num2str(nPoints));
+    
+elseif strcmpi(meas,'VLBEL')
+    if isfield(params,'I')
+        I = params.I;
+    else
+        I = 1;
+    end
+    res = feval(meas,gmh,gmr,I);
+    str = strcat(meas,'-',num2str(I));
 
 else
     res = feval(meas,gmh,gmr);

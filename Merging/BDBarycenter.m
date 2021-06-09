@@ -1,9 +1,9 @@
 function bar =  BDBarycenter(gmh,maxiter,tol)
 if nargin < 2
-    maxiter = 100;
-    tol = 1e-10;
+    maxiter = 10000;
+    tol = 1e-09;
 elseif nargin < 3
-    tol = 1e-10;
+    tol = 1e-09;
 end
 
 bar = KLDBarycenter(gmh);

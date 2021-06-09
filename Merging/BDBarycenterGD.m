@@ -3,7 +3,7 @@ function BDBar = BDBarycenterGD(gmh,NOptSteps,accThresh)
 
 if nargin < 3
     NOptSteps = 1000;
-    accThresh = 1e-12;
+    accThresh = 1e-21;
 end
 
 d = size(gmh(1).mu,1);

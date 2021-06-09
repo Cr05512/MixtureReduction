@@ -31,13 +31,15 @@ if ~isempty(ref)
         elseif strcmpi(refs(i),'ERCTDRef')
             refParamsBlock{i}.('costMeas') = 'KLDij';
             refParamsBlock{i}.('lambda') = 0.05;
-            refParamsBlock{i}.('maxiter') = 50;
+            refParamsBlock{i}.('maxiter') = 100;
             
         elseif strcmpi(refs(i),'DPHEM')
-            refParamsBlock{i}.('I') = 20;
-            refParamsBlock{i}.('maxiter') = 50;
+            refParamsBlock{i}.('I') = numel(gmh);
+            refParamsBlock{i}.('maxiter') = 100;
+            
         elseif strcmpi(refs(i),'VKLRef')
             refParamsBlock{i}.('maxiter') = 100;
+            
         elseif strcmpi(refs(i),'GMEMRef')
             refParamsBlock{i}.('nSamples') = 20000;
             refParamsBlock{i}.('maxiter') = 200;
@@ -74,7 +76,7 @@ if ~isempty(ref)
                 if any(strcmpi(userRefFields,'I'))
                     refParamsBlock{i}.('I') = refParams{i}.I;
                 else
-                    refParamsBlock{i}.('I') = 10;
+                    refParamsBlock{i}.('I') = numel(gmh);
                 end
 
             elseif any(strcmpi(refParamsBlock{i}.('costMeas'),{'GJSDij','chernAlphaDij','RAlphaDij'}))

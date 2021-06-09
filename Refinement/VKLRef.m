@@ -12,6 +12,8 @@ function gmr = VKLRef(gmr,gmh,maxiter)
 if nargin < 3
     maxiter = 100;
 end
+assert(~isempty(gmh) && ~isempty(gmr),'The mixuters have to contain at least one element.');
+assert(maxiter>=0,'The number of iterations has to be non-negative.');
 
 Nh = numel(gmh);
 Nr = numel(gmr);

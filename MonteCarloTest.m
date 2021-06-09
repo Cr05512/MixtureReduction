@@ -2,25 +2,25 @@
 clear
 close all
 %%
-Nh = 20;
-Nr = 4;
+Nh = 30;
+Nr = 5;
 numMCRuns = 500;
-d = 6;
+d = 1;
 alpha = 5;
-beta = 0.1;
+beta = 0.2;
 
 test = 'random';
 
 
 
 exp1 = Experiment('',           {struct('rho',0.7),struct('k',2)},...
-                  'W2MRA',        struct('Nr',Nr,'seq',0),...
+                  'Runnalls',        struct('Nr',Nr,'seq',0),...
                   '',           {struct('costMeas','KLDij','lambda',0),struct()},...
                   test,          struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));              
 
               
 exp2 = Experiment('',           {},...
-                  'IW2MRA',       struct('Nr',Nr,'costMeas','KLDij'),...
+                  'BDMRA',       struct('Nr',Nr,'costMeas','KLDij'),...
                   '',           {struct('costMeas','KLDBij','lambda',0),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha,'beta',beta,'d',d));
 
@@ -34,7 +34,9 @@ experiments = [exp1;exp2];
 numExperiments = numel(experiments);
 
 
-globalMeas = {struct('globMeas','CTD','costMeas','W2ij')}';
+globalMeas = {struct('globMeas','KLD12','nPoints',1000/(d^2)),...
+              struct('globMeas','BD12','nPoints',1000/(d^2)),...
+              struct('globMeas','CTD','costMeas','W2ij')}';
 
 
 perfMatrix = zeros(numExperiments,numMCRuns,numel(globalMeas)+1);
@@ -63,11 +65,25 @@ end
 %%
 close(h);
 %%
-perfMatrix = reshape(sum(perfMatrix,2)./numMCRuns,numExperiments,numel(globalMeas)+1);
+avgPerfMatrix = reshape(sum(perfMatrix,2)./numMCRuns,numExperiments,numel(globalMeas)+1);
+stdMatrix = zeros(numel(experiments),numel(globalMeas)+1);
+for i=1:numel(globalMeas)+1
+    for j=1:numel(experiments)
+        stdMatrix(j,i) = std(perfMatrix(j,:,i));
+    end
+end
 
 %%
 
-T=array2table(perfMatrix);
+strAvgPerfMatrix = string(avgPerfMatrix);
+
+for i=1:numel(globalMeas)+1
+    for j=1:numel(experiments)
+        strAvgPerfMatrix(j,i) = sprintf('%2.6f +- %2.6f',avgPerfMatrix(j,i),stdMatrix(j,i));
+    end
+end
+
+T=array2table(strAvgPerfMatrix);
 rowNames = cell(numExperiments,1);
 colNames = cell(numel(globalMeas,1));
 for i=1:numel(globalMeas)
@@ -75,7 +91,11 @@ for i=1:numel(globalMeas)
 end
 colNames{end+1} = 'Time';
 for i=1:numExperiments
-    rowNames{i} = strcat(num2str(i),'-',experiments(i).getAlgo,'-',experiments(i).getRef);
+    str = strcat(num2str(i),'-',experiments(i).getAlgo);
+    if ~isempty(experiments(i).getRef)
+        str = strcat(str,'-',experiments(i).getRef);
+    end
+    rowNames{i} = str;
 end
 T.Properties.RowNames = rowNames;
 T.Properties.VariableNames = colNames;

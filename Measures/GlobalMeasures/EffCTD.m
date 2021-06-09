@@ -1,4 +1,4 @@
-function [d,C,pi_star] = EffCTD(gmh,gmr,costMeas,varargin)
+function [d,C,pi_star] = EffCTD(gmh,gmr,costMeas,lambda,varargin)
 % [d,C,pi_star] = EffCTD(gmh,gmr,costMeas):
 % INPUTS:
 % - gmh, gmr, two Gaussian mixtures,
@@ -13,14 +13,17 @@ function [d,C,pi_star] = EffCTD(gmh,gmr,costMeas,varargin)
 
 if nargin < 3
     costMeas = 'KLDij'; %By default
+    lambda = 0;
     disp('Assuming KLD as cost function...');
+elseif nargin < 4
+    lambda = 0;
 end
 
 assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element.');
 
 C = CostMatrix(gmh,gmr,costMeas,varargin{:});
 
-pi_star = EffEROTP([gmh.w]',C,0);
+pi_star = EffEROTP([gmh.w]',C,lambda);
 
 d = trace(pi_star'*C);  %Matrix inner product
 

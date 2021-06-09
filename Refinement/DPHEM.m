@@ -1,10 +1,10 @@
-function gmr = DPHEM(gmr,gmh,I,numIter)
+function gmr = DPHEM(gmr,gmh,I,maxiter)
 % gmr = DPHEM(gmr,gmh,I,numIter):
 % INPUTS:
 % - gmr, initial GM used as initialization of the algorithm,
 % - gmh, reference Gaussian mixture,
 % - I, number of virtual samples (scalar),
-% - numIter, maximum number of allowed iterations (scalar).
+% - maxiter, maximum number of allowed iterations (scalar).
 % OUTPUTS:
 % - gmr, the refined mixture according to the DPHEM algorithm.
 % This function implements the Density-Preserving Hierarchical Expectation
@@ -14,12 +14,12 @@ function gmr = DPHEM(gmr,gmh,I,numIter)
 % on  Pattern  Analysis  and  Machine  Intelligence,  vol.41(6), 2018.
 if nargin < 3
     I = numel(gmh);
-    numIter = 100;
+    maxiter = 100;
 elseif nargin < 4
-    numIter = 100;
+    maxiter = 100;
 end
 assert(~isempty(gmh) && ~isempty(gmr),'The mixuters have to contain at least one element.');
-assert(numIter>=0,'The number of iterations has to be non-negative.');
+assert(maxiter>=0,'The number of iterations has to be non-negative.');
 assert(I>0,'The sample number has to be greater than 0.');
 
 d = size(gmh(1).mu,1);
@@ -34,7 +34,7 @@ Z = E;
 L = Inf; %Variational Lower Bound value
 L_prev = L;
 
-for k=1:numIter
+for k=1:maxiter
     
     %Expectation
     
@@ -73,7 +73,7 @@ for k=1:numIter
         gmr(j).Sigma = newCov;
     end
     
-    L = varLowerBoundEllh(gmh,gmr,I);
+    L = VLBEL(gmh,gmr,I);
     if abs(L-L_prev)<1e-15
         break;
     end

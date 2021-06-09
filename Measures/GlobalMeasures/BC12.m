@@ -17,8 +17,13 @@ d = size(gmh(1).mu,1);
 
 assert(d==1 || d==2,'This function allows to evaluate the Bhattacharyya coefficient only for dimensions 1 and 2.');
 
+[offset,P] = getMixtureMoments(gmh);
+errorEll = errorEllipses(offset,P,1-eps);
+alpha = max(max(abs(errorEll)));
+
 if d==1
-    X = genAxisPoints(gmh,nPoints);
+    X = linspace(-alpha+offset, alpha+offset,nPoints);
+    
     sOrig = evalGM(gmh,X);
     sRed = evalGM(gmr,X);
 
@@ -26,7 +31,11 @@ if d==1
 
     NBhattC = trapz(X,f);
 elseif d==2
-    [X,x1,x2] = genAxisPoints(gmh,nPoints);
+    x1 = linspace(-alpha + offset(1), alpha + offset(1),nPoints);
+    x2 = linspace(-alpha + offset(2), alpha + offset(2),nPoints);
+    [X1,X2] = meshgrid(x1,x2);
+    X = [X1(:) X2(:)];
+    
     sOrig = evalGM(gmh,X');
     sRed = evalGM(gmr,X');
     

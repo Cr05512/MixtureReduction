@@ -51,7 +51,7 @@ GLfa = -wa'*D - hwa - V;
 Hab = matrixUnwCrossLikeness(mua,Sigmaa,mub,Sigmab);
 B = log(Hab*wb);
 
-GLgb = +wa'*B;
+GLgb = wa'*B;
 
 tB = GLfa - GLgb;
 

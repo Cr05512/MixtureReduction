@@ -5,7 +5,7 @@ function [pi_star,C] = EffEROTP(wF,C,lambda)
 % - C, Cost Matrix (Nh x Nr matrix),
 % - lambda, regularization parameter (scalar).
 % OUTPUTS:
-% - pi_star, the entropic regularized optimal transportation plan (scalar).
+% - logPi, the logarithmic entropic regularized optimal transportation plan (scalar).
 % This function computes the Entropic regularized Optimal Transportation Plan
 % according to:
 %"A unified framework for GMR with composite transportation distance".
@@ -20,10 +20,11 @@ for i=1:Nh
         [~,Ci] = min(C(i,:));
         pi_star(i,Ci) = wF(i);
     else
-        normFactor = sum(exp(-C(i,:)./lambda));
-        %if normFactor>0
-        pi_star(i,:) = wF(i)*exp(-C(i,:)./lambda)./normFactor;
-        %end
+        tmp = exp(-C(i,:)./lambda);
+        piTmp = wF(i)*tmp/sum(tmp);
+        if ~isnan(piTmp)
+            pi_star(i,:) = piTmp;
+        end
 
     end
 end

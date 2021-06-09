@@ -42,7 +42,7 @@ while(numel(gmr)-Nr>0)
     %We then find the action with the lowest KLD bound and we merge the
     %corresponding mixture components
     [i,j] = find(BDMatrix == min(BDMatrix(BDMatrix<Inf)),1);
-    pdf_merged = BDBarycenter(gmr([i,j]));
+    pdf_merged = KLDBarycenter(gmr([i,j]));
     gmr(i) = pdf_merged;
     gmr(j) = [];
     BDMatrix(j,:) = [];
