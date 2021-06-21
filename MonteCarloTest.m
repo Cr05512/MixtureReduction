@@ -2,25 +2,25 @@
 clear
 close all
 %%
-Nh = 30;
-Nr = 5;
-numMCRuns = 500;
-d = 1;
+Nh = 20;
+Nr = 4;
+numMCRuns = 1000;
+d = 10;
 alpha = 5;
-beta = 0.2;
+beta = 0.1;
 
 test = 'random';
 
 
 
 exp1 = Experiment('',           {struct('rho',0.7),struct('k',2)},...
-                  'Runnalls',        struct('Nr',Nr,'seq',0),...
+                  'W2MRA',        struct('Nr',Nr,'seq',0),...
                   '',           {struct('costMeas','KLDij','lambda',0),struct()},...
                   test,          struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));              
 
               
 exp2 = Experiment('',           {},...
-                  'BDMRA',       struct('Nr',Nr,'costMeas','KLDij'),...
+                  'IW2MRA',       struct('Nr',Nr,'costMeas','KLDij'),...
                   '',           {struct('costMeas','KLDBij','lambda',0),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha,'beta',beta,'d',d));
 
@@ -34,9 +34,7 @@ experiments = [exp1;exp2];
 numExperiments = numel(experiments);
 
 
-globalMeas = {struct('globMeas','KLD12','nPoints',1000/(d^2)),...
-              struct('globMeas','BD12','nPoints',1000/(d^2)),...
-              struct('globMeas','CTD','costMeas','W2ij')}';
+globalMeas = {struct('globMeas','CTD','costMeas','W2ij')}';
 
 
 perfMatrix = zeros(numExperiments,numMCRuns,numel(globalMeas)+1);

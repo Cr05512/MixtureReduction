@@ -10,7 +10,7 @@ beta = 0.09;
 
 d = 1;
 
-numMCRuns = 1000;
+numMCRuns = 10;
 test = 'random';
               
 exp1 = Experiment('',           {struct('rho',0.3)},...

@@ -89,7 +89,11 @@ for i=1:numExperiments
             axis('square');
             grid minor
         end
+        if strcmpi(experiments(i).getTest,'random')
+            str{end} = strcat([str{end},' Random seed:',' ',num2str(experiments(i).getTestParams.rngSeed)]);
+        end
         disp(strcat(['Experiment: ',num2str(i),', ',str{end}]));
+        
         
     end
         

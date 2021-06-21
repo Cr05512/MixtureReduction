@@ -19,7 +19,7 @@ Nh = numel(gmh);
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    gmr = BDBarycenter(gmh);
+    gmr = KLDBarycenter(gmh);
     return
 end
 
