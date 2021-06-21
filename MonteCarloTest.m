@@ -5,7 +5,7 @@ close all
 Nh = 20;
 Nr = 4;
 numMCRuns = 1000;
-d = 10;
+d = 1;
 alpha = 5;
 beta = 0.1;
 
