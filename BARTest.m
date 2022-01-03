@@ -7,7 +7,7 @@ d = 8;
 gm = GMGen(N,d);
 S = rand(d,d);
 S = S*S';
-gm = mixtureFromParams([gm.w]',[gm.mu],cat(3,S.*ones(1,1,N))); %Homoscedasticity
+%gm = mixtureFromParams([gm.w]',[gm.mu],cat(3,S.*ones(1,1,N))); %Homoscedasticity
 %%
 tic;
 barOS = W2Barycenter(gm);

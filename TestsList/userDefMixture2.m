@@ -4,10 +4,10 @@ function [gm,newParams] = userDefMixture2()
 
 w = [0.5 0.5]';
    
-mu = [-1 2];
+mu = [-1 1];
    
    
-Sigma = 1*[0.3 0.2];
+Sigma = 1*[0.2 0.2];
 
 Nh = numel(w);
 d = size(mu,1);

@@ -1,4 +1,4 @@
-function dH2 = Hell2ij(pdf1,pdf2)
+function dH2 = H2ij(pdf1,pdf2)
 
 dH2 = 1-BCij(pdf1,pdf2);
 

@@ -19,19 +19,7 @@ for k=1:numIter
     %Expectation
     C = CostMatrix(gmh,gmr,'KLDij');
 
-    expC = exp(-3*C);
-
-
-    for i=1:Nh
-        normFactor = [gmr.w]*expC(i,:)';
-        for j=1:Nr
-            W(i,j) = gmr(j).w*expC(i,j)/normFactor;
-        end
-    end
-
-    pi_star = D*W;
-    %pi_star = W.*log(W) + W.*C - W.*log([gmr.w]);
-    pi_star(isnan(W)) = 0;
+    pi_star = computeOTP(C,wh,[gmr.w]');
     
     wG = sum(pi_star,1)';
 
@@ -39,11 +27,18 @@ for k=1:numIter
     for j=1:Nr
         if wG(j)>0
             [gmh_temp.w] = w_temp{:,j};
-            gmr(j) = KLDBarycenter(gmh_temp);
+            bar = computeBarycenter(gmh_temp,'KLDij');
+            gmr(j).mu = bar.mu;
+            gmr(j).Sigma = bar.Sigma;
         end
 
     end
     
+    %Optimal weight update
+    C = CostMatrix(gmh,gmr,'KLDij');
+    
+    pi_star = EffEROTP(wh,C,0);
+    wG = sum(pi_star,1)';
     gmr = gmr(wG>0);
     wG = wG(wG>0);
     w_norm = num2cell(wG./sum(wG));

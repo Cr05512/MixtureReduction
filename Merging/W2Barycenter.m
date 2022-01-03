@@ -42,6 +42,8 @@ else
           S = S + w(i)*sqrtm(sqrtS*Sigma(:,:,i)*sqrtS); 
        end
        Sigmabar = 1/wbar * S;
+%        invSqS = inv(sqrtS);
+%        Sigmabar = invSqS*Sigmabar*Sigmabar*invSqS;
        
        if ~mod(k,10)
            if norm(sqrtS-sqrtm(Sigmabar))<tol

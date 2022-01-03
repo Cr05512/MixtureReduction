@@ -1,4 +1,4 @@
-function dCalpha = ChernAlphaDij(pdfi,pdfj,alpha)
+function dCalpha = alpha2Dij(pdfi,pdfj,alpha)
 % dCalpha = ChernAlphaDij(pdfi,pdfj,alpha):
 % INPUT:
 % - pdfi, pdfj, two Gaussian densities,
@@ -13,14 +13,6 @@ if nargin < 3
 end
 assert(alpha>=0 && alpha <=1,'Alpha has to take values between 0 and 1.');
 
-mui = pdfi.mu;
-muj = pdfj.mu;
-Sigmai = pdfi.Sigma;
-Sigmaj = pdfj.Sigma;
-
-alphaSigmaij = alpha*Sigmai + (1-alpha)*Sigmaj;
-
-dCalpha = 0.5 * (log(det(alphaSigmaij)/(det(Sigmai)^alpha * det(Sigmaj)^(1-alpha))) + ...
-            alpha*(1-alpha) * (mui - muj)'*(alphaSigmaij\(mui - muj)));
+dCalpha = -log(alphaCij(pdfi,pdfj,alpha));
 end
 

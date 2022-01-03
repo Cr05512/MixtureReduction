@@ -39,7 +39,7 @@ for k=1:maxiter
     end
     
     B = 2*A - diag(A);
-    Sigma = (B + diag(B))\eye(d);
+    Sigma = eye(d)/(B + diag(B));
     
     if ~mod(k,10)
         if norm(mu-mu_prev)<tol && norm(Sigma-Sigma_prev)<tol

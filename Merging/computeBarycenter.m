@@ -1,4 +1,8 @@
-function bar = computeBarycenter(gmh,costMeas)
+function bar = computeBarycenter(gmh,costMeas,alpha)
+
+if nargin < 3
+    alpha = 0.5;
+end
 
 
 availableMeasVec = Experiment.getAvailableLocalMeasures(); %Vector of available dissimilarity measures
@@ -17,6 +21,12 @@ switch costMeas
         bar = TSLBarycenter(gmh);
     case 'BDij'
         bar = BDBarycenter(gmh);
+    case 'RKLDij'
+        bar = RKLDBarycenter(gmh);
+    case 'H2ij'
+        bar = H2Barycenter(gmh);
+    case 'alpha1Dij'
+        bar = DaBarycenter(gmh,alpha);
     otherwise
         bar = KLDBarycenter(gmh);
 end

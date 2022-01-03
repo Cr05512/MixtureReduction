@@ -9,10 +9,14 @@ function [errEllipsesVals,lambda,V] = errorEllipses(mu,P,nSigma)
 % - lambda, eigenvalues of the error ellipse (stateDim x 1 vector),
 % - V, eigenvectors of the error ellipse.
 % This function generates the points for 1D and 2D error ellipses.
+
+if nargin < 3
+    nSigma = 0.95;
+end
 n=size(mu,1); % Dimension or degrees of freedom
 
 %We define the error value (confidence interval of uncertainty)
-gamma = nSigma; %0.95=2*sigma, this is a percentile
+gamma = nSigma; %0.95~=2*sigma, this is a percentile
 %We compute the quantile for the desired percentile
 k = chi2inv(gamma,n);
 [~, D, V] = svd(P * k);

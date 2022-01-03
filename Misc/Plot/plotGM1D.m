@@ -1,4 +1,4 @@
-function h = plotGM1D(gm,X,color)
+function h = plotGM1D(gm,X,color,linestyle)
 % [] = plotGM1D(gm,X):
 % INPUTS:
 % - gm, a Gaussian mixture,
@@ -10,10 +10,13 @@ assert(~isempty(X),'The evaluation points have to be at least one.');
 
 if nargin < 3
     color = rand(1,3);
+    linestyle = '-';
+elseif nargin < 4
+    linestyle = '-';
 end
 
 
-h = plot(X,evalGM(gm,X),'LineWidth',1.5,'Color',color); hold on
+h = plot(X,evalGM(gm,X),'LineWidth',1.5,'Color',color,'LineStyle',linestyle); hold on
 xlabel('x');
 ylabel('p(x)');
 

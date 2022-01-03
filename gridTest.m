@@ -2,20 +2,20 @@
 close all
 clear
 
-numPoints = 101;
+numPoints = 201;
 
 %rng(1001);
 
-gmh = testWilliams;
+gmh = testCrouse;
 
 gmr = KLDBarycenter(gmh);
 gmrKLD = gmr;
 
 %%
 %mu = linspace(-4*max(abs([gmh.mu])),4*max(abs([gmh.mu])),numPoints);
-mu = linspace(-6,6,numPoints);
+mu = linspace(1.1,1.3,numPoints);
 
-sigma = linspace(0.00001,20,numPoints);
+sigma = linspace(0.01,0.7,numPoints);
 
 
 XBSGA = zeros(numPoints,numPoints);
@@ -31,8 +31,8 @@ for i=1:numPoints
         gmr.Sigma = sigma(j);
 %         Jhr = crossLikeness(gmh,gmr);
 %         Jrr = selfLikeness(gmr);
-        XBSGA(i,j) = JR2D(gmh,gmr);
-        XBAR(i,j) = evalBarycenterFun(gmh,gmr,'JR2Dij');
+        XBSGA(i,j) = Hell212(gmh,gmr,1000);
+        XBAR(i,j) = evalBarycenterFun(gmh,gmr,'H2ij');
 %        XTSL(i,j,k) = XISE(i,j)/(Jhh + Jrr);
 %         XCSD(i,j) = -log(Jhr) + 0.5*(log(Jhh*Jrr));
 %         XJR2D(i,j) = JR2D(gmh,gmr);
@@ -60,7 +60,7 @@ scatter3(gmrBSGA.mu,gmrBSGA.Sigma,optBSGA,100,'r*','LineWidth',4); hold on
 %plot3([gmrBSGA.mu gmrBSGA.mu],[gmrBSGA.Sigma gmrBSGA.Sigma],[min([0;min(min(XBSGA))]) optBSGA],'k-.','LineWidth',4); hold on
 %plot3([min(mu) gmrBSGA.mu],[gmrBSGA.Sigma gmrBSGA.Sigma],[min([0;min(min(XBSGA))]) min([0;min(min(XBSGA))])],'b-.','LineWidth',4); hold on
 %plot3([gmrBSGA.mu gmrBSGA.mu],[min(sigma) gmrBSGA.Sigma],[min([0;min(min(XBSGA))]) min([0;min(min(XBSGA))])],'g-.','LineWidth',4); hold on
-axis([min(mu) max(mu) min(sigma) max(sigma) 0 max(max(XBSGA))])
+axis([min(mu) max(mu) min(sigma) max(sigma) -1 max(max(XBSGA))])
 set(gca,'FontSize',34)
 
 
@@ -80,6 +80,6 @@ scatter3(gmrBAR.mu,gmrBAR.Sigma,optBAR,100,'r*','LineWidth',4); hold on
 %plot3([gmrBAR.mu gmrBAR.mu],[gmrBAR.Sigma gmrBAR.Sigma],[min([0;min(min(XBAR))]) optBAR],'k-.','LineWidth',4); hold on
 %plot3([min(mu) gmrBAR.mu],[gmrBAR.Sigma gmrBAR.Sigma],[min([0;min(min(XBAR))]) min([0;min(min(XBAR))])],'b-.','LineWidth',4); hold on
 %plot3([gmrBAR.mu gmrBAR.mu],[min(sigma) gmrBAR.Sigma],[min([0;min(min(XBAR))]) min([0;min(min(XBAR))])],'g-.','LineWidth',4); hold on
-axis([min(mu) max(mu) min(sigma) max(sigma) 0 max(max(XBAR))])
+axis([min(mu) max(mu) min(sigma) max(sigma) -1 max(max(XBAR))])
 set(gca,'FontSize',34)
 

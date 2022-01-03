@@ -16,6 +16,10 @@ errorEll = errorEllipses(offset,P,0.9999);
 alpha = max(max(abs(errorEll)));
 d = size(gm(1).mu,1);
 mult = 1/sqrt(d);
+
+if nargin < 2
+    nPoints = 1000/(d^2);
+end
 if d==1
     X = linspace(-mult*alpha+offset, mult*alpha+offset,nPoints);
     varargout{1} = X;

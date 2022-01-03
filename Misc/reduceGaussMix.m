@@ -26,6 +26,10 @@ elseif strcmpi(algo,'bf')
     algoParamsBlock.('seq') = 1;
 elseif strcmpi(algo,'g2ra')
     algoParamsBlock.('costMeas') = 'KLDij';
+elseif strcmpi(algo,'alphaReduction')
+    algoParamsBlock.('alpha') = 0.5;
+    algoParamsBlock.('maxiter') = 50;
+    algoParamsBlock.('tol') = 1e-6;
 end
 
 if isstruct(algoParams)

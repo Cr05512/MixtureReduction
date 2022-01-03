@@ -2,10 +2,10 @@
 clear
 close all
 %%
-Nh = 20;
+Nh = 50;
 Nr = 4;
 numMCRuns = 1000;
-d = 1;
+d = 3;
 alpha = 5;
 beta = 0.1;
 
@@ -14,14 +14,14 @@ test = 'random';
 
 
 exp1 = Experiment('',           {struct('rho',0.7),struct('k',2)},...
-                  'W2MRA',        struct('Nr',Nr,'seq',0),...
-                  '',           {struct('costMeas','KLDij','lambda',0),struct()},...
+                  'IW2MRA',        struct('Nr',Nr,'seq',0),...
+                  'ERCTDRef',           {struct('costMeas','KLDij','lambda',0),struct()},...
                   test,          struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));              
 
               
 exp2 = Experiment('',           {},...
                   'IW2MRA',       struct('Nr',Nr,'costMeas','KLDij'),...
-                  '',           {struct('costMeas','KLDBij','lambda',0),struct()},...
+                  'KRef',           {struct('costMeas','KLDij','lambda',0),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha,'beta',beta,'d',d));
 
 
@@ -34,7 +34,7 @@ experiments = [exp1;exp2];
 numExperiments = numel(experiments);
 
 
-globalMeas = {struct('globMeas','CTD','costMeas','W2ij')}';
+globalMeas = {struct('globMeas','CTD','costMeas','KLDij')}';
 
 
 perfMatrix = zeros(numExperiments,numMCRuns,numel(globalMeas)+1);
