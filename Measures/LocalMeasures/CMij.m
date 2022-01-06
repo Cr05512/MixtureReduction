@@ -1,4 +1,4 @@
-function C = CMij(pdfh,pdfr)
+function C = CMij(pdfi,pdfj)
 % C = CMij(pdfh,pdfr):
 % INPUTS:
 % - pdfh, pdfr, two Gaussian Densities.
@@ -9,9 +9,9 @@ function C = CMij(pdfh,pdfr)
 % target tracking inclutter.Master’s thesis, Air Force Institute of Technology, 2005.
 
 
-Jhh = mvnpdf(pdfh.mu,pdfh.mu,2*pdfh.Sigma);
-Jrr = mvnpdf(pdfr.mu,pdfr.mu,2*pdfr.Sigma);
-Jhr = mvnpdf(pdfr.mu,pdfh.mu,pdfr.Sigma+pdfh.Sigma);
+Jhh = mvnpdf(pdfi.mu,pdfi.mu,2*pdfi.Sigma);
+Jrr = mvnpdf(pdfj.mu,pdfj.mu,2*pdfj.Sigma);
+Jhr = mvnpdf(pdfj.mu,pdfi.mu,pdfj.Sigma+pdfi.Sigma);
 
 C = Jhr/sqrt(Jhh*Jrr);
 

@@ -1,10 +1,10 @@
-function tB = tKLDUB(fa,gb)
+function tB = tKLDUB(gmh,gmr)
 
-na = numel(fa);
-nb = numel(gb);
-[wa,mua,Sigmaa] = paramsFromMixture(fa);
-wb = [gb.w]';
-C = CostMatrix(fa,gb,'KLDij');
+na = numel(gmh);
+nb = numel(gmr);
+[wa,mua,Sigmaa] = paramsFromMixture(gmh);
+wb = [gmr.w]';
+C = CostMatrix(gmh,gmr,'KLDij');
 
 expC = exp(-1*C);
 W = zeros(na,nb);
@@ -44,7 +44,7 @@ Jaa = matrixUnwSelfLikeness(mua,Sigmaa);
 B = log(Jaa*wa);
 D = zeros(na,1);
 for i=1:na
-    D(i) = mvEntropy(fa(i));
+    D(i) = mvEntropy(gmh(i));
 end
 hwa = - wa'*log(wa);
 tB = wa'*(B+D)+hwa+V;

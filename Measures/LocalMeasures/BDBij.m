@@ -1,7 +1,7 @@
-function dBDBij = BDBij(pdfh,pdfr)
+function dBDBij = BDBij(pdfi,pdfj)
 
-bar = KLDBarycenter([pdfh;pdfr]);
-dBDBij = pdfh.w*BDij(pdfh,bar) + pdfr.w*BDij(pdfr,bar);
+bar = KLDBarycenter([pdfi;pdfj]);
+dBDBij = pdfi.w*BDij(pdfi,bar) + pdfj.w*BDij(pdfj,bar);
 
 end
 

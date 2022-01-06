@@ -1,4 +1,4 @@
-function dmMS = mMSDij(pdf1,pdf2,P)
+function dmMS = mMSDij(pdfi,pdfj,P)
 % dmMS = mMSDij(pdf1,pdf2,P):
 % INPUT:
 % - pdf1, pdf2, two Gaussian densities,
@@ -9,6 +9,6 @@ function dmMS = mMSDij(pdf1,pdf2,P)
 % suggested in:
 % "Mixture reduction algorithms for target tracking in clutter", D.J. Salmond
 
-dmMS = pdf1.w*pdf2.w/(pdf1.w+pdf2.w)*mahalSquaredDist(pdf1.mu,pdf2.mu,P);
+dmMS = pdfi.w*pdfj.w/(pdfi.w+pdfj.w)*mahalSquaredDist(pdfi.mu,pdfj.mu,P);
 end
 

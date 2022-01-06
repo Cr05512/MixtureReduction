@@ -1,16 +1,16 @@
-function tB = tKLDLB(fa,gb)
+function tB = tKLDLB(gmh,gmr)
 
-na = numel(fa);
-[wa,mua,Sigmaa] = paramsFromMixture(fa);
-[wb,mub,Sigmab] = paramsFromMixture(gb);
+na = numel(gmh);
+[wa,mua,Sigmaa] = paramsFromMixture(gmh);
+[wb,mub,Sigmab] = paramsFromMixture(gmr);
 
 
 D = zeros(na,1);
 for i=1:na
-    D(i) = mvEntropy(fa(i));
+    D(i) = mvEntropy(gmh(i));
 end
 hwa = - wa'*log(wa);
-C = CostMatrix(fa,fa,'KLDij');
+C = CostMatrix(gmh,gmh,'KLDij');
 
 expC = exp(-1*C);
 W = zeros(na,na);

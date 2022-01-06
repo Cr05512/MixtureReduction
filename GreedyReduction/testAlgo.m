@@ -15,7 +15,7 @@ for k=1:Nh-Nr
                 gmr_temp(i) = KLDBarycenter(gmr([i;j]));
                 gmr_temp(j) = [];
                 
-                KBMatrix(i,j) = tKLDUB(gmh,gmr_temp);
+                KBMatrix(i,j) = CTD(gmh,gmr_temp,'KLDij');
 
                 
             end

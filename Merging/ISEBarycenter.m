@@ -8,7 +8,7 @@ end
 d = size(gmh(1).mu,1);
 
 
-gmr = KLDBarycenter(gmh);
+gmr = RKLDBarycenter(gmh);
 
 [~,mur,Sigmar] = paramsFromMixture(gmr);
 L = chol(Sigmar,'lower');

@@ -8,7 +8,7 @@ function NRKLD = RKLD12(gmh,gmr,nPoints)
 % This function computes the numerical KLD only for 1 and 2 dimensional
 % problems.
 if nargin < 3
-    nPoints = 10000;
+    nPoints = 1000;
 end
 assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to be non-empty.');
 assert(nPoints>0,'The number of evaluation points has to be greater than zero.');

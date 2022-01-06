@@ -1,4 +1,4 @@
-function dJS = JSDij(pdfh,pdfr)
+function dJS = JSDij(pdfi,pdfj)
 % JSD = JSDij(pdfh,pdfr):
 % INPUTS:
 % - pdfh, pdfr, two Gaussian densities.
@@ -12,7 +12,7 @@ function dJS = JSDij(pdfh,pdfr)
 % 
 % dJS = 0.5*(KLD(pdfh,M) + KLD(pdfr,M));
 
-dJS = GJSDij(pdfh,pdfr,0.5);
+dJS = GJSDij(pdfi,pdfj,0.5);
 
 %The two expressions above are equivalent
 

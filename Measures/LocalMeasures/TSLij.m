@@ -1,9 +1,9 @@
-function dTSL = TSLij(pdfh,pdfr)
+function dTSL = TSLij(pdfi,pdfj)
 
 
-Jhh = mvnpdf(pdfh.mu,pdfh.mu,2*pdfh.Sigma);
-Jrr = mvnpdf(pdfr.mu,pdfr.mu,2*pdfr.Sigma);
-Jhr = mvnpdf(pdfh.mu,pdfr.mu,pdfh.Sigma+pdfr.Sigma);
+Jhh = mvnpdf(pdfi.mu,pdfi.mu,2*pdfi.Sigma);
+Jrr = mvnpdf(pdfj.mu,pdfj.mu,2*pdfj.Sigma);
+Jhr = mvnpdf(pdfi.mu,pdfj.mu,pdfi.Sigma+pdfj.Sigma);
 
 
 dTSL = (Jhh - 2*Jhr + Jrr)/sqrt(1+4*Jrr);

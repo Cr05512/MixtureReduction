@@ -1,6 +1,6 @@
-function dH = H1ij(pdf1,pdf2)
+function dH = H1ij(pdfi,pdfj)
 % Hellinger distance
 
-dH = sqrt(1-BCij(pdf1,pdf2));
+dH = sqrt(1-BCij(pdfi,pdfj));
 
 end

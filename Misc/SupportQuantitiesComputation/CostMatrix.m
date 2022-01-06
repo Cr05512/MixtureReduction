@@ -3,7 +3,7 @@ function C = CostMatrix(gmh,gmr,costMeas,varargin)
 % INPUTS:
 % - gmh, gmr, two Gaussian mixtures,
 % - costMeas, desired cost function (char array),
-% - varargin, additional parameters needed by some measures (can be empty).
+% - varargin, additional parameters needed by some measures (can be empty) (struct).
 % OUTPUTS:
 % - C, the cost matrix (Nh x Nr matrix).
 % This function computes the cost matrix based on the following cost
@@ -18,6 +18,26 @@ Nh = numel(gmh);
 Nr = numel(gmr);
 
 C = zeros(Nh,Nr);
+
+measInputList = getFunArgNames(costMeas);
+measInputList(1:2) = [];
+
+if nargin>3
+    params = varargin{:};
+    varargin = {};
+    
+    for i=1:length(measInputList)
+        if isfield(params,measInputList{i})
+            varargin{i} = params.(measInputList{i});
+            params = rmfield(params,measInputList{i});
+        end
+    end
+
+    if ~isempty(fieldnames(params))
+        disp('The provided parameters for the cost measure may be too many.');
+    end
+
+end
 
 
 for i=1:Nh

@@ -2,26 +2,26 @@
 clear
 close all
 %%
-Nh = 50;
-Nr = 4;
-numMCRuns = 1000;
-d = 3;
-alpha = 5;
-beta = 0.1;
+Nh = 30;
+Nr = 5;
+numMCRuns = 500;
+d = 1;
+alpha = randi(Nh)/(d^2);
+beta = 2*rand();
 
 test = 'random';
 
 
 
 exp1 = Experiment('',           {struct('rho',0.7),struct('k',2)},...
-                  'IW2MRA',        struct('Nr',Nr,'seq',0),...
+                  'Runnalls',        struct('Nr',Nr,'seq',0),...
                   'ERCTDRef',           {struct('costMeas','KLDij','lambda',0),struct()},...
                   test,          struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));              
 
               
 exp2 = Experiment('',           {},...
-                  'IW2MRA',       struct('Nr',Nr,'costMeas','KLDij'),...
-                  'KRef',           {struct('costMeas','KLDij','lambda',0),struct()},...
+                  'Runnalls',       struct('Nr',Nr,'costMeas','KLDij'),...
+                  '',           {struct('costMeas','KLDij','lambda',0),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha,'beta',beta,'d',d));
 
 
@@ -34,7 +34,7 @@ experiments = [exp1;exp2];
 numExperiments = numel(experiments);
 
 
-globalMeas = {struct('globMeas','CTD','costMeas','KLDij')}';
+globalMeas = {struct('globMeas','KLD12','nPoints',300)}';
 
 
 perfMatrix = zeros(numExperiments,numMCRuns,numel(globalMeas)+1);
@@ -45,7 +45,7 @@ for k=1:numMCRuns
     
     %disp(strcat(['MC Run: ',num2str(k),'/',num2str(numMCRuns)]));
     
-    rngSeed = randi(10000000);
+    rngSeed = randi(100000000);
     waitbar(k/numMCRuns,h,strcat(['Processing...','Run: ',num2str(k),' of ',num2str(numMCRuns),'.']));
     for i=1:numExperiments
         experiments(i).setTestParams(struct('rngSeed',rngSeed));

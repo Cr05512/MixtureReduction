@@ -2,7 +2,6 @@ function L = VLBEL(gmh,gmr,I)
 % L = VLBEL(gmh,gmr,E,I):
 % INPUTS:
 % - gmh, gmr, two Gaussian mixtures,
-% - E, expected log-Gaussian matrix (Nh x Nr matrix),
 % - I, number of virtual samples (scalar).
 % OUTPUTS:
 % - L, variational lower bound for the expected log-likelihood (scalar).

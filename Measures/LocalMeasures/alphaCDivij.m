@@ -1,5 +1,5 @@
-function dBhatt = BDij(pdfi,pdfj)
-% dBhatt = BDij(pdfi,pdfj):
+function dCDiv = alphaCDivij(pdfi,pdfj,alpha)
+% dBhatt = sBDij(pdfi,pdfj):
 % INPUT:
 % - pdfi, pdfj, two Gaussian densities.
 % OUTPUT:
@@ -8,14 +8,7 @@ function dBhatt = BDij(pdfi,pdfj)
 % Note that the Bhattacharyya distance is a Chernoff alpha-divergence for
 % alpha = 0.5.
 
-mui = pdfi.mu;
-muj = pdfj.mu;
-Sigmai = pdfi.Sigma;
-Sigmaj = pdfj.Sigma;
-diff = mui-muj;
-Sigma = 0.5*(Sigmai+Sigmaj);
-
-dBhatt = (1/8)*diff'*(Sigma\diff) + 0.5*log(det(Sigma)) - 0.25*log(det(Sigmai)) - 0.25*log(det(Sigmaj));
+dCDiv = -log(alphaCij(pdfi,pdfj,alpha));
 
 end
 

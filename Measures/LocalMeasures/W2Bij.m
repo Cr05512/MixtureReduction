@@ -1,9 +1,9 @@
-function dW2Bij = W2Bij(pdfh,pdfr)
+function dW2Bij = W2Bij(pdfi,pdfj)
 
-w1 = pdfh.w;
-w2 = pdfr.w;
-bar = W2Barycenter([pdfh;pdfr]);
+w1 = pdfi.w;
+w2 = pdfj.w;
+bar = W2Barycenter([pdfi;pdfj]);
 
-dW2Bij = w1*W2ij(pdfh,bar) + w2*W2ij(pdfr,bar);
+dW2Bij = w1*W2ij(pdfi,bar) + w2*W2ij(pdfj,bar);
 end
 

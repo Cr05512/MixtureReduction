@@ -1,9 +1,9 @@
-function MCKLDs = MCKLD(gmh,gmrVec,nSamples)
-% MCKLD = MCKLD(gmh,gmr,nSamples):
+function dMCKLD = MCKLD(gmh,gmr,nPoints)
+% dMCKLD = MCKLD(gmh,gmr,nSamples):
 % INPUTS:
 % - gmh, proposal density f (Gaussian Mixture),
 % - gmrVec, cell array containing Gaussian mixtures to evaluate (g),
-% - nSamples, number of i.i.d. samples to evaluate the MCKLD (scalar).
+% - nPoints, number of i.i.d. samples to evaluate the MCKLD (scalar).
 % OUTPUTS:
 % - MCKLDs, numerically computed KLD (vector numGs x 1).
 % This function implements the MC computation of the KLD between two
@@ -15,28 +15,16 @@ function MCKLDs = MCKLD(gmh,gmrVec,nSamples)
 % approximation.
 
 if nargin < 3
-    nSamples = 1000000;
+    nPoints = 1000000;
 end
-assert(~isempty(gmh) && ~isempty(gmrVec),'The mixtures have to contain at least one element.');
+assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element.');
 
-if iscell(gmrVec)
-    numGs = length(gmrVec);
-elseif isstruct(gmrVec)
-    numGs = 1;
-end
 
-X = GMSamples(gmh,nSamples);
+X = GMSamples(gmh,nPoints);
 valsh = evalGM(gmh,X);
-MCKLDs = zeros(numGs,1);
-if isstruct(gmrVec)
-    valsr = evalGM(gmrVec,X);
-    MCKLDs = 1/nSamples * sum(log(valsh./valsr));
-else
-    for i=1:numGs
-        valsr = evalGM(gmrVec{i},X);
-        MCKLDs(i) = 1/nSamples * sum(log(valsh./valsr));
-    end
-end
+valsr = evalGM(gmr,X);
+dMCKLD = 1/nPoints * sum(log(valsh./valsr));
+
 
 
 end

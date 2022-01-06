@@ -1,6 +1,6 @@
-function dH2 = H2ij(pdf1,pdf2)
+function dH2 = H2ij(pdfi,pdfj)
 
-dH2 = 1-BCij(pdf1,pdf2);
+dH2 = 1-BCij(pdfi,pdfj);
 
 % mu1 = pdf1.mu;
 % mu2 = pdf2.mu;

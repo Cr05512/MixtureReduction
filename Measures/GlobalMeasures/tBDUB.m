@@ -1,8 +1,8 @@
-function dtBDUB = tBDUB(fa,gb)
+function dtBDUB = tBDUB(gmh,gmr)
 
-wa = [fa.w]';
-wb = [gb.w]';
-C = CostMatrix(fa,gb,'BDij');
+wa = [gmh.w]';
+wb = [gmr.w]';
+C = CostMatrix(gmh,gmr,'BDij');
 expC = exp(-C);
 
 na = numel(wa);

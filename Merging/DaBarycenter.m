@@ -3,15 +3,22 @@ function Dabar = DaBarycenter(comps,alpha,maxiter,tol)
 if nargin < 2
     alpha = 0.5;
     maxiter = 50;
-    tol = 1e-6;
+    tol = 1e-12;
 elseif nargin < 3
     maxiter = 50;
-    tol = 1e-6;
+    tol = 1e-12;
 elseif nargin < 4
-    tol = 1e-6;
+    tol = 1e-12;
 end
 
-Dabar = RKLDBarycenter(comps);
+% if alpha==0
+%     Dabar = RKLDBarycenter(comps);
+% elseif alpha==1
+     Dabar = KLDBarycenter(comps);
+% else
+%     [~,idx] = max([comps.w]);
+%     Dabar = comps(idx);
+% end
 
 n = length(comps);
 d = size(comps(1).mu,1);
@@ -36,21 +43,18 @@ for k=1:maxiter
         wVec(i) = wi(i)*gamma;
     end
     
-   wVec = wVec./sum(wVec);
+    wVec = wVec./sum(wVec);
     
     Dabarnew = KLDBarycenter(mixtureFromParams(wVec,muVec,SigmaVec));
-    %if ~mod(k,5)
-    if norm(Dabarnew.mu-Dabar.mu)<tol
-        %Dabarnew.w = normFactor;
-        Dabar = Dabarnew;
-        break;
-    else
-        Dabar=Dabarnew;
-    end
-    %end
     
+    if alpha1Dij(Dabarnew,Dabar,alpha)<tol
+        break;
+    end
+    
+    Dabar=Dabarnew;
     
 end
+Dabar = Dabarnew;
 Dabar.w = normFactor;
 
 end

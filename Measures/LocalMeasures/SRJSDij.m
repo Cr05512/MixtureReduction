@@ -1,4 +1,4 @@
-function dSRJS = SRJSDij(pdfh,pdfr)
+function dSRJS = SRJSDij(pdfi,pdfj)
 % dSRJS = SRJSDij(pdfh,pdfr):
 % INPUTS:
 % - pdfh, pdfr, two Gaussian densities.
@@ -8,6 +8,6 @@ function dSRJS = SRJSDij(pdfh,pdfr)
 % not suitable for other kind of distributions. Note, this is a true
 % distance.
 
-dSRJS = real(sqrt(GJSD(pdfh,pdfr,0.5)));
+dSRJS = real(sqrt(GJSD(pdfi,pdfj,0.5)));
 end
 

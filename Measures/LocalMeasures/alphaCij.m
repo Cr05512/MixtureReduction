@@ -5,8 +5,8 @@ mui = pdfi.mu;
 muj = pdfj.mu;
 Sigmai = pdfi.Sigma;
 Sigmaj = pdfj.Sigma;
-alphaSigma = alpha*Sigmai + (1-alpha)*Sigmaj;
+alphaSigma = alpha*Sigmaj + (1-alpha)*Sigmai;
 
-dsBC = (det(Sigmai)^(alpha/2)*det(Sigmaj)^((1-alpha)/2))/sqrt(det(alphaSigma))*exp(-0.5*alpha*(1-alpha)*(mui-muj)'*(alphaSigma\(mui-muj)));
+dsBC = (sqrt(det(Sigmaj)^alpha*det(Sigmai)^(1-alpha)))/sqrt(det(alphaSigma))*exp(-0.5*alpha*(1-alpha)*(mui-muj)'*(alphaSigma\(mui-muj)));
 end
 

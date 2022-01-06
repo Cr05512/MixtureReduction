@@ -1,8 +1,6 @@
-function bar = computeBarycenter(gmh,costMeas,alpha)
-
-if nargin < 3
-    alpha = 0.5;
-end
+function bar = computeBarycenter(gmh,costMeas,varargin)
+% varargin is thought to be a struct containing the additional fields
+% required for some local measures
 
 
 availableMeasVec = Experiment.getAvailableLocalMeasures(); %Vector of available dissimilarity measures
@@ -10,7 +8,7 @@ assert(any(strcmpi(availableMeasVec,costMeas)), strcat(['Unknown cost measure. T
 
 switch costMeas
     case 'W2ij'
-        bar = W2Barycenter(gmh,100);
+        bar = W2Barycenter(gmh,varargin{:}.maxiter);
     case 'L2ij'
         bar = ISEBarycenter(gmh);
     case 'NL2ij'
@@ -26,7 +24,7 @@ switch costMeas
     case 'H2ij'
         bar = H2Barycenter(gmh);
     case 'alpha1Dij'
-        bar = DaBarycenter(gmh,alpha);
+        bar = DaBarycenter(gmh,varargin{:}.alpha);
     otherwise
         bar = KLDBarycenter(gmh);
 end

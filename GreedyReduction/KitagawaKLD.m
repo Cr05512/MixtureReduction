@@ -1,25 +1,17 @@
-function [gmr,pairs,minCosts] = alphaReduction(gmh, Nr, alpha, maxiter, tol)
-% gmr = Runnalls(gmh, Nr):
+function [gmr,pairs,minCosts] = KitagawaKLD(gmh, Nr)
+% gmr = Kitagawa(gmh, Nr):
 % INPUTS:
 % - gmh, a Gaussian mixture to be reduced,
 % - Nr, the desired number of components for the reduced mixture (scalar).
 % OUTPUTS:
 % - gmr, the reduced Gaussian mixture.
-% This function implements the algorithm presented in
-% Kullback-Leibler Approach to Gaussian Mixture Reduction, A.R. Runnals
+% This function implements the KLD-based algorithm presented in
+% "Pearson χ 2 -divergence Approach to Gaussian Mixture Reduction
+% and its Application to Gaussian-sum Filter and Smoother", G. Kitagawa
 assert(~isempty(gmh),'The mixture has to contain at least one element.');
 assert(Nr>0,'The number of reduced components has to be greater than zero.');
 
-if nargin < 3
-    alpha = 0.5;
-    maxiter = 50;
-    tol = 1e-6;
-elseif nargin < 4
-    maxiter = 50;
-    tol = 1e-6;
-elseif nargin < 5
-    tol = 1e-6;
-end
+
 
 if numel(gmh)<Nr
     gmr = gmh;
@@ -30,7 +22,7 @@ Nh = numel(gmh);
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    gmr = DaBarycenter(gmh,alpha,maxiter,tol);
+    gmr = KLDBarycenter(gmh);
     return
 end
 
@@ -44,7 +36,7 @@ minCosts = zeros(Nh-Nr,1);
 for i=1:Nh
     for j=1:Nh
         if(i<j)
-            BMatrix(i,j) = alpha1Bij(gmr(i),gmr(j),alpha,maxiter,tol);
+            BMatrix(i,j) = wKLDij(gmr(i),gmr(j));
         end
     end
 end
@@ -55,7 +47,7 @@ for k=1:Nh-Nr
     %We then find the action with the lowest KLD bound and we merge the
     %corresponding mixture components
     [i,j] = find(BMatrix == min(BMatrix(BMatrix<Inf)),1);
-    bar = DaBarycenter(gmr([i,j]),alpha,maxiter,tol);
+    bar = KLDBarycenter(gmr([i,j]));
     gmr(i) = bar;
     gmr(j) = [];
     pairs(k,:) = [i,j];
@@ -64,7 +56,7 @@ for k=1:Nh-Nr
     BMatrix(:,j) = [];
     upd_ind = setdiff(1:numel(gmr),i);
     for j=upd_ind
-        newBound = alpha1Bij(bar,gmr(j),alpha,maxiter,tol);
+        newBound = wKLDij(bar,gmr(j));
         if i<j
             BMatrix(i,j) = newBound;
         else
@@ -73,6 +65,8 @@ for k=1:Nh-Nr
     end
 
 end
+    
+    
     
 end
 

@@ -1,4 +1,4 @@
-function sKLD = SKLDij(pdfh,pdfr)
+function sKLD = SKLDij(pdfi,pdfj)
 % sKLD = SKLDij(pdfh,pdfr):
 % INPUTS:
 % - pdfh, pdfr, two Gaussian densities.
@@ -7,15 +7,17 @@ function sKLD = SKLDij(pdfh,pdfr)
 % This function computes the KLD symmetrization between two multivariate Gaussians. It is
 % not suitable for other kind of distributions.
 
-% muh = pdfh.mu;
-% mur = pdfr.mu;
-% Ph = pdfh.Sigma;
-% Pr = pdfr.Sigma;
-% Phinv = inv(Ph);
-% Prinv = inv(Pr);
+mui = pdfi.mu;
+muj = pdfj.mu;
+diff = mui-muj;
+Sigmai = pdfi.Sigma;
+Sigmaj = pdfj.Sigma;
+d = size(mui,1);
+Sigmaiinv = eye(d)/Sigmai;
+Sigmajinv = eye(d)/Sigmaj;
 
-sKLD = KLDij(pdfh,pdfr) + KLDij(pdfr,pdfh);
-% sKLD = 0.5*((muh-mur)'*(Phinv + Prinv)*(muh-mur) + trace((Prinv - Phinv)*(Ph - Pr)));
+%sKLD = KLDij(pdfi,pdfj) + KLDij(pdfj,pdfi);
+sKLD = 0.5*(trace(Sigmajinv*Sigmai) + trace(Sigmaiinv*Sigmaj) + diff'*(Sigmaiinv+Sigmajinv)*diff - 2*d);
 
 end
 

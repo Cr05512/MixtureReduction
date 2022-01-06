@@ -1,7 +1,7 @@
-function dCSDBij = CSDBij(pdfh,pdfr)
+function dCSDBij = CSDBij(pdfi,pdfj)
 
-bar = CSDBarycenter([pdfh;pdfr]);
-dCSDBij = pdfh.w*CSDij(pdfh,bar) + pdfr.w*CSDij(pdfr,bar);
+bar = CSDBarycenter([pdfi;pdfj]);
+dCSDBij = pdfi.w*CSDij(pdfi,bar) + pdfj.w*CSDij(pdfj,bar);
 
 end
 
