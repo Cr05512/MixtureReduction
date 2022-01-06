@@ -24,7 +24,9 @@ switch costMeas
     case 'H2ij'
         bar = H2Barycenter(gmh);
     case 'alpha1Dij'
-        bar = DaBarycenter(gmh,varargin{:}.alpha);
+        bar = Da1Barycenter(gmh,varargin{:}.alpha);
+    case 'alpha2Dij'
+        bar = Da2Barycenter(gmh,varargin{:}.alpha);
     otherwise
         bar = KLDBarycenter(gmh);
 end

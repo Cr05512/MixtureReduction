@@ -1,11 +1,11 @@
-function Dabar = DaBarycenter(comps,alpha,maxiter,tol)
+function Dabar = Da2Barycenter(comps,alpha,maxiter,tol)
 
 if nargin < 2
     alpha = 0.5;
-    maxiter = 50;
+    maxiter = 100;
     tol = 1e-12;
 elseif nargin < 3
-    maxiter = 50;
+    maxiter = 100;
     tol = 1e-12;
 elseif nargin < 4
     tol = 1e-12;
@@ -27,7 +27,7 @@ wVec = zeros(n,1);
 muVec = zeros(d,n);
 SigmaVec = zeros(d,d,n);
 [wi,mui,Sigmai] = paramsFromMixture(comps);
-normFactor = sum(wi);
+w = sum(wi);
 Sigmaiinv = zeros(d,d,n);
 
 for i=1:n
@@ -39,23 +39,30 @@ for k=1:maxiter
     for i=1:n
         SigmaVec(:,:,i) = eye(d)/(alpha*Sigmaiinv(:,:,i) + (1-alpha)*Sigmainv);
         muVec(:,i) = SigmaVec(:,:,i)*(alpha*Sigmaiinv(:,:,i)*mui(:,i) + (1-alpha)*Sigmainv*Dabar.mu);
-        gamma = alphaCij(comps(i),Dabar,alpha);
-        wVec(i) = wi(i)*gamma;
+        wVec(i) = wi(i);
     end
     
     wVec = wVec./sum(wVec);
+    wNew = sum(wVec);
     
-    Dabarnew = KLDBarycenter(mixtureFromParams(wVec,muVec,SigmaVec));
+    mu = sum(wVec'.*muVec,2)/wNew;
+    
+    Sigma = zeros(d,d);
+    for i=1:n
+        diff = muVec(:,i) - mu;
+        Sigma = Sigma + wVec(i)*(SigmaVec(:,:,i) + diff*diff');
+    end
+    Sigma = Sigma/wNew;
+    Dabarnew = mixtureFromParams(w,mu,Sigma);
     
     if alpha1Dij(Dabarnew,Dabar,alpha)<tol
+        Dabar = Dabarnew; 
         break;
     end
     
     Dabar=Dabarnew;
     
 end
-Dabar = Dabarnew;
-Dabar.w = normFactor;
 
 end
 

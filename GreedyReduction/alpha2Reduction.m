@@ -1,4 +1,4 @@
-function [gmr,pairs,minCosts] = alphaReduction(gmh, Nr, alpha, maxiter, tol)
+function [gmr,pairs,minCosts] = alpha2Reduction(gmh, Nr, alpha, maxiter, tol)
 % gmr = Runnalls(gmh, Nr):
 % INPUTS:
 % - gmh, a Gaussian mixture to be reduced,
@@ -44,7 +44,7 @@ minCosts = zeros(Nh-Nr,1);
 for i=1:Nh
     for j=1:Nh
         if(i<j)
-            BMatrix(i,j) = alpha1Bij(gmr(i),gmr(j),alpha,maxiter,tol);
+            BMatrix(i,j) = alpha2Bij(gmr(i),gmr(j),alpha,maxiter,tol);
         end
     end
 end
@@ -55,7 +55,7 @@ for k=1:Nh-Nr
     %We then find the action with the lowest KLD bound and we merge the
     %corresponding mixture components
     [i,j] = find(BMatrix == min(BMatrix(BMatrix<Inf)),1);
-    bar = DaBarycenter(gmr([i,j]),alpha,maxiter,tol);
+    bar = Da2Barycenter(gmr([i,j]),alpha,maxiter,tol);
     gmr(i) = bar;
     gmr(j) = [];
     pairs(k,:) = [i,j];
@@ -64,7 +64,7 @@ for k=1:Nh-Nr
     BMatrix(:,j) = [];
     upd_ind = setdiff(1:numel(gmr),i);
     for j=upd_ind
-        newBound = alpha1Bij(bar,gmr(j),alpha,maxiter,tol);
+        newBound = alpha2Bij(bar,gmr(j),alpha,maxiter,tol);
         if i<j
             BMatrix(i,j) = newBound;
         else
