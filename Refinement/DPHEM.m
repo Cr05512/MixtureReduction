@@ -1,4 +1,4 @@
-function gmr = DPHEM(gmr,gmh,I,maxiter)
+function gmr = DPHEM(gmr,gmh,maxiter,I)
 % gmr = DPHEM(gmr,gmh,I,numIter):
 % INPUTS:
 % - gmr, initial GM used as initialization of the algorithm,

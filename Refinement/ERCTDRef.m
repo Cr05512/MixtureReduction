@@ -49,7 +49,7 @@ for k=1:maxiter
     for j=1:Nr
         if wG(j)>0
             [gmh_temp.w] = w_temp{:,j};
-            gmr(j) = computeBarycenter(gmh_temp,costMeas);
+            gmr(j) = computeBarycenter(gmh_temp,costMeas,varargin{:});
         end
 
     end

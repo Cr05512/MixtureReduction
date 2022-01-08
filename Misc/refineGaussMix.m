@@ -18,75 +18,28 @@ if ~isempty(ref)
         res = strcmpi(refs{i},availableRefAlgorithms);
         assert(any(res), strcat(['Unknown refinement method. The available refinement methods are:',' ',strjoin(availableRefAlgorithms,', '),'.']));
         
-        if strcmpi(refs(i),'ISEOptUnc')
-            refParamsBlock{i}.('NOptSteps') = 500;
-            refParamsBlock{i}.('optWeights') = 1;
-            refParamsBlock{i}.('accThresh') = 1e-21;
-            
-        elseif any(strcmpi(refs(i),{'ISEOptCon','ISEOptConQ','NISEOptCon','CSDOptCon',...
-                                    'CMOptCon','TSLOptCon','JR2DOptCon'}))
-            refParamsBlock{i}.('NOptSteps') = 1000;
-            refParamsBlock{i}.('accThresh') = 1e-21;
-            
-        elseif strcmpi(refs(i),'ERCTDRef')
-            refParamsBlock{i}.('costMeas') = 'KLDij';
-            refParamsBlock{i}.('lambda') = 0.05;
-            refParamsBlock{i}.('maxiter') = 100;
-            
-        elseif strcmpi(refs(i),'DPHEM')
-            refParamsBlock{i}.('I') = numel(gmh);
-            refParamsBlock{i}.('maxiter') = 100;
-            
-        elseif strcmpi(refs(i),'VKLRef')
-            refParamsBlock{i}.('maxiter') = 100;
-            
-        elseif strcmpi(refs(i),'GMEMRef')
-            refParamsBlock{i}.('nSamples') = 20000;
-            refParamsBlock{i}.('maxiter') = 200;
-            
-        elseif strcmpi(refs(i),'GMKMeansRef')
-            refParamsBlock{i}.('costMeas') = 'KLDij';
-            refParamsBlock{i}.('NKMeansSteps') = 50;
-            
-        elseif strcmpi(refs(i),'clusteringGMRC')
-            refParamsBlock{i}.('NSteps') = 1;
-            
-        elseif strcmpi(refs(i),'clusteringUTKLD')
-            refParamsBlock{i}.('NSteps') = 1;
-            refParamsBlock{i}.('numRings') = 1;
-        else
-            refParamsBlock{i} = struct();
-        end
+        refInputList = getFunArgNames(refs{i});
+        
+        refInputList(strcmpi(refInputList,'gmh')) = [];
+        refInputList(strcmpi(refInputList,'gmr')) = [];
+        refParamsBlock{i} = cell2struct(cell(length(refInputList),1),refInputList);
+        
+        
 
         if ~isempty(refParams)
             if isstruct(refParams{i})
                 userRefFields = fieldnames(refParams{i});
                 for j=1:length(userRefFields)
-                    if isfield(refParamsBlock{i},userRefFields{j})
+                    if any(strcmpi(refInputList,userRefFields{j}))
                         refParamsBlock{i}.(userRefFields{j}) = refParams{i}.(userRefFields{j});
                     end
                 end
             end
         end
+        
+        refParamsBlock = defaultRefFieldsFill(refParamsBlock);
 
-        %Additional parameter case
-
-        if isfield(refParamsBlock{i},'costMeas')
-            if strcmpi(refParamsBlock{i}.('costMeas'),'MKLDij')
-                if any(strcmpi(userRefFields,'I'))
-                    refParamsBlock{i}.('I') = refParams{i}.I;
-                else
-                    refParamsBlock{i}.('I') = numel(gmh);
-                end
-
-            elseif any(strcmpi(refParamsBlock{i}.('costMeas'),{'GJSDij','chernAlphaDij','RAlphaDij'}))
-                if any(strcmpi(userRefFields,'alpha'))
-                    refParamsBlock{i}.('alpha') = refParams{i}.alpha;
-                else
-                    refParamsBlock{i}.('alpha') = 0.5;
-                end
-            end
-        end
+        
         refArgs = struct2cell(refParamsBlock{i});
         gmr = feval(availableRefAlgorithms{res},gmr,gmh,refArgs{:});
     end

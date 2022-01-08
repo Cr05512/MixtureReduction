@@ -6,16 +6,16 @@ numPoints = 101;
 
 %rng(1001);
 
-gmh = testCrouse;
+gmh = userDefMixture2;
 
 gmr = KLDBarycenter(gmh);
 gmrKLD = gmr;
 
 %%
 %mu = linspace(-4*max(abs([gmh.mu])),4*max(abs([gmh.mu])),numPoints);
-mu = linspace(-2,2,numPoints);
+mu = linspace(-4,4,numPoints);
 
-sigma = linspace(0.01,1.2,numPoints);
+sigma = linspace(0.01,5,numPoints);
 
 
 XBSGA = zeros(numPoints,numPoints);
@@ -31,8 +31,8 @@ for i=1:numPoints
         gmr.Sigma = sigma(j);
 %         Jhr = crossLikeness(gmh,gmr);
 %         Jrr = selfLikeness(gmr);
-        XBSGA(i,j) = evalBarycenterFun(gmh,gmr,'alpha1Dij',struct('alpha',0.5));
-        XBAR(i,j) = evalBarycenterFun(gmh,gmr,'H2ij');
+        XBSGA(i,j) = evalBarycenterFun(gmh,gmr,'SKLDij');
+        XBAR(i,j) = evalBarycenterFun(gmh,gmr,'RKLDij');
 %        XTSL(i,j,k) = XISE(i,j)/(Jhh + Jrr);
 %         XCSD(i,j) = -log(Jhr) + 0.5*(log(Jhh*Jrr));
 %         XJR2D(i,j) = JR2D(gmh,gmr);

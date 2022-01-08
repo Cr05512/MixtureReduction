@@ -1,4 +1,4 @@
-function gmr = CSDOptCon(gmr,gmh,NOptSteps,accThresh)
+function gmr = CSDOptCon(gmr,gmh,maxiter,tol)
 % gmr = CSDOptCon(gmr,gmh,NOptSteps,accThresh):
 % - gmr, gmh, two Gaussian Mixtures,
 % - NOptSteps, maximum number of optimization steps,
@@ -7,8 +7,8 @@ function gmr = CSDOptCon(gmr,gmh,NOptSteps,accThresh)
 % reduced mixture by using the builtin Matlab function fmincon.
 
 if nargin < 3
-    NOptSteps = 100;
-    accThresh = 1e-12;
+    maxiter = 100;
+    tol = 1e-12;
 end
 
 Nr = numel(gmr);
@@ -31,8 +31,8 @@ B = zeros(length(x0),1);
 Aeq = [ones(1,Nr),zeros(1,Nr*dr + dr*dr*Nr)];
 Beq = sum([gmr.w]);
 
-options = optimoptions('fmincon','OptimalityTolerance',accThresh,...
-                       'MaxFunctionEvaluations',NOptSteps,'MaxIterations',NOptSteps,...
+options = optimoptions('fmincon','OptimalityTolerance',tol,...
+                       'MaxFunctionEvaluations',maxiter,'MaxIterations',maxiter,...
                        'Algorithm','interior-point','SpecifyObjectiveGradient',true,'display','none');
 
 x = fmincon(f,x0,A,B,Aeq,Beq,[],[],[],options);

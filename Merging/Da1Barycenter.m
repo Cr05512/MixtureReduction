@@ -14,7 +14,7 @@ end
 % if alpha==0
 %     Dabar = RKLDBarycenter(comps);
 % elseif alpha==1
-     Dabar = KLDBarycenter(comps);
+     Dabar = RKLDBarycenter(comps);
 % else
 %     [~,idx] = max([comps.w]);
 %     Dabar = comps(idx);

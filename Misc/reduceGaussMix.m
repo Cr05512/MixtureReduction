@@ -9,39 +9,24 @@ availableGreedyAlgorithms = Experiment.getAvailableAlgorithms(); %Check the corr
 res = strcmpi(algo,availableGreedyAlgorithms);
 assert(any(res), strcat(['Unknown greedy algorithm. The available algorithms are:',' ',strjoin(availableGreedyAlgorithms,', '),'.']));
 
-algoParamsBlock = struct();
-algoParamsBlock.('Nr') = 5;
-if ismember(lower(algo),{'west','cowa'})
-    algoParamsBlock.('costMeas') = 'L2ij';
-    algoParamsBlock.('algo') = 0;
-    algoParamsBlock.('gamma') = Inf;
-elseif strcmpi(algo,'gmrc')
-    algoParamsBlock.('initMethod') = 'Runnalls';
-    algoParamsBlock.('NKmeansSteps') = 1;
-    algoParamsBlock.('NOptSteps') = 100;
-    algoParamsBlock.('accThresh') = 1e-09;
-elseif strcmpi(algo,'gmrcw2')
-    algoParamsBlock.('NKMeansSteps') = 100;
-elseif strcmpi(algo,'bf')
-    algoParamsBlock.('seq') = 1;
-elseif strcmpi(algo,'g2ra')
-    algoParamsBlock.('costMeas') = 'KLDij';
-elseif strcmpi(algo,'alphaReduction')
-    algoParamsBlock.('alpha') = 0.5;
-    algoParamsBlock.('maxiter') = 50;
-    algoParamsBlock.('tol') = 1e-6;
-end
+algoInputList = getFunArgNames(algo);
+algoInputList(strcmpi(algoInputList,'gmh')) = [];
+algoParamsBlock = cell2struct(cell(length(algoInputList),1),algoInputList);
+
 
 if isstruct(algoParams)
     userAlgoFields = fieldnames(algoParams);
     for i=1:length(userAlgoFields)
-        if isfield(algoParamsBlock,userAlgoFields{i})
+        if any(strcmpi(algoInputList,userAlgoFields{i}))
             algoParamsBlock.(userAlgoFields{i}) = algoParams.(userAlgoFields{i}); 
         else
             disp('The provided param is not a known param.');
         end
     end
 end
+
+algoParamsBlock = defaultAlgoFieldsFill(algoParamsBlock);
+
 
 algoArgVector = struct2cell(algoParamsBlock);
 gmr = feval(availableGreedyAlgorithms{res},gmr,algoArgVector{:});

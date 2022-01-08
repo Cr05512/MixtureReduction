@@ -1,4 +1,4 @@
-function gmr = ISEOptUnc(gmr,gmh,NOptSteps,optWeights,accThresh)
+function gmr = ISEOptUnc(gmr,gmh,maxiter,tol,optWeights)
 % gmr = ISEOptUnc(gmr,gmh,NOptSteps):
 % - gmr, gmh, two Gaussian Mixtures,
 % - NOptSteps
@@ -8,8 +8,8 @@ function gmr = ISEOptUnc(gmr,gmh,NOptSteps,optWeights,accThresh)
 % reduced mixture by using the builtin Matlab function fminunc.
 
 if nargin < 3
-    NOptSteps = 1000;
-    accThresh = 1e-12;
+    maxiter = 1000;
+    tol = 1e-12;
 end
 
 Nr = numel(gmr);
@@ -26,8 +26,8 @@ x0 = [q;reshape(mur,dr*Nr,1);reshape(L,dr*dr*Nr,1)];
 [wh,muh,Sigmah] = paramsFromMixture(gmh);
 f = @(x) funGradComp(x,wh,muh,Sigmah,Nr,optWeights);
 
-options = optimoptions('fminunc','OptimalityTolerance',accThresh,...
-                       'MaxFunctionEvaluations',NOptSteps,'MaxIterations',NOptSteps,...
+options = optimoptions('fminunc','OptimalityTolerance',tol,...
+                       'MaxFunctionEvaluations',maxiter,'MaxIterations',maxiter,...
                        'Algorithm','trust-region','SpecifyObjectiveGradient',true,'display','none');
 
 x = fminunc(f,x0,options);

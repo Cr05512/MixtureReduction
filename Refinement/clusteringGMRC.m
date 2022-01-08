@@ -1,4 +1,4 @@
-function gmr = clusteringGMRC(gmr,gmh,NSteps)
+function gmr = clusteringGMRC(gmr,gmh,maxiter)
 % gmr = clusteringGMRC(gmr,gmh,costMeas,NSteps):
 % INPUTS:
 % - gmr, gmh, two Gaussian mixture densities,
@@ -9,7 +9,7 @@ function gmr = clusteringGMRC(gmr,gmh,NSteps)
 % Gaussian Mixture Reduction via Clustering, D. Schieferdecker, M.F. Huber
 
 if nargin < 3
-    NSteps = 1;
+    maxiter = 1;
 end
 
 assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element.');
@@ -20,7 +20,7 @@ cost_vector = Inf(1,Nr);
 Jhh = selfLikeness(gmh);
 Rnk = computeAssignMatrix(gmh,gmr,'KLDij');
 
-for k=1:NSteps
+for k=1:maxiter
 
     for i=1:Nh
         for j=1:Nr

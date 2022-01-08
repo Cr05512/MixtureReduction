@@ -30,7 +30,7 @@ Nh = numel(gmh);
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    gmr = DaBarycenter(gmh,alpha,maxiter,tol);
+    gmr = Da1Barycenter(gmh,alpha,maxiter,tol);
     return
 end
 

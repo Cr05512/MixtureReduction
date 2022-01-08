@@ -1,4 +1,4 @@
-function gmr = GMEMRef(gmr, gmh, nSamples, maxiter)
+function gmr = GMEMRef(gmr, gmh, nPoints, maxiter)
 % gmr = GMEMRef(gmr, gmh, nSamples, maxiter):
 % INPUTS:
 % - gmr, initial Gaussian mixture,
@@ -14,11 +14,11 @@ if nargin < 3
     maxiter = 200;
 end
 assert(~isempty(gmr) && ~isempty(gmh),'The Gaussian Mixtures have to contain at least one element.');
-assert(nSamples>0,'The number of samples has to be a non-negative integer.');
+assert(nPoints>0,'The number of samples has to be a non-negative integer.');
 assert(maxiter>0,'The number of iterations has to be non-negative.');
-assert(nSamples>numel(gmr),'The number of samples has to be greater than the number of starting componts.');
+assert(nPoints>numel(gmr),'The number of samples has to be greater than the number of starting componts.');
 
-samples = GMSamples(gmh,nSamples);
+samples = GMSamples(gmh,nPoints);
 
 gmr = EM(samples,numel(gmr),maxiter,gmr);
 

@@ -1,4 +1,4 @@
-function [gmr,Rnk] = GMKMeansRef(gmr,gmh,costMeas,NKMeansSteps)
+function [gmr,Rnk] = GMKMeansRef(gmr,gmh,costMeas,maxiter)
 % [gmr,Rnk] = GMKMeansRef(gmr,gmh,costMeas,NKMeansSteps):
 % INPUTS:
 % - gmr, gmh, respectively the reduced and original mixtures,
@@ -11,16 +11,16 @@ function [gmr,Rnk] = GMKMeansRef(gmr,gmh,costMeas,NKMeansSteps)
 % order to improve the corresponding parameters.
 if nargin < 3
     costMeas = 'KLDBij';
-    NKMeansSteps = 100;
+    maxiter = 100;
 elseif nargin < 4
-    NKMeansSteps = 100;
+    maxiter = 100;
 end
 assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element.');
-assert(NKMeansSteps>0,'The number of kmeans iterations has to be greater than zero.');
+assert(maxiter>0,'The number of kmeans iterations has to be greater than zero.');
 
 J = Inf;
 JPrev = J;
-for k=1:NKMeansSteps
+for k=1:maxiter
    
     [Rnk, C] = computeAssignMatrix(gmh,gmr,costMeas);
     

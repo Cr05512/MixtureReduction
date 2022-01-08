@@ -12,9 +12,9 @@ elseif nargin < 4
 end
 
 % if alpha==0
-%     Dabar = RKLDBarycenter(comps);
+    Dabar = RKLDBarycenter(comps);
 % elseif alpha==1
-     Dabar = KLDBarycenter(comps);
+%     Dabar = KLDBarycenter(comps);
 % else
 %     [~,idx] = max([comps.w]);
 %     Dabar = comps(idx);

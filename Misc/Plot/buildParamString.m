@@ -68,7 +68,15 @@ if ~isempty(refs)
             fieldNames = fieldnames(refParams{k});
             numFields = numel(fieldNames);
             for m=1:numFields
-                strRef = strcat([strRef,' ',fieldNames{m},'=',num2str(refParams{k}.(fieldNames{m})),',']);
+                fieldN = refParams{k}.(fieldNames{m});
+                if ~isstruct(fieldN)
+                    strRef = strcat([strRef,' ',fieldNames{m},'=',num2str(fieldN),',']);
+                else
+                    subfieldNames = fieldnames(fieldN);
+                    for n=1:length(subfieldNames)
+                        strRef = strcat([strRef,' ',subfieldNames{n},'=',num2str(fieldN.(subfieldNames{n})),',']);
+                    end
+                end
             end
 
         else

@@ -1,4 +1,4 @@
-function gmr = ISEOptCon(gmr,gmh,NOptSteps,accThresh)
+function gmr = ISEOptCon(gmr,gmh,maxiter,tol)
 % gmr = ISEOptCon(gmr,gmh,NOptSteps,optWeights,accThresh):
 % - gmr, gmh, two Gaussian Mixtures,
 % - NOptSteps, maximum number of optimization steps,
@@ -7,8 +7,8 @@ function gmr = ISEOptCon(gmr,gmh,NOptSteps,accThresh)
 % reduced mixture by using the builtin Matlab function fmincon.
 
 if nargin < 3
-    NOptSteps = 1000;
-    accThresh = 1e-12;
+    maxiter = 1000;
+    tol = 1e-12;
 end
 
 Nr = numel(gmr);
@@ -31,8 +31,8 @@ B = zeros(length(x0),1);
 Aeq = [ones(1,Nr),zeros(1,Nr*dr + dr*dr*Nr)];
 Beq = sum(wr);
 
-options = optimoptions('fmincon','OptimalityTolerance',accThresh,...
-                       'MaxFunctionEvaluations',NOptSteps,'MaxIterations',NOptSteps,...
+options = optimoptions('fmincon','OptimalityTolerance',tol,...
+                       'MaxFunctionEvaluations',maxiter,'MaxIterations',maxiter,...
                        'Algorithm','interior-point','SpecifyObjectiveGradient',true,'display','none');
 
 x = fmincon(f,x0,A,B,Aeq,Beq,[],[],[],options);
