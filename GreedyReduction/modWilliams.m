@@ -1,4 +1,4 @@
-function gmr = modWilliams(gmh, Nr)
+function gmr = modWilliams(gmh, Nr, maxiter, tol)
 % gmr = modWilliams(gmh, Nr):
 % INPUTS:
 % - gmh, a Gaussian mixture,
@@ -12,6 +12,12 @@ function gmr = modWilliams(gmh, Nr)
 assert(~isempty(gmh),'The mixture has to contain at least one element.');
 assert(Nr>0,'The number of reduced components has to be greater than zero.');
 
+if nargin < 3
+    maxiter = 200;
+    tol = 1e-12;
+elseif nargin < 4
+    tol = 1e-12;
+end
 
 if numel(gmh)<Nr
     gmr = gmh;
@@ -22,7 +28,7 @@ Nh = numel(gmh);
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    gmr = ISEBSGA(gmh);
+    gmr = ISEBarycenter(gmh,maxiter,tol);
     return
 end
 
@@ -52,7 +58,7 @@ while numel(gmr)>Nr
 
                 else %Merging
                     
-                    bar = ISEBSGA(gmr([i;j]));
+                    bar = ISEBarycenter(gmr([i;j]),maxiter,tol);
 
                     %CrossLikeness
                     newColhr = matrixCrossLikeness(gmr,bar);
@@ -88,7 +94,7 @@ while numel(gmr)>Nr
         gmr = renormalizeWeights(gmr);
         
     else
-        gmr(idxs(1)) = ISEBSGA(gmr([idxs(1);idxs(2)]));
+        gmr(idxs(1)) = ISEBarycenter(gmr([idxs(1);idxs(2)]),maxiter,tol);
         gmr(idxs(2)) = [];
     end
 end

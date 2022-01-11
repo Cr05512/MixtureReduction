@@ -1,5 +1,4 @@
-function CSDBar = CSDBarycenterGD(gmh,NOptSteps,accThresh)
-
+function IB = ISEBarycenterGD(gmh)
 
 if nargin < 3
     NOptSteps = 1000;
@@ -8,7 +7,8 @@ end
 
 d = size(gmh(1).mu,1);
 
-gmr = KLDBarycenter(gmh);
+
+gmr = RKLDBarycenter(gmh);
 
 [~,mur,Sigmar] = paramsFromMixture(gmr);
 L = chol(Sigmar,'lower');
@@ -28,7 +28,7 @@ mur = x(1:d);
 L = reshape(x(d+1:end),[d d]);
 Sigmar = L*L';
 
-CSDBar = mixtureFromParams(wr,mur,Sigmar);
+IB = mixtureFromParams(wr,mur,Sigmar);
 
 end
 
@@ -41,11 +41,13 @@ function [f,grad] = funGradComp(x,gmh)
     Sigmar = L*L';
     
     gmr = mixtureFromParams(sum([gmh.w]),mur,Sigmar);
-    f = evalBarycenterFun(gmh,gmr,'CSDij');
+    f = evalBarycenterFun(gmh,gmr,'L2ij');
     
-    [Dfmu,DfL] = partialCSDBar(mur,L,[gmh.w]',[gmh.mu],cat(3,gmh.Sigma));
+    [Dfmu,DfL] = partialISEBar(mur,L,[gmh.w]',[gmh.mu],cat(3,gmh.Sigma));
     
     grad = [Dfmu; reshape(DfL,dr*dr,1)];
 
 
 end
+
+

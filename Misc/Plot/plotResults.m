@@ -22,7 +22,10 @@ end
 
 numExperiments = numel(experiments);
 
-%Check if the test is the same for different experiments
+%Evaluate plot grid size
+nRows = round(sqrt(numExperiments));
+nCols = ceil(sqrt(numExperiments));
+dim1Counter = 0;
 
 for i=1:numExperiments
     
@@ -31,13 +34,15 @@ for i=1:numExperiments
         str = buildParamString(experiments(i),gm_vector{i},gmr_vector{i},time_vector(i),globalMeas);
         %str = {''};
         if experiments(i).getTestParams.d == 1 && showPlot==1
-            figure(i)
+            dim1Counter = dim1Counter + 1;
+            figure(1)
             
-            sgt = sgtitle(str,'interpreter','latex');
-            set(sgt, 'horizontalAlignment', 'left')
+%             sgt = sgtitle(str,'interpreter','latex');
+%             set(sgt, 'horizontalAlignment', 'left')
+
        
             X = genAxisPoints(gm_vector{i},nPoints);
-            subplot(1,1,1);
+            subplot(nRows,nCols,dim1Counter);
             plotGM1D(gm_vector{i},X,'k'); hold on
             plotGM1D(gmr_vector{i},X,'r'); hold on
             xlim([min(X) max(X)])
@@ -52,8 +57,9 @@ for i=1:numExperiments
             if ~isempty(experiments(i).getRef)
                 legendStr = strcat(legendStr,'+',experiments(i).getRef);
             end
-            
             legend('Original',legendStr,'FontSize',12,'interpreter','latex');
+            st = subtitle(str,'Interpreter','latex');
+            set(st,'verticalAlignment','baseline');
             
         elseif experiments(i).getTestParams.d == 2 && showPlot==1
             figure(i)

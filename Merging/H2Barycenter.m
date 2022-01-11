@@ -1,51 +1,66 @@
-function H2Bar = H2Barycenter(gmh,NOptSteps,accThresh)
+function bar = H2Barycenter(comps,maxiter,tol)
 
-
-if nargin < 3
-    NOptSteps = 1000;
-    accThresh = 1e-12;
+if nargin < 2
+    maxiter = 100;
+    tol = 1e-9;
+elseif nargin < 3
+    tol = 1e-9;
 end
 
-d = size(gmh(1).mu,1);
+% if alpha==0
+%     Dabar = RKLDBarycenter(comps);
+% elseif alpha==1
+     bar = KLDBarycenter(comps);
+% else
+%     [~,idx] = max([comps.w]);
+%     Dabar = comps(idx);
+% end
 
-gmr = KLDBarycenter(gmh);
+barnew = bar;
 
-[~,mur,Sigmar] = paramsFromMixture(gmr);
-L = chol(Sigmar,'lower');
+n = length(comps);
+d = size(comps(1).mu,1);
 
-x0 = [mur;reshape(L,d*d,1)];
-f = @(x) funGradComp(x,gmh);
+wVec = zeros(n,1);
+muVec = zeros(d,n);
+SigmaVec = zeros(d,d,n);
+[wi,mui,Sigmai] = paramsFromMixture(comps);
+Sigmaiinv = zeros(d,d,n);
 
-options = optimoptions('fminunc','OptimalityTolerance',accThresh,...
-                       'MaxFunctionEvaluations',NOptSteps,'MaxIterations',NOptSteps,...
-                       'Algorithm','quasi-newton','SpecifyObjectiveGradient',true,'display','none');
+for i=1:n
+    Sigmaiinv(:,:,i) = eye(d)/Sigmai(:,:,i);
+end
 
-x = fminunc(f,x0,options);
-
-
-wr = sum([gmh.w]);
-mur = x(1:d);
-L = reshape(x(d+1:end),[d d]);
-Sigmar = L*L';
-
-H2Bar = mixtureFromParams(wr,mur,Sigmar);
+for k=1:maxiter
+    Sigmainv = eye(d)/bar.Sigma;
+    for i=1:n
+        SigmaVec(:,:,i) = 2*eye(d)/((Sigmaiinv(:,:,i) + Sigmainv));
+        muVec(:,i) = 0.5*SigmaVec(:,:,i)*(Sigmaiinv(:,:,i)*mui(:,i) + Sigmainv*bar.mu);
+        gamma = BCij(comps(i),bar);
+        wVec(i) = wi(i)*gamma;
+    end
+    
+    wVec = wVec./sum(wVec);
+    
+    mu = sum(wVec'.*muVec,2);
+    
+    Sigma = zeros(d,d);
+    for i=1:n
+        diff = muVec(:,i) - mu;
+        Sigma = Sigma + wVec(i)*(SigmaVec(:,:,i) + diff*diff');
+    end
+    barnew.mu = mu;
+    barnew.Sigma = Sigma;
+    
+    if mod(k,5)==1
+        if H2ij(barnew,bar)<tol
+            bar = barnew; 
+            break;
+        end
+    end
+    
+    bar=barnew;
+end
 
 end
 
-function [f,grad] = funGradComp(x,gmh)
-    dr = size(gmh(1).mu,1);
-   
-    mur = x(1:dr);
-    L = reshape(x(dr+1:end),[dr dr]);
-    
-    Sigmar = L*L';
-    
-    gmr = mixtureFromParams(sum([gmh.w]),mur,Sigmar);
-    f = evalBarycenterFun(gmh,gmr,'H2ij');
-    
-    [Dfmu,DfL] = partialH2Bar(mur,L,[gmh.w]',[gmh.mu],cat(3,gmh.Sigma));
-    
-    grad = [Dfmu; reshape(DfL,dr*dr,1)];
-
-
-end

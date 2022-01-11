@@ -2,9 +2,9 @@
 clear
 close all
 %%
-Nh = 30;
+Nh = 25;
 Nr = 5;
-numMCRuns = 500;
+numMCRuns = 100;
 d = 1;
 alpha = randi(Nh)/(d^2);
 beta = 2*rand();
@@ -14,27 +14,27 @@ test = 'random';
 
 
 exp1 = Experiment('',           {struct('rho',0.7),struct('k',2)},...
-                  'Runnalls',        struct('Nr',Nr,'seq',0),...
-                  'ERCTDRef',           {struct('costMeas','KLDij','lambda',0),struct()},...
+                  'IL2MRA',        struct('Nr',Nr,'maxiter',150,'tol',1e-12),...
+                  '',           {struct('costMeas','KLDij','lambda',0),struct()},...
                   test,          struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));              
 
               
 exp2 = Experiment('',           {},...
-                  'Runnalls',       struct('Nr',Nr,'costMeas','KLDij'),...
+                  'Williams',       struct('Nr',Nr),...
                   '',           {struct('costMeas','KLDij','lambda',0),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha,'beta',beta,'d',d));
 
 
 exp3 = Experiment('',           {},...
-                  'Runnalls',       struct('Nr',Nr,'costMeas','W2ij'),...
+                  'modWilliams',       struct('Nr',Nr,'maxiter',150,'tol',1e-12),...
                   '',  {struct('costMeas','KLDij','lambda',0.0),struct()},...
                   test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));
               
-experiments = [exp1;exp2];
+experiments = [exp1;exp2;exp3];
 numExperiments = numel(experiments);
 
 
-globalMeas = {struct('globMeas','KLD12','nPoints',300)}';
+globalMeas = {struct('globMeas','CTD','costMeas','L2ij'),struct('globMeas','ISE')}';
 
 
 perfMatrix = zeros(numExperiments,numMCRuns,numel(globalMeas)+1);
