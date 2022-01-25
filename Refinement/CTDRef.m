@@ -8,7 +8,7 @@ function [gmr,C,pi_star] = CTDRef(gmr,gmh,costMeas,maxiter,varargin)
 % - gmr, the refined mixture according to the CTDGMRA algorithm.
 
 if nargin < 3
-    costMeas = 'KLDij';
+    costMeas = 'FKLDij';
     maxiter = 100;
 elseif nargin < 4
     maxiter = 100;

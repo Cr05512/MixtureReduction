@@ -15,7 +15,7 @@ for i=1:n
             if ~strcmpi(fieldList{j},'varargin')
             
                 if strcmpi(fieldList{j},'costMeas')
-                    refParamsBlock{i}.(fieldList{j}) = 'KLDij';
+                    refParamsBlock{i}.(fieldList{j}) = 'FKLDij';
                 elseif strcmpi(fieldList{j},'maxiter')
                     refParamsBlock{i}.(fieldList{j}) = 100;
                 elseif strcmpi(fieldList{j},'I')

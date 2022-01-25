@@ -29,11 +29,12 @@ end
 
 res = feval(meas,gmh,gmr,varargin{:});
 
+
 %MISC
 
-if strcmpi(meas,'CTD')
+if any(strcmpi({'CTD','RCTD'},meas))
     meas = strcat([meas,'-',varargin{1}]);
-elseif any(strcmpi({'BC12','BD12','CrossEntropy12','H112','H212','ISMCKLD','ISUTKLD','KLD12','MCKLD','RKLD12','VLBEL'},meas))
+elseif any(strcmpi({'BC12','BD12','CrossEntropy12','H112','H212','ISMCKLD','FKLD12','MCKLD','RKLD12','sampleReducedBIC','VLBEL'},meas))
     meas = strcat([meas,'-',num2str(varargin{1})]);
 end
 

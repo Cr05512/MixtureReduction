@@ -16,8 +16,8 @@ d = size(mui,1);
 Sigmaiinv = eye(d)/Sigmai;
 Sigmajinv = eye(d)/Sigmaj;
 
-%sKLD = KLDij(pdfi,pdfj) + KLDij(pdfj,pdfi);
-sKLD = 0.5*(trace(Sigmajinv*Sigmai) + trace(Sigmaiinv*Sigmaj) + diff'*(Sigmaiinv+Sigmajinv)*diff - 2*d);
+%sKLD = 0.5*(KLDij(pdfi,pdfj) + KLDij(pdfj,pdfi));
+sKLD = 0.25*(trace(Sigmajinv*Sigmai) + trace(Sigmaiinv*Sigmaj) + diff'*(Sigmaiinv+Sigmajinv)*diff - 2*d);
 
 end
 

@@ -22,7 +22,7 @@ Nh = numel(gmh);
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    gmr = KLDBarycenter(gmh);
+    gmr = FKLDBarycenter(gmh);
     return
 end
 
@@ -52,7 +52,7 @@ while numel(gmr)>Nr
 
                 else %Merging
                     
-                    bar = KLDBarycenter(gmr([i;j]));
+                    bar = FKLDBarycenter(gmr([i;j]));
 
                     %CrossLikeness
                     newColhr = matrixCrossLikeness(gmr,bar);
@@ -88,7 +88,7 @@ while numel(gmr)>Nr
         gmr = renormalizeWeights(gmr);
         
     else
-        gmr(idxs(1)) = KLDBarycenter(gmr([idxs(1);idxs(2)]));
+        gmr(idxs(1)) = FKLDBarycenter(gmr([idxs(1);idxs(2)]));
         gmr(idxs(2)) = [];
     end
 end

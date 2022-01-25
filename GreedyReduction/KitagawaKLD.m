@@ -22,7 +22,7 @@ Nh = numel(gmh);
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    gmr = KLDBarycenter(gmh);
+    gmr = FKLDBarycenter(gmh);
     return
 end
 
@@ -47,7 +47,7 @@ for k=1:Nh-Nr
     %We then find the action with the lowest KLD bound and we merge the
     %corresponding mixture components
     [i,j] = find(BMatrix == min(BMatrix(BMatrix<Inf)),1);
-    bar = KLDBarycenter(gmr([i,j]));
+    bar = FKLDBarycenter(gmr([i,j]));
     gmr(i) = bar;
     gmr(j) = [];
     pairs(k,:) = [i,j];

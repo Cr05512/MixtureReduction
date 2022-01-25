@@ -1,6 +1,6 @@
 function [mu,Sigma] = getMixtureMoments(gm)
             
-pdf = KLDBarycenter(gm);
+pdf = FKLDBarycenter(gm);
 mu = pdf.mu;
 Sigma = pdf.Sigma;
 end

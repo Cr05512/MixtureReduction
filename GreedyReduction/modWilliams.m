@@ -28,7 +28,7 @@ Nh = numel(gmh);
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    gmr = ISEBarycenter(gmh,maxiter,tol);
+    gmr = L2Barycenter(gmh,maxiter,tol);
     return
 end
 
@@ -58,7 +58,7 @@ while numel(gmr)>Nr
 
                 else %Merging
                     
-                    bar = ISEBarycenter(gmr([i;j]),maxiter,tol);
+                    bar = L2Barycenter(gmr([i;j]),maxiter,tol);
 
                     %CrossLikeness
                     newColhr = matrixCrossLikeness(gmr,bar);
@@ -94,7 +94,7 @@ while numel(gmr)>Nr
         gmr = renormalizeWeights(gmr);
         
     else
-        gmr(idxs(1)) = ISEBarycenter(gmr([idxs(1);idxs(2)]),maxiter,tol);
+        gmr(idxs(1)) = L2Barycenter(gmr([idxs(1);idxs(2)]),maxiter,tol);
         gmr(idxs(2)) = [];
     end
 end

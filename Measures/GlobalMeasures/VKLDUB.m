@@ -11,7 +11,7 @@ nb = numel(wb);
 phiba = wa*wb';
 psiab = phiba;
 
-C = CostMatrix(gmh,gmr,'KLDij');
+C = CostMatrix(gmh,gmr,'FKLDij');
 expC = exp(-C);
 
 for k=1:100

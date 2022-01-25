@@ -1,6 +1,6 @@
-function gm = random(Nh,d,alpha,beta,delta,rngSeed)
+function gm = random(Nh,d,gamma,beta,delta,rngSeed)
     rng(rngSeed)
-    gm = GMGen(Nh,d,alpha,beta,delta);
+    gm = GMGen(Nh,d,gamma,beta,delta);
     
 end
 

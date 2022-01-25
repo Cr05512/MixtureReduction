@@ -2,10 +2,10 @@ function bar = Da1Barycenter(comps,alpha,maxiter,tol)
 
 if nargin < 2
     alpha = 0.5;
-    maxiter = 100;
+    maxiter = 500;
     tol = 1e-12;
 elseif nargin < 3
-    maxiter = 100;
+    maxiter = 500;
     tol = 1e-12;
 elseif nargin < 4
     tol = 1e-12;
@@ -14,13 +14,11 @@ end
 % if alpha==0
 %     Dabar = RKLDBarycenter(comps);
 % elseif alpha==1
-     bar = KLDBarycenter(comps);
+     bar = FKLDBarycenter(comps);
 % else
 %     [~,idx] = max([comps.w]);
 %     Dabar = comps(idx);
 % end
-
-barnew = bar;
 
 n = length(comps);
 d = size(comps(1).mu,1);
@@ -36,6 +34,7 @@ for i=1:n
 end
 
 for k=1:maxiter
+    barOld = bar;
     Sigmainv = eye(d)/bar.Sigma;
     for i=1:n
         SigmaVec(:,:,i) = eye(d)/(alpha*Sigmaiinv(:,:,i) + (1-alpha)*Sigmainv);
@@ -53,17 +52,18 @@ for k=1:maxiter
         diff = muVec(:,i) - mu;
         Sigma = Sigma + wVec(i)*(SigmaVec(:,:,i) + diff*diff');
     end
-    barnew.mu = mu;
-    barnew.Sigma = Sigma;
+    bar.mu = mu;
+    bar.Sigma = Sigma;
     
-    if mod(k,5)==1
-        if alpha1Dij(barnew,bar,alpha)<tol
-            bar = barnew; 
+    if mod(k,10)==1
+        if alpha1Dij(bar,barOld,alpha)<tol
             break;
         end
     end
-    
-    bar=barnew;
+end
+
+if k==maxiter
+    disp('The Da1 FPI algorithm did not converge in the allowed iterations.');
 end
 
 end

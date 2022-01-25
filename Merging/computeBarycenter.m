@@ -10,9 +10,9 @@ switch costMeas
     case 'W2ij'
         bar = W2Barycenter(gmh,varargin{:});
     case 'L2ij'
-        bar = ISEBarycenter(gmh);
+        bar = L2Barycenter(gmh);
     case 'NL2ij'
-        bar = NISEBarycenter(gmh);
+        bar = NL2Barycenter(gmh);
     case 'CSDij'
         bar = CSDBarycenter(gmh,varargin{:});
     case 'TSLij'
@@ -27,10 +27,15 @@ switch costMeas
         bar = Da1Barycenter(gmh,varargin{:});
     case 'alpha2Dij'
         bar = Da2Barycenter(gmh,varargin{:});
+    case 'alphaJDij'
+        bar = alphaJDBarycenter(gmh,varargin{:});
     case 'SKLDij'
         bar = SKLDBarycenter(gmh,varargin{:});
+    case 'FKLDij'
+        bar = FKLDBarycenter(gmh);
     otherwise
-        bar = KLDBarycenter(gmh);
+        disp('Assuming FKLDij as D-measure.')
+        bar = FKLDBarycenter(gmh);
 end
 
 end

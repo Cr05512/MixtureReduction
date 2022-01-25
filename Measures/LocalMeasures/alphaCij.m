@@ -1,5 +1,8 @@
 function dsBC = alphaCij(pdfi,pdfj,alpha)
 
+if nargin < 3
+    alpha = 0.5;
+end
 
 mui = pdfi.mu;
 muj = pdfj.mu;

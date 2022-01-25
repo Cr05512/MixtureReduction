@@ -10,7 +10,7 @@ for i=1:na
     D(i) = mvEntropy(gmh(i));
 end
 hwa = - wa'*log(wa);
-C = CostMatrix(gmh,gmh,'KLDij');
+C = CostMatrix(gmh,gmh,'FKLDij');
 
 expC = exp(-1*C);
 W = zeros(na,na);

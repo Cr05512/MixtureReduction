@@ -12,7 +12,7 @@ function dCUBKLD = CUBKLD(gmh,gmr)
 % NOTE: the positivity property of the KLD holds with this
 % approximation.
 
-C = CostMatrix(gmh,gmr,'KLDij');
+C = CostMatrix(gmh,gmr,'FKLDij');
 dCUBKLD = [gmh.w]*C*[gmr.w]';
 
 

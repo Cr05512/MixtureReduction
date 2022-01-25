@@ -39,7 +39,7 @@ for k=1:maxiter
             psi(i,j) = wr(j)*phi(i,j)/sumPhibarows(j);
         end
     end
-    C = CostMatrix(gmh,gmr,'KLDij');
+    C = CostMatrix(gmh,gmr,'FKLDij');
     expC = exp(-C);
     for i=1:Nh
         for j=1:Nr

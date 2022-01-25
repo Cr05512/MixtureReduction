@@ -15,7 +15,7 @@ Nh = numel(gmh);
 pi = zeros(Nh,1);
 
 logWr = log([gmr.w]');
-C = CostMatrix(gmh,gmr,'KLDij');
+C = CostMatrix(gmh,gmr,'FKLDij');
 
 for i=1:Nh
     [~,pi(i)] = min(C(i,:)-logWr');

@@ -13,7 +13,7 @@ if nargin < 3
 end
 
 if alpha==1
-    dCalpha = KLDij(pdfi,pdfj);
+    dCalpha = FKLDij(pdfi,pdfj);
 elseif alpha==0
     dCalpha = RKLDij(pdfi,pdfj);
 else

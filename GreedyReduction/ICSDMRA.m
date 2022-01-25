@@ -58,7 +58,7 @@ while(numel(gmr)-Nr>0)
     CSMatrix(:,j) = [];
     upd_ind = setdiff(1:numel(gmr),i);
     for j=upd_ind
-        newBound = CSDBij(pdf_merged,gmr(j));
+        newBound = CSDBij(pdf_merged,gmr(j),maxiter,tol);
         if i<j
             CSMatrix(i,j) = newBound;
         else

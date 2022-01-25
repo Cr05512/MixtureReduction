@@ -27,7 +27,7 @@ Nh = numel(gmh);
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    gmr = SKLDBarycenter(gmh);
+    gmr = SKLDBarycenter(gmh,maxiter,tol);
     return
 end
 
@@ -41,7 +41,7 @@ minCosts = zeros(Nh-Nr,1);
 for i=1:Nh
     for j=1:Nh
         if(i<j)
-            BMatrix(i,j) = SKLDBij(gmr(i),gmr(j));
+            BMatrix(i,j) = SKLDBij(gmr(i),gmr(j),maxiter,tol);
         end
     end
 end
@@ -52,7 +52,7 @@ for k=1:Nh-Nr
     %We then find the action with the lowest KLD bound and we merge the
     %corresponding mixture components
     [i,j] = find(BMatrix == min(BMatrix(BMatrix<Inf)),1);
-    bar = SKLDBarycenter(gmr([i,j]));
+    bar = SKLDBarycenter(gmr([i,j]),maxiter,tol);
     gmr(i) = bar;
     gmr(j) = [];
     pairs(k,:) = [i,j];
@@ -61,7 +61,7 @@ for k=1:Nh-Nr
     BMatrix(:,j) = [];
     upd_ind = setdiff(1:numel(gmr),i);
     for j=upd_ind
-        newBound = SKLDBij(bar,gmr(j));
+        newBound = SKLDBij(bar,gmr(j),maxiter,tol);
         if i<j
             BMatrix(i,j) = newBound;
         else

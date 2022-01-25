@@ -1,4 +1,4 @@
-function B = SKLDBij(pdfi, pdfj)
+function B = SKLDBij(pdfi, pdfj, maxiter, tol)
 % B = KLDBij(pdf1,pdf2):
 % INPUTS:
 % - pdf1, pdf2, two Gaussian densities.
@@ -8,7 +8,15 @@ function B = SKLDBij(pdfi, pdfj)
 % This function computes the upper bound proposed by A. R. Runnalls "Kullback-Leibler Approach to Gaussian Mixture
 % Reduction". IEEE Trans. Aerosp. Electron. Syst., vol. 43(3):989--999, 2007
 
-bar = SKLDBarycenter([pdfi;pdfj]);
+if nargin < 3
+    maxiter = 200;
+    tol = 1e-12;
+elseif nargin < 4
+    tol = 1e-12;
+end
+
+
+bar = SKLDBarycenter([pdfi;pdfj], maxiter, tol);
     
 B = pdfi.w*SKLDij(pdfi,bar) + pdfj.w*SKLDij(pdfj,bar);
 

@@ -35,7 +35,7 @@ if(Nh==Nr)
     gmr = gmh;
     return
 elseif(Nr==1)
-    gmr = KLDBarycenter(gmh);
+    gmr = FKLDBarycenter(gmh);
     return
 end
 

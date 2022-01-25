@@ -1,16 +1,15 @@
-function NIB = TSLBSGA(gmh,NOptSteps,accThresh)
+function NIB = TSLBSGA(gmh,maxiter,tol)
 
 if nargin < 2
-    NOptSteps = 100;
-    accThresh = 1e-12;
+    maxiter = 100;
+    tol = 1e-12;
 elseif nargin < 3
-    accThresh = 1e-12;
+    tol = 1e-12;
 end
 
-[~,ind] = max([gmh.w]);
-gmr = struct('w',sum([gmh.w]),'mu',gmh(ind).mu,'Sigma',gmh(ind).Sigma);
+gmr = RKLDBarycenter(gmh);
 
-NIB = refineGaussMix('TSLOptCon',gmr,gmh,struct('NOptSteps',NOptSteps,'accThresh',accThresh));
+NIB = refineGaussMix('TSLOptCon',gmr,gmh,struct('maxiter',maxiter,'tol',tol));
 
 end
 

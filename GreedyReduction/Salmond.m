@@ -19,7 +19,7 @@ Nh = numel(gmh);
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    gmr = KLDBarycenter(gmh);
+    gmr = FKLDBarycenter(gmh);
     return
 end
 
@@ -40,7 +40,7 @@ end
 while(numel(gmr)-Nr>0)
 
     [i,j] = find(MMatrix == min(MMatrix(MMatrix<Inf)),1);
-    pdf_merged = KLDBarycenter(gmr([i,j]));
+    pdf_merged = FKLDBarycenter(gmr([i,j]));
     gmr(i) = pdf_merged;
     gmr(j) = [];
     

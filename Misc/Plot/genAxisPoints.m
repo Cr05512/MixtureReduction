@@ -12,8 +12,8 @@ assert(~isempty(gm),'The Gaussian Mixture has to be non-empty.');
 
 %At first we get an estimate of the GM center offset
 [offset,P] = getMixtureMoments(gm);
-errorEll = errorEllipses(offset,P,0.9999);
-alpha = max(max(abs(errorEll)));
+errorEll = errorEllipses(offset,P,0.9995);
+gamma = max(max(abs(errorEll)));
 d = size(gm(1).mu,1);
 mult = 1/sqrt(d);
 
@@ -21,12 +21,12 @@ if nargin < 2
     nPoints = 1000/(d^2);
 end
 if d==1
-    X = linspace(-mult*alpha+offset, mult*alpha+offset,nPoints);
+    X = linspace(-mult*gamma+offset, mult*gamma+offset,nPoints);
     varargout{1} = X;
     %X = linspace(-1.5*(alpha + center), 1.5*(center + alpha), params.nPoints);
 elseif d==2
-    x1 = linspace(-mult*alpha + offset(1), mult*alpha + offset(1),nPoints);
-    x2 = linspace(-mult*alpha + offset(2), mult*alpha + offset(2),nPoints);
+    x1 = linspace(-mult*gamma + offset(1), mult*gamma + offset(1),nPoints);
+    x2 = linspace(-mult*gamma + offset(2), mult*gamma + offset(2),nPoints);
     [X1,X2] = meshgrid(x1,x2);
     X = [X1(:) X2(:)];
     varargout{1} = X;

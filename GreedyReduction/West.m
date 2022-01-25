@@ -45,7 +45,7 @@ elseif(Nr==1)
     if strcmpi(costMeas,'W2ij')
         gmr = W2Barycenter(gmh,100);
     else
-        gmr = KLDBarycenter(gmh);
+        gmr = FKLDBarycenter(gmh);
     end
     return
 end
@@ -78,7 +78,7 @@ while numel(gmr)-Nr>0
     dist_bar = dist(dist<gamma);
     if ~isempty(dist_bar)
         j = find(dist == min(dist_bar),1);
-        pdf_merged = KLDBarycenter(gmr([i,j]));
+        pdf_merged = FKLDBarycenter(gmr([i,j]));
         gmr(i) = pdf_merged;
         gmr(j) = [];
     elseif isempty(dist_bar) && numel(gmr)>Nr

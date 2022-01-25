@@ -12,7 +12,7 @@ varargout = cell(1,nargout(test));
 if strcmpi(test,'random')
     testParamsBlock.('Nh') = 20;
     testParamsBlock.('d') = 1;
-    testParamsBlock.('alpha') = 5;
+    testParamsBlock.('gamma') = 5;
     testParamsBlock.('beta') = 0.09;
     testParamsBlock.('delta') = 0;
     testParamsBlock.('rngSeed') = randi(100000);

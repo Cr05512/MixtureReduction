@@ -2,17 +2,17 @@ function Dabar = Da2Barycenter(comps,alpha,maxiter,tol)
 
 if nargin < 2
     alpha = 0.5;
-    maxiter = 150;
-    tol = 1e-12;
+    maxiter = 500;
+    tol = 1e-09;
 elseif nargin < 3
-    maxiter = 150;
-    tol = 1e-12;
+    maxiter = 500;
+    tol = 1e-09;
 elseif nargin < 4
-    tol = 1e-12;
+    tol = 1e-09;
 end
 
 % if alpha==0
-    Dabar = KLDBarycenter(comps);
+    bar = FKLDBarycenter(comps);
 % elseif alpha==1
 %     Dabar = KLDBarycenter(comps);
 % else
@@ -34,10 +34,11 @@ for i=1:n
 end
 
 for k=1:maxiter
-    Sigmainv = eye(d)/Dabar.Sigma;
+    barOld = bar
+    Sigmainv = eye(d)/bar.Sigma;
     for i=1:n
         SigmaVec(:,:,i) = eye(d)/(alpha*Sigmaiinv(:,:,i) + (1-alpha)*Sigmainv);
-        muVec(:,i) = SigmaVec(:,:,i)*(alpha*Sigmaiinv(:,:,i)*mui(:,i) + (1-alpha)*Sigmainv*Dabar.mu);
+        muVec(:,i) = SigmaVec(:,:,i)*(alpha*Sigmaiinv(:,:,i)*mui(:,i) + (1-alpha)*Sigmainv*bar.mu);
     end
     
     
@@ -51,16 +52,18 @@ for k=1:maxiter
     
     Sigma = Sigma/wiSum;
 
-    Dabarnew = mixtureFromParams(wiSum,mu,Sigma);
+    bar.mu = mu;
+    bar.Sigma = Sigma;
     
-   if mod(k,5)==1
-        if alpha2Dij(Dabarnew,Dabar)<tol
-            Dabar=Dabarnew;
+   if mod(k,10)==1
+        if alpha2Dij(bar,barOld,alpha)<tol
             break;
         end
-    end
-    
-    Dabar=Dabarnew;
+   end
+end
+
+if k==maxiter
+    disp('The Da2 FPI algorithm did not converge in the allowed iterations.');
 end
 
 end

@@ -4,7 +4,7 @@ na = numel(gmh);
 nb = numel(gmr);
 [wa,mua,Sigmaa] = paramsFromMixture(gmh);
 wb = [gmr.w]';
-C = CostMatrix(gmh,gmr,'KLDij');
+C = CostMatrix(gmh,gmr,'FKLDij');
 
 expC = exp(-1*C);
 W = zeros(na,nb);

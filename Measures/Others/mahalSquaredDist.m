@@ -9,7 +9,7 @@ function ds = mahalSquaredDist(x,mu,P)
 % This function computes the squared Mahalanobis distance between a point x
 % and a set of points characterized by a mean mu and a covariance P.
 
-ds = (x-mu)' * inv(P) * (x-mu);
+ds = (x-mu)'*(P\(x-mu));
 
 end
 

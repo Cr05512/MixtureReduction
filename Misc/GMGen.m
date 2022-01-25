@@ -1,9 +1,9 @@
-function gm = GMGen(N,d,alpha,beta,delta)
+function gm = GMGen(N,d,gamma,beta,delta)
 % gm = GMGen(N,n,alpha,beta,delta):
 % INPUTS:
 % - N, number of desired components in the mixture (scalar),
 % - d, state dimension (scalar),
-% - alpha, tuning parameter which accounts for the spread of the means.
+% - gamma, tuning parameter which accounts for the spread of the means.
 %   This parameter tunes the boundaries of the uniform distribution used to
 %   generate the means randomly (scalar),
 % - beta, tuning parameter which accounts for the average covariance of the
@@ -23,11 +23,11 @@ function gm = GMGen(N,d,alpha,beta,delta)
 
 if nargin < 2
     d = 1;
-    alpha = N/2;
+    gamma = N/2;
     beta = 0.09;
     delta = zeros(d,1);
 elseif nargin < 3
-    alpha = N/2;
+    gamma = N/2;
     beta = 0.09;
     delta = zeros(d,1);
 elseif nargin < 4
@@ -39,13 +39,13 @@ end
 
 assert(N>0 && floor(N)==N,'The mixture has to contain at least one element.');
 assert(d>0 && floor(d)==d,'The state dimension has to be a positive integer.');
-assert(alpha>0 && beta>0,'The parameters alpha and beta have to be greater than zero.');
+assert(gamma>0 && beta>0,'The parameters alpha and beta have to be greater than zero.');
 
 w = 0.05 + 0.45*rand(N,1);
 w_bar = w./sum(w);
 
 %Generate means
-mu = -alpha*ones(d,N) + alpha*2*rand(d,N) + delta;
+mu = -gamma*ones(d,N) + gamma*2*rand(d,N) + delta;
 %mu = zeros(2,1);
 
 %Generate Symmetric Positive Definite Covariance matrices

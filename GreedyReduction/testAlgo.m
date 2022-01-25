@@ -12,10 +12,10 @@ for k=1:Nh-Nr
             if i<j
                 gmr_temp = gmr;
 
-                gmr_temp(i) = KLDBarycenter(gmr([i;j]));
+                gmr_temp(i) = FKLDBarycenter(gmr([i;j]));
                 gmr_temp(j) = [];
                 
-                KBMatrix(i,j) = CTD(gmh,gmr_temp,'KLDij');
+                KBMatrix(i,j) = CTD(gmh,gmr_temp,'FKLDij');
 
                 
             end
@@ -23,7 +23,7 @@ for k=1:Nh-Nr
     end
     
     [i,j] = find(KBMatrix == min(KBMatrix(KBMatrix<Inf)),1);
-    bar = KLDBarycenter(gmr([i,j]));
+    bar = FKLDBarycenter(gmr([i,j]));
     gmr(i) = bar;
     gmr(j) = [];
     KBMatrix(j,:) = [];

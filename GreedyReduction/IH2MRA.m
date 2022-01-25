@@ -1,4 +1,4 @@
-function gmr = IH2MRA(gmh, Nr)
+function gmr = IH2MRA(gmh, Nr, maxiter, tol)
 % gmr = IH2MRA(gmh, Nr):
 % INPUTS:
 % - gmh, a Gaussian mixture to be reduced,
@@ -8,7 +8,12 @@ function gmr = IH2MRA(gmh, Nr)
 assert(~isempty(gmh),'The mixture has to contain at least one element.');
 assert(Nr>0,'The number of reduced components has to be greater than zero.');
 
-
+if nargin < 3
+    maxiter = 500;
+    tol = 1e-12;
+elseif nargin < 4
+    tol = 1e-12;
+end
 
 if numel(gmh)<Nr
     gmr = gmh;
@@ -19,7 +24,7 @@ Nh = numel(gmh);
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    gmr = H2Barycenter(gmh);
+    gmr = H2Barycenter(gmh,maxiter,tol);
     return
 end
 
@@ -31,7 +36,7 @@ H2Matrix = Inf(Nh,Nh);
 for i=1:Nh
     for j=1:Nh
         if(i<j)
-            H2Matrix(i,j) = H2Bij(gmr(i),gmr(j));
+            H2Matrix(i,j) = H2Bij(gmr(i),gmr(j),maxiter,tol);
         end
     end
 end
@@ -42,14 +47,14 @@ while(numel(gmr)-Nr>0)
     %We then find the action with the lowest KLD bound and we merge the
     %corresponding mixture components
     [i,j] = find(H2Matrix == min(H2Matrix(H2Matrix<Inf)),1);
-    pdf_merged = H2Barycenter(gmr([i,j]));
+    pdf_merged = H2Barycenter(gmr([i,j]),maxiter,tol);
     gmr(i) = pdf_merged;
     gmr(j) = [];
     H2Matrix(j,:) = [];
     H2Matrix(:,j) = [];
     upd_ind = setdiff(1:numel(gmr),i);
     for j=upd_ind
-        newBound = H2Bij(pdf_merged,gmr(j));
+        newBound = H2Bij(pdf_merged,gmr(j),maxiter,tol);
         if i<j
             H2Matrix(i,j) = newBound;
         else

@@ -34,7 +34,7 @@ txt2 = '\leftarrow D_{FKL}';
 text(0,DaVal(1),txt1,'FontSize',24); hold on
 text(1,DaVal(end),txt2,'FontSize',24); hold on
 scatter(0,RKLDij(g1,g2),100,'m*','LineWidth',4);
-scatter(1,KLDij(g1,g2),100,'r*','LineWidth',4);
+scatter(1,FKLDij(g1,g2),100,'r*','LineWidth',4);
 [minVal,minIdx] = min(DaVal);
 % txtmin = horzcat('$\leftarrow \alpha^*=$',num2str(alpha(minIdx)),', $D_{\alpha}^*=$',num2str(minVal));
 % text(alpha(minIdx),minVal,txtmin,'FontSize',24,'Interpreter','latex');

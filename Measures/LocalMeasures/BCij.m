@@ -6,5 +6,5 @@ function CBhatt = BCij(pdfi,pdfj)
 % - CBhatt, the Bhattacharyya coefficient value (scalar).
 % This function implements the Bhattacharyya coefficient computation for two Gaussian densities.
 
-CBhatt = exp(-BDij(pdfi,pdfj));
+CBhatt = alphaCij(pdfi,pdfj,0.5);
 end

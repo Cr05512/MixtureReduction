@@ -1,8 +1,15 @@
-function CSDB = CSDBSGA(gmh)
+function CSDB = CSDBSGA(gmh,maxiter,tol)
 
-gmr = KLDBarycenter(gmh);
+if nargin < 2
+    maxiter = 100;
+    tol = 1e-9;
+elseif nargin < 3
+    tol = 1e-9;
+end
 
-CSDB = refineGaussMix('CSDOptCon',gmr,gmh,struct('NOptSteps',200,'accThresh',1e-12));
+gmr = RKLDBarycenter(gmh);
+
+CSDB = refineGaussMix('CSDOptCon',gmr,gmh,struct('maxiter',maxiter,'tol',tol));
 
 end
 

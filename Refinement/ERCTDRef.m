@@ -12,7 +12,7 @@ function [gmr,C,pi_star] = ERCTDRef(gmr,gmh,costMeas,lambda,maxiter,varargin)
 % Q. Zhang and J. Chen. "A unified framework for gaussian mixture reduction
 % with  composite  transportation  distance".arXiv:2002.08410v1  [stat.ML.],2020.
 if nargin < 3
-    costMeas = 'KLDij';
+    costMeas = 'FKLDij';
     lambda = 0.1;
     maxiter = 100;
 elseif nargin < 4

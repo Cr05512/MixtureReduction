@@ -10,7 +10,7 @@ for j=1:length(fieldList)
         if ~strcmpi(fieldList{j},'varargin')
 
             if strcmpi(fieldList{j},'costMeas')
-                algoParamsBlock.(fieldList{j}) = 'KLDij';
+                algoParamsBlock.(fieldList{j}) = 'FKLDij';
             elseif strcmpi(fieldList{j},'maxiter')
                 algoParamsBlock.(fieldList{j}) = 100;
             elseif strcmpi(fieldList{j},'tol')
@@ -23,6 +23,8 @@ for j=1:length(fieldList)
                 algoParamsBlock.(fieldList{j}) = 1;
             elseif strcmpi(fieldList{j},'gamma')
                 algoParamsBlock.(fieldList{j}) = Inf;
+            elseif strcmpi(fieldList{j},'algo')
+                algoParamsBlock.(fieldList{j}) = 1;
             end
 
 

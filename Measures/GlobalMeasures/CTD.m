@@ -12,7 +12,7 @@ function [dT,C,pi_star] = CTD(gmh,gmr,costMeas,varargin)
 % Gaussian mixtures given a cost function.
 
 if nargin < 3
-    costMeas = 'KLDij'; %By default
+    costMeas = 'FKLDij'; %By default
     disp('Assuming KLD as cost function...');
 end
 

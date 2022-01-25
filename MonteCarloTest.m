@@ -2,11 +2,11 @@
 clear
 close all
 %%
-Nh = 25;
-Nr = 5;
-numMCRuns = 100;
-d = 1;
-alpha = randi(Nh)/(d^2);
+Nh = 45;
+Nr = 10;
+numMCRuns = 200;
+d = 2;
+gamma = randi(Nh)/(d^2);
 beta = 2*rand();
 
 test = 'random';
@@ -14,27 +14,27 @@ test = 'random';
 
 
 exp1 = Experiment('',           {struct('rho',0.7),struct('k',2)},...
-                  'IL2MRA',        struct('Nr',Nr,'maxiter',150,'tol',1e-12),...
-                  '',           {struct('costMeas','KLDij','lambda',0),struct()},...
-                  test,          struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));              
+                  'IW2MRA',        struct('Nr',Nr),...
+                  '',           {struct('costMeas','FKLDij','lambda',0),struct()},...
+                  test,          struct('Nh',Nh,'gamma',gamma','beta',beta,'d',d));              
 
               
 exp2 = Experiment('',           {},...
-                  'Williams',       struct('Nr',Nr),...
-                  '',           {struct('costMeas','KLDij','lambda',0),struct()},...
-                  test,         struct('Nh',Nh,'alpha',alpha,'beta',beta,'d',d));
+                  'IIW2MRA',       struct('Nr',Nr),...
+                  '',           {struct('costMeas','FKLDij','lambda',0),struct()},...
+                  test,         struct('Nh',Nh,'gamma',gamma,'beta',beta,'d',d));
 
 
 exp3 = Experiment('',           {},...
                   'modWilliams',       struct('Nr',Nr,'maxiter',150,'tol',1e-12),...
-                  '',  {struct('costMeas','KLDij','lambda',0.0),struct()},...
-                  test,         struct('Nh',Nh,'alpha',alpha','beta',beta,'d',d));
+                  '',  {struct('costMeas','FKLDij','lambda',0.0),struct()},...
+                  test,         struct('Nh',Nh,'gamma',gamma','beta',beta,'d',d));
               
-experiments = [exp1;exp2;exp3];
+experiments = [exp1;exp2];
 numExperiments = numel(experiments);
 
 
-globalMeas = {struct('globMeas','CTD','costMeas','L2ij'),struct('globMeas','ISE')}';
+globalMeas = {struct('globMeas','CTD','costMeas','W2ij')}';
 
 
 perfMatrix = zeros(numExperiments,numMCRuns,numel(globalMeas)+1);

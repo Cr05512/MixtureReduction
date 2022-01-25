@@ -1,0 +1,52 @@
+function TBar = TSLBarycenterGD(gmh,maxiter,tol)
+
+if nargin < 2
+    maxiter = 1000;
+    tol = 1e-12;
+elseif nargin < 3
+    tol = 1e-12;
+end
+
+d = size(gmh(1).mu,1);
+
+gmr = FKLDBarycenter(gmh);
+
+[~,mur,Sigmar] = paramsFromMixture(gmr);
+L = chol(Sigmar,'lower');
+
+x0 = [mur;reshape(L,d*d,1)];
+f = @(x) funGradComp(x,gmh);
+
+options = optimoptions('fminunc','OptimalityTolerance',tol,...
+                       'MaxFunctionEvaluations',maxiter,'MaxIterations',maxiter,...
+                       'Algorithm','quasi-newton','SpecifyObjectiveGradient',true,'display','none');
+
+x = fminunc(f,x0,options);
+
+
+wr = sum([gmh.w]);
+mur = x(1:d);
+L = reshape(x(d+1:end),[d d]);
+Sigmar = L*L';
+
+TBar = mixtureFromParams(wr,mur,Sigmar);
+
+end
+
+function [f,grad] = funGradComp(x,gmh)
+    dr = size(gmh(1).mu,1);
+   
+    mur = x(1:dr);
+    L = reshape(x(dr+1:end),[dr dr]);
+    
+    Sigmar = L*L';
+    
+    gmr = mixtureFromParams(sum([gmh.w]),mur,Sigmar);
+    f = evalBarycenterFun(gmh,gmr,'TSLij');
+    
+    [Dfmu,DfL] = partialTSLBar(mur,L,[gmh.w]',[gmh.mu],cat(3,gmh.Sigma));
+    
+    grad = [Dfmu; reshape(DfL,dr*dr,1)];
+
+
+end

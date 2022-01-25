@@ -30,7 +30,7 @@ mubar = Sigmabar*mubar;
 
 Sigmabar = wbar*Sigmabar;
 
-RKLDBar = mixtureFromParams(wbar,mubar,Sigmabar);
+RKLDBar = struct('w',wbar,'mu',mubar,'Sigma',Sigmabar);
 
 end
 

@@ -23,9 +23,9 @@ end
 numExperiments = numel(experiments);
 
 %Evaluate plot grid size
-nRows = round(sqrt(numExperiments));
-nCols = ceil(sqrt(numExperiments));
+
 dim1Counter = 0;
+dim2Counter = 1;
 
 for i=1:numExperiments
     
@@ -34,6 +34,8 @@ for i=1:numExperiments
         str = buildParamString(experiments(i),gm_vector{i},gmr_vector{i},time_vector(i),globalMeas);
         %str = {''};
         if experiments(i).getTestParams.d == 1 && showPlot==1
+            nRows = round(sqrt(numExperiments));
+            nCols = ceil(sqrt(numExperiments));
             dim1Counter = dim1Counter + 1;
             figure(1)
             
@@ -62,35 +64,35 @@ for i=1:numExperiments
             set(st,'verticalAlignment','baseline');
             
         elseif experiments(i).getTestParams.d == 2 && showPlot==1
-            figure(i)
-
-            sgt = sgtitle(str,'interpreter','latex');
-            set(sgt, 'horizontalAlignment', 'left')
-       
-            [X,x1,x2] = genAxisPoints(gm_vector{i},nPoints);
+            nRows = round(sqrt(numExperiments+1));
+            nCols = ceil(sqrt(numExperiments+1));
+            dim2Counter = dim2Counter + 1;
+            figure(1)
             
-            subplot(1,2,1)
+            if dim2Counter == 2
+       
+                [X,x1,x2] = genAxisPoints(gm_vector{i},nPoints);
 
-            plotGM2D(gm_vector{i},X,x1,x2); hold on
-            xlim([min(x1) max(x1)])
-            ylim([min(x2) max(x2)])
-            for k=1:numel(gm_vector{i})
-                errEllVals = errorEllipses(gm_vector{i}(k).mu,gm_vector{i}(k).Sigma,0.95);
-                plot(errEllVals(1,:),errEllVals(2,:)); hold on
+                subplot(nRows,nCols,1);
+
+                plotGM2D(gm_vector{i},X,x1,x2); hold on
+                xlim([min(x1) max(x1)])
+                ylim([min(x2) max(x2)])
+ 
+                set(gca,'YDir','normal');
+                axis('square');
+                grid minor
+                st = subtitle('Original Mixture','Interpreter','latex');
+                set(st,'verticalAlignment','baseline');
             end
-            set(gca,'YDir','normal');
-            axis('square');
-            grid minor
-            title('Original Mixture','interpreter','latex','FontSize',14);
-            subplot(1,2,2)
+            
+            subplot(nRows,nCols,dim2Counter);
             plotGM2D(gmr_vector{i},X,x1,x2); hold on
-            title('Reduced Mixture','interpreter','latex','FontSize',14);
+            st = subtitle(str,'Interpreter','latex');
+            set(st,'verticalAlignment','baseline');
             xlim([min(x1) max(x1)])
             ylim([min(x2) max(x2)])
-            for k=1:numel(gmr_vector{i})
-                errEllVals = errorEllipses(gmr_vector{i}(k).mu,gmr_vector{i}(k).Sigma,0.95);
-                plot(errEllVals(1,:),errEllVals(2,:)); hold on
-            end
+       
             set(gca,'YDir','normal');
             axis('square');
             grid minor
