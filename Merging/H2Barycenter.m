@@ -10,11 +10,11 @@ end
 % if alpha==0
 %     bar = RKLDBarycenter(comps);
 % elseif alpha==1
-     bar = FKLDBarycenter(comps);
+%     bar = FKLDBarycenter(comps);
 % else
-%      [~,idx] = max([comps.w]);
-%      bar = comps(idx);
-%      bar.w = sum([comps.w]);
+     [~,idx] = max([comps.w]);
+     bar = comps(idx);
+     bar.w = sum([comps.w]);
 % end
 
 n = length(comps);
@@ -30,6 +30,7 @@ for i=1:n
     Sigmaiinv(:,:,i) = eye(d)/Sigmai(:,:,i);
 end
 
+numIter = 0;
 for k=1:maxiter
     barOld = bar;
     Sigmainv = eye(d)/bar.Sigma;
@@ -42,7 +43,11 @@ for k=1:maxiter
     
     wVec = wVec./sum(wVec);
     
-    mu = sum(wVec'.*muVec,2);
+    mu = zeros(d,1);
+    for i=1:n
+        mu = mu + wVec(i)*muVec(:,i);
+    end
+    %mu = sum(wVec'.*muVec,2);
     
     Sigma = zeros(d,d);
     for i=1:n
@@ -52,14 +57,14 @@ for k=1:maxiter
     bar.mu = mu;
     bar.Sigma = Sigma;
     
-    if mod(k,10)==1
+    if mod(k,5)==0
         if H2ij(bar,barOld)<tol
             break;
         end
     end
-    
+    numIter=k;
 end
-if k==maxiter
+if numIter==maxiter
     disp('The H2 FPI algorithm did not converge in the allowed iterations.');
 end
 

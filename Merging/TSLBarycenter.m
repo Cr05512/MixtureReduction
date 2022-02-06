@@ -62,7 +62,7 @@ for k=1:maxiter
     bar.Sigma = Sigma;
     
     
-    if mod(k,5)==1
+    if mod(k,5)==0
         if TSLij(bar,barOld)<tol
             break;
         end

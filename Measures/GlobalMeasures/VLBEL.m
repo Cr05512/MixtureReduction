@@ -8,7 +8,7 @@ function L = VLBEL(gmh,gmr,I)
 % This function computes the variational lower bound for the expected
 % log-likelihood.
 if nargin < 3
-    I = numel(gmh);
+    I = 1;
 end
 assert(~isempty(gmh) && ~isempty(gmr),'The mixtures have to contain at least one element.');
 assert(I>0,'The number of virtual samples has to be greater than zero.');

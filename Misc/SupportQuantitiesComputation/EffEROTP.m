@@ -20,10 +20,10 @@ for i=1:Nh
         [~,Ci] = min(C(i,:));
         pi_star(i,Ci) = wF(i);
     else
-        tmp = exp(-C(i,:)./lambda);
-        piTmp = wF(i)*tmp/sum(tmp);
-        if ~isnan(piTmp)
-            pi_star(i,:) = piTmp;
+        logT = -C(i,:)./lambda;
+        logPiTmp = log(wF(i)) + logT - log(sum(exp(logT)));
+        if ~any(isinf(logPiTmp))
+            pi_star(i,:) = exp(logPiTmp);
         end
 
     end

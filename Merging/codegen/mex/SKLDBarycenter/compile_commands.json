@@ -1,0 +1,164 @@
+[
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  SKLDBarycenter_data.c -o build/glnxa64/SKLDBarycenter_data.o",
+    "file": "SKLDBarycenter_data.c",
+    "output": "build/glnxa64/SKLDBarycenter_data.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  rt_nonfinite.c -o build/glnxa64/rt_nonfinite.o",
+    "file": "rt_nonfinite.c",
+    "output": "build/glnxa64/rt_nonfinite.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  SKLDBarycenter_initialize.c -o build/glnxa64/SKLDBarycenter_initialize.o",
+    "file": "SKLDBarycenter_initialize.c",
+    "output": "build/glnxa64/SKLDBarycenter_initialize.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  SKLDBarycenter_terminate.c -o build/glnxa64/SKLDBarycenter_terminate.o",
+    "file": "SKLDBarycenter_terminate.c",
+    "output": "build/glnxa64/SKLDBarycenter_terminate.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  SKLDBarycenter.c -o build/glnxa64/SKLDBarycenter.o",
+    "file": "SKLDBarycenter.c",
+    "output": "build/glnxa64/SKLDBarycenter.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  paramsFromMixture.c -o build/glnxa64/paramsFromMixture.o",
+    "file": "paramsFromMixture.c",
+    "output": "build/glnxa64/paramsFromMixture.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  sum.c -o build/glnxa64/sum.o",
+    "file": "sum.c",
+    "output": "build/glnxa64/sum.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  sumMatrixIncludeNaN.c -o build/glnxa64/sumMatrixIncludeNaN.o",
+    "file": "sumMatrixIncludeNaN.c",
+    "output": "build/glnxa64/sumMatrixIncludeNaN.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  eml_int_forloop_overflow_check.c -o build/glnxa64/eml_int_forloop_overflow_check.o",
+    "file": "eml_int_forloop_overflow_check.c",
+    "output": "build/glnxa64/eml_int_forloop_overflow_check.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  eye.c -o build/glnxa64/eye.o",
+    "file": "eye.c",
+    "output": "build/glnxa64/eye.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  mrdivide_helper.c -o build/glnxa64/mrdivide_helper.o",
+    "file": "mrdivide_helper.c",
+    "output": "build/glnxa64/mrdivide_helper.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  repmat.c -o build/glnxa64/repmat.o",
+    "file": "repmat.c",
+    "output": "build/glnxa64/repmat.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  warning.c -o build/glnxa64/warning.o",
+    "file": "warning.c",
+    "output": "build/glnxa64/warning.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  qrsolve.c -o build/glnxa64/qrsolve.o",
+    "file": "qrsolve.c",
+    "output": "build/glnxa64/qrsolve.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  eml_mtimes_helper.c -o build/glnxa64/eml_mtimes_helper.o",
+    "file": "eml_mtimes_helper.c",
+    "output": "build/glnxa64/eml_mtimes_helper.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  mtimes.c -o build/glnxa64/mtimes.o",
+    "file": "mtimes.c",
+    "output": "build/glnxa64/mtimes.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  sqrtm.c -o build/glnxa64/sqrtm.o",
+    "file": "sqrtm.c",
+    "output": "build/glnxa64/sqrtm.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  schur.c -o build/glnxa64/schur.o",
+    "file": "schur.c",
+    "output": "build/glnxa64/schur.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  rsf2csf.c -o build/glnxa64/rsf2csf.o",
+    "file": "rsf2csf.c",
+    "output": "build/glnxa64/rsf2csf.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  trace.c -o build/glnxa64/trace.o",
+    "file": "trace.c",
+    "output": "build/glnxa64/trace.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  interface/_coder_SKLDBarycenter_api.c -o build/glnxa64/_coder_SKLDBarycenter_api.o",
+    "file": "interface/_coder_SKLDBarycenter_api.c",
+    "output": "build/glnxa64/_coder_SKLDBarycenter_api.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  interface/_coder_SKLDBarycenter_mex.c -o build/glnxa64/_coder_SKLDBarycenter_mex.o",
+    "file": "interface/_coder_SKLDBarycenter_mex.c",
+    "output": "build/glnxa64/_coder_SKLDBarycenter_mex.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  sqrt.c -o build/glnxa64/sqrt.o",
+    "file": "sqrt.c",
+    "output": "build/glnxa64/sqrt.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  SKLDBarycenter_emxutil.c -o build/glnxa64/SKLDBarycenter_emxutil.o",
+    "file": "SKLDBarycenter_emxutil.c",
+    "output": "build/glnxa64/SKLDBarycenter_emxutil.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  SKLDBarycenter_mexutil.c -o build/glnxa64/SKLDBarycenter_mexutil.o",
+    "file": "SKLDBarycenter_mexutil.c",
+    "output": "build/glnxa64/SKLDBarycenter_mexutil.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  interface/_coder_SKLDBarycenter_info.c -o build/glnxa64/_coder_SKLDBarycenter_info.o",
+    "file": "interface/_coder_SKLDBarycenter_info.c",
+    "output": "build/glnxa64/_coder_SKLDBarycenter_info.o"
+  },
+  {
+    "directory": "/home/cr055/MATLAB Workspace/MixtureReduction/Merging/codegen/mex/SKLDBarycenter",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/cr055/MATLAB Workspace/MixtureReduction/Merging\" -I \"./interface\" -I \"/home/cr055/MATLAB/extern/include\" -I \".\" -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=SKLDBarycenter_mex -c  /home/cr055/MATLAB/extern/version/c_mexapi_version.c -o build/glnxa64/c_mexapi_version.o",
+    "file": "/home/cr055/MATLAB/extern/version/c_mexapi_version.c",
+    "output": "build/glnxa64/c_mexapi_version.o"
+  }
+]

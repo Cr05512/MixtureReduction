@@ -55,7 +55,7 @@ for k=1:maxiter
     bar.Sigma = Sigma;
     
     
-    if mod(k,3)==1
+    if mod(k,3)==0
         if CSDij(bar,barOld)<tol
             break;
         end

@@ -1,4 +1,4 @@
-function gmr = IBDMRA(gmh, Nr)
+function gmr = IBDMRA(gmh, Nr,maxiter,tol)
 % gmr = IBDMRA(gmh, Nr):
 % INPUTS:
 % - gmh, a Gaussian mixture to be reduced,
@@ -8,7 +8,12 @@ function gmr = IBDMRA(gmh, Nr)
 assert(~isempty(gmh),'The mixture has to contain at least one element.');
 assert(Nr>0,'The number of reduced components has to be greater than zero.');
 
-
+if nargin < 3
+    maxiter = 500;
+    tol = 1e-9;
+elseif nargin < 4
+    tol = 1e-9;
+end
 
 if numel(gmh)<Nr
     gmr = gmh;
@@ -19,7 +24,7 @@ Nh = numel(gmh);
 if(Nh==Nr)
     return
 elseif(Nr==1)
-    gmr = BDBarycenter(gmh);
+    gmr = BDBarycenter_mex(gmh);
     return
 end
 
@@ -42,7 +47,7 @@ while(numel(gmr)-Nr>0)
     %We then find the action with the lowest KLD bound and we merge the
     %corresponding mixture components
     [i,j] = find(BDMatrix == min(BDMatrix(BDMatrix<Inf)),1);
-    pdf_merged = BDBarycenter(gmr([i,j]));
+    pdf_merged = BDBarycenter_mex(gmr([i,j]),maxiter,tol);
     gmr(i) = pdf_merged;
     gmr(j) = [];
     BDMatrix(j,:) = [];

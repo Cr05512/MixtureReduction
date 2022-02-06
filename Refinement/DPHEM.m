@@ -13,7 +13,7 @@ function gmr = DPHEM(gmr,gmh,maxiter,I)
 % Simplifying gaussian mixture models for approximate inference.IEEE  Transactions
 % on  Pattern  Analysis  and  Machine  Intelligence,  vol.41(6), 2018.
 if nargin < 3
-    I = numel(gmh);
+    I = 1;
     maxiter = 100;
 elseif nargin < 4
     maxiter = 100;
@@ -40,7 +40,7 @@ for k=1:maxiter
     
     for i=1:Nh
         for j=1:Nr
-            E(i,j) = funEij(gmh(i),gmr(j));
+            E(i,j) = -CEij(gmh(i),gmr(j));
         end
     end
     
@@ -74,7 +74,7 @@ for k=1:maxiter
     end
     
     L = VLBEL(gmh,gmr,I);
-    if abs(L-L_prev)<1e-15
+    if abs(L-L_prev)<1e-12
         break;
     end
     

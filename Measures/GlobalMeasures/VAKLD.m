@@ -21,12 +21,12 @@ varKLD = 0;
 for i=1:Nh
     num = 0;
     for j=1:Nh
-        num = num + gmh(j).w*exp(-KLDij(gmh(i),gmh(j)));
+        num = num + gmh(j).w*exp(-FKLDij(gmh(i),gmh(j)));
     end
     
     den = 0;
     for j=1:Nr
-        den = den + gmr(j).w*exp(-KLDij(gmh(i),gmr(j)));
+        den = den + gmr(j).w*exp(-FKLDij(gmh(i),gmr(j)));
     end
     
     varKLD = varKLD + gmh(i).w*log(num/den);

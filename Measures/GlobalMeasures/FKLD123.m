@@ -28,9 +28,9 @@ end
 
 
 [offset,P] = getMixtureMoments(gmh);
-% errorEll = errorEllipses(offset,P,0.999999);
-% gamma = max(max(abs(errorEll)));
-gamma = max(eig(P))*1.2;
+errorEll = errorEllipses(offset,P,0.999999);
+gamma = max(max(abs(errorEll)));
+%gamma = max(eig(P));
     
 if d==1
    

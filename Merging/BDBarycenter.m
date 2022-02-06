@@ -28,6 +28,8 @@ for i=1:n
     Sigmaiinv(:,:,i) = eye(d)/Sigmai(:,:,i);
 end
 
+numIter = 0;
+
 for k=1:maxiter
     barOld = bar;
     Sigmainv = eye(d)/bar.Sigma;
@@ -36,8 +38,11 @@ for k=1:maxiter
         muVec(:,i) = 0.5*SigmaVec(:,:,i)*(Sigmaiinv(:,:,i)*mui(:,i) + Sigmainv*bar.mu);
     end
     
-    
-    mu = sum(wi'.*muVec,2)/wiSum;
+    mu = zeros(d,1);
+    for i=1:n
+        mu = mu + wi(i)*muVec(:,i);
+    end
+    mu = mu/wiSum;
     
     Sigma = zeros(d,d);
     for i=1:n
@@ -50,13 +55,14 @@ for k=1:maxiter
     bar.mu = mu;
     bar.Sigma = Sigma;
     
-   if mod(k,10)==1
+   if mod(k,5)==0
         if BDij(bar,barOld)<tol
             break;
         end
    end
+   numIter = numIter + 1;
 end
-if k==maxiter
+if numIter==maxiter
     disp('The BD FPI algorithm did not converge in the allowed iterations.');
 end
     

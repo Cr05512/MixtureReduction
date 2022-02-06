@@ -24,6 +24,8 @@ for i=1:n
                     refParamsBlock{i}.(fieldList{j}) = 1e-6;
                 elseif strcmpi(fieldList{j},'lambda')
                     refParamsBlock{i}.(fieldList{j}) = 0;
+                elseif strcmpi(fieldList{j},'nPoints')
+                    refParamsBlock{i}.(fieldList{j}) = 100000;
                 end
 
 

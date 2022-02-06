@@ -193,7 +193,9 @@ classdef Experiment < handle
             
             %We can perform pruning
             tic;
-            [gmr,obj.pruneParams] = pruneGaussMix(obj.prune,gmr,obj.pruneParams);
+            if ~isempty(obj.prune)
+                [gmr,obj.pruneParams] = pruneGaussMix(obj.prune,gmr,obj.pruneParams);
+            end
             timeVec(1) = toc;
             
             %We apply the greedy reduction
@@ -243,6 +245,11 @@ classdef Experiment < handle
         function locMeasList = getAvailableLocalMeasures()
            tmp = split({dir(strcat(what('LocalMeasures').path,'/*.m')).name}','.m');
            locMeasList = tmp(:,1);
+        end
+        
+        function mergeList = getAvailableMerging()
+           tmp = split({dir(strcat(what('Merging').path,'/*.m')).name}','.m');
+           mergeList = tmp(:,1);
         end
     end
 end

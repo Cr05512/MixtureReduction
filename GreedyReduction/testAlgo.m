@@ -15,7 +15,7 @@ for k=1:Nh-Nr
                 gmr_temp(i) = FKLDBarycenter(gmr([i;j]));
                 gmr_temp(j) = [];
                 
-                KBMatrix(i,j) = CTD(gmh,gmr_temp,'FKLDij');
+                KBMatrix(i,j) = tCrossEntropyUB(gmh,gmr_temp);
 
                 
             end

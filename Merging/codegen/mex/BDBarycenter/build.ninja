@@ -1,0 +1,65 @@
+# CompilerName=gcc
+# Mode=optim
+ninja_required_version = 1.3
+
+# Basic folders
+root = .
+builddir = $root/build/glnxa64
+matlabdir = /home/cr055/MATLAB
+startdir = /home/cr055/MATLAB Workspace/MixtureReduction/Merging
+
+# Toolchain information
+cc = /usr/bin/gcc
+cxx = g++
+linker = /usr/bin/gcc
+linkerxx = g++
+
+cflags =  -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I "$root" -I "$matlabdir Workspace/MixtureReduction/Merging" -I "$root/interface" -I "$matlabdir/extern/include" -I "." -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=BDBarycenter_mex -c 
+
+cxxflags =  -fexceptions -fPIC -fno-omit-frame-pointer -pthread -std=c++11 -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c++11 -I "$root" -I "$matlabdir Workspace/MixtureReduction/Merging" -I "$root/interface" -I "$matlabdir/extern/include" -I "." -DHAVE_LAPACK_CONFIG_H -DLAPACK_COMPLEX_STRUCTURE -DMW_HAVE_LAPACK_DECLS -DMODEL=BDBarycenter_mex -c 
+
+ldflags =  -pthread -Wl,--no-undefined -Wl,-rpath-link,$matlabdir/bin/glnxa64 -shared  -L"$matlabdir/bin/glnxa64" -lmx -lmex -lmat -lm -lstdc++  -o BDBarycenter_mex.mexa64 -L"$matlabdir/bin/glnxa64" -lmwlapack -lmwblas -lemlrt -lcovrt -lut -lmwmathutil  -Wl,--version-script,BDBarycenter_mex.map
+
+# Build Rules
+rule cc
+    command = $cc $cflags $in -o $out
+
+rule cxx
+    command = $cxx $cxxflags $in -o $out
+
+rule link
+    command = $linker $in $ldflags
+
+rule linkxx
+    command = $linkerxx $in $ldflags
+
+# Build
+build $builddir/BDBarycenter_data.o : cc $root/BDBarycenter_data.c
+build $builddir/rt_nonfinite.o : cc $root/rt_nonfinite.c
+build $builddir/BDBarycenter_initialize.o : cc $root/BDBarycenter_initialize.c
+build $builddir/BDBarycenter_terminate.o : cc $root/BDBarycenter_terminate.c
+build $builddir/BDBarycenter.o : cc $root/BDBarycenter.c
+build $builddir/paramsFromMixture.o : cc $root/paramsFromMixture.c
+build $builddir/sum.o : cc $root/sum.c
+build $builddir/sumMatrixIncludeNaN.o : cc $root/sumMatrixIncludeNaN.c
+build $builddir/eml_int_forloop_overflow_check.o : cc $root/eml_int_forloop_overflow_check.c
+build $builddir/eye.o : cc $root/eye.c
+build $builddir/repmat.o : cc $root/repmat.c
+build $builddir/warning.o : cc $root/warning.c
+build $builddir/qrsolve.o : cc $root/qrsolve.c
+build $builddir/infocheck.o : cc $root/infocheck.c
+build $builddir/eml_mtimes_helper.o : cc $root/eml_mtimes_helper.c
+build $builddir/mtimes.o : cc $root/mtimes.c
+build $builddir/mldivide.o : cc $root/mldivide.c
+build $builddir/det.o : cc $root/det.c
+build $builddir/_coder_BDBarycenter_api.o : cc $root/interface/_coder_BDBarycenter_api.c
+build $builddir/_coder_BDBarycenter_mex.o : cc $root/interface/_coder_BDBarycenter_mex.c
+build $builddir/mrdivide_helper.o : cc $root/mrdivide_helper.c
+build $builddir/xgeqp3.o : cc $root/xgeqp3.c
+build $builddir/BDBarycenter_emxutil.o : cc $root/BDBarycenter_emxutil.c
+build $builddir/BDBarycenter_mexutil.o : cc $root/BDBarycenter_mexutil.c
+build $builddir/_coder_BDBarycenter_info.o : cc $root/interface/_coder_BDBarycenter_info.c
+build $builddir/c_mexapi_version.o : cc $matlabdir/extern/version/c_mexapi_version.c
+
+# Link
+build $root/BDBarycenter_mex.mexa64 : link $builddir/BDBarycenter_data.o $builddir/rt_nonfinite.o $builddir/BDBarycenter_initialize.o $builddir/BDBarycenter_terminate.o $builddir/BDBarycenter.o $builddir/paramsFromMixture.o $builddir/sum.o $builddir/sumMatrixIncludeNaN.o $builddir/eml_int_forloop_overflow_check.o $builddir/eye.o $builddir/repmat.o $builddir/warning.o $builddir/qrsolve.o $builddir/infocheck.o $builddir/eml_mtimes_helper.o $builddir/mtimes.o $builddir/mldivide.o $builddir/det.o $builddir/_coder_BDBarycenter_api.o $builddir/_coder_BDBarycenter_mex.o $builddir/mrdivide_helper.o $builddir/xgeqp3.o $builddir/BDBarycenter_emxutil.o $builddir/BDBarycenter_mexutil.o $builddir/_coder_BDBarycenter_info.o $builddir/c_mexapi_version.o 

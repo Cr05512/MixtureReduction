@@ -13,12 +13,12 @@ assert(Nr>0,'The number of reduced components has to be greater than zero.');
 if nargin < 3
     alpha = 0.5;
     maxiter = 50;
-    tol = 1e-6;
+    tol = 1e-9;
 elseif nargin < 4
     maxiter = 50;
-    tol = 1e-6;
+    tol = 1e-9;
 elseif nargin < 5
-    tol = 1e-6;
+    tol = 1e-9;
 end
 
 if numel(gmh)<Nr

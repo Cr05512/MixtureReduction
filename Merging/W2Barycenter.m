@@ -39,7 +39,7 @@ else
 %        invSqS = inv(sqrtS);
 %        Sigmabar = invSqS*Sigmabar*Sigmabar*invSqS;
        
-       if mod(k,5)==1
+       if mod(k,5)==0
            if norm(SigmabarOld-Sigmabar)<tol
                break;
            end
@@ -50,7 +50,6 @@ else
         disp('The W2 FPI algorithm did not converge in the allowed iterations.');
     end
 end
-k
 W2Bar = struct('w',wbar,'mu',mubar,'Sigma',Sigmabar);
 
 

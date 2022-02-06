@@ -36,16 +36,21 @@ for k=1:maxiter
     sumPhibarows = sum(phi,1);
     for i=1:Nh
         for j=1:Nr
-            psi(i,j) = wr(j)*phi(i,j)/sumPhibarows(j);
+            if sumPhibarows(j)>0
+                psi(i,j) = wr(j)*phi(i,j)/sumPhibarows(j);
+            else
+                psi(i,j) = 0;
+            end
         end
     end
     C = CostMatrix(gmh,gmr,'FKLDij');
     expC = exp(-C);
     for i=1:Nh
+        normFactor = psi(i,:)*expC(i,:)';
         for j=1:Nr
             phi(i,j) = wh(i)*psi(i,j)*expC(i,j);
         end
-        phi(i,:) = phi(i,:)./(psi(i,:)*expC(i,:)');
+        phi(i,:) = phi(i,:)./(normFactor);
     end
     
     

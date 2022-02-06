@@ -1,4 +1,4 @@
-function gm_pruned = kSmallestPruning(gm,k)
+function gmr = kSmallestPruning(gmh,k)
 % gm_pruned = kSmallestPruning(gm,k):
 % INPUTS:
 % - gm, a Gaussian mixture,
@@ -10,24 +10,24 @@ function gm_pruned = kSmallestPruning(gm,k)
 if nargin<2
     k = 1;
 end
-assert(~isempty(gm),'The Gaussian mixture has to contain at least one element.');
+assert(~isempty(gmh),'The Gaussian mixture has to contain at least one element.');
 assert(k>=0,'The number of components to be pruned has to be greater than zero.');
 
 if k==0
-    gm_pruned = gm;
+    gmr = gmh;
 else
 
-    w = [gm.w]';
+    w = [gmh.w]';
     w_bar = w;
-    for i=1:length(gm)
-        w_bar(i) = w_bar(i)/sqrt(det(gm(i).Sigma));
+    for i=1:length(gmh)
+        w_bar(i) = w_bar(i)/sqrt(det(gmh(i).Sigma));
     end
     [~,ind] = mink(w_bar,k);
-    indKeep = setdiff(1:length(gm),ind);
-    gm_pruned = gm(indKeep);
+    indKeep = setdiff(1:length(gmh),ind);
+    gmr = gmh(indKeep);
     w = w(indKeep);
     w_norm = num2cell(w./sum(w));
-    [gm_pruned.w] = w_norm{:};
+    [gmr.w] = w_norm{:};
 end
 
     

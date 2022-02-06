@@ -47,18 +47,18 @@ while(numel(gmr)-Nr>0)
     %We then find the action with the lowest KLD bound and we merge the
     %corresponding mixture components
     [i,j] = find(H2Matrix == min(H2Matrix(H2Matrix<Inf)),1);
-    pdf_merged = H2Barycenter(gmr([i,j]),maxiter,tol);
-    gmr(i) = pdf_merged;
+    bar = H2Barycenter([gmr(i);gmr(j)],maxiter,tol);
+    gmr(i) = bar;
     gmr(j) = [];
     H2Matrix(j,:) = [];
     H2Matrix(:,j) = [];
     upd_ind = setdiff(1:numel(gmr),i);
-    for j=upd_ind
-        newBound = H2Bij(pdf_merged,gmr(j),maxiter,tol);
-        if i<j
-            H2Matrix(i,j) = newBound;
+    for j=1:length(upd_ind)
+        newBound = H2Bij(bar,gmr(upd_ind(j)),maxiter,tol);
+        if i<(upd_ind(j))
+            H2Matrix(i,upd_ind(j)) = newBound;
         else
-            H2Matrix(j,i) = newBound;
+            H2Matrix(upd_ind(j),i) = newBound;
         end
     end
 

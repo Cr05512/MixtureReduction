@@ -9,7 +9,7 @@ function d = MKLDij(pdfi,pdfj,I)
 % Q. Zhang and J. Chen. "A unified framework for gaussian mixture reduction
 % with  composite  transportation  distance".arXiv:2002.08410v1  [stat.ML.],2020.
 if nargin < 3
-    I = 20;
+    I = 1;
 end
 d = -log(pdfj.w) - I*funEij(pdfi,pdfj);
 

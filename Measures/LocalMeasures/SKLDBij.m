@@ -16,7 +16,7 @@ elseif nargin < 4
 end
 
 
-bar = SKLDBarycenter([pdfi;pdfj], maxiter, tol);
+bar = SKLDBarycenter_mex([pdfi;pdfj], maxiter, tol);
     
 B = pdfi.w*SKLDij(pdfi,bar) + pdfj.w*SKLDij(pdfj,bar);
 

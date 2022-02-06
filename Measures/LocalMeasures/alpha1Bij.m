@@ -12,7 +12,7 @@ elseif nargin < 5
 end
 
 
-bar = Da1Barycenter([pdfi;pdfj],alpha,maxiter,tol);
+bar = alpha1DBarycenter([pdfi;pdfj],alpha,maxiter,tol);
     
 B = pdfi.w*alpha1Dij(pdfi,bar,alpha) + pdfj.w*alpha1Dij(pdfj,bar,alpha);
 

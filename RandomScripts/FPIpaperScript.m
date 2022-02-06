@@ -2,12 +2,12 @@
 close all
 clear
 
-numPoints = 101;
+numPoints = 201;
 
 %rng(1001);
 
 gmh = userDefMixture2;
-costMeas = 'sqL2ij';
+costMeas = 'H2ij';
 
 gmr = FKLDBarycenter(gmh);
 
@@ -46,8 +46,8 @@ optBAR = min(min(XBAR));
 mesh(mu,sigma,XBAR'); hold on
 xlabel('$\mu$','FontSize',34,'Interpreter','latex');
 ylabel('$\Sigma$','FontSize',34,'Interpreter','latex');
-zlabel('$m_{}(\nu)$','FontSize',34,'Interpreter','latex');
-title('$D_{}$-barycenter','FontSize',54,'Interpreter','latex'); hold on
+zlabel(strcat(['$m_{D_{',costMeas(1:end-2),'}}(\nu)$']),'FontSize',34,'Interpreter','latex');
+title(strcat('$D_{',costMeas(1:end-2),'}$-barycenter'),'FontSize',54,'Interpreter','latex'); hold on
 scatter3(gmrBAR.mu,gmrBAR.Sigma,optBAR,100,'r*','LineWidth',12,'SizeData',300); hold on
 %plot3([gmrBAR.mu gmrBAR.mu],[gmrBAR.Sigma gmrBAR.Sigma],[min([0;min(min(XBAR))]) optBAR],'k-.','LineWidth',4); hold on
 %plot3([min(mu) gmrBAR.mu],[gmrBAR.Sigma gmrBAR.Sigma],[min([0;min(min(XBAR))]) min([0;min(min(XBAR))])],'b-.','LineWidth',4); hold on

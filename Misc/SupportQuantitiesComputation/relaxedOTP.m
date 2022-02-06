@@ -15,8 +15,8 @@ Nh = numel(w);
 Nr = size(C,2);
 pi_star = zeros(Nh,Nr);
 for i=1:Nh
-    [~,Ci] = min(C(i,:));
-    pi_star(i,Ci) = w(i);
+    idxs = find(C(i,:)==min(C(i,:)));
+    pi_star(i,idxs) = w(i)/numel(idxs);
 end
         
     

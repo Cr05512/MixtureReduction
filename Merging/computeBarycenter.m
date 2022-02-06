@@ -6,37 +6,37 @@ function bar = computeBarycenter(gmh,costMeas,varargin)
 availableMeasVec = Experiment.getAvailableLocalMeasures(); %Vector of available dissimilarity measures
 assert(any(strcmpi(availableMeasVec,costMeas)), strcat(['Unknown cost measure. The available measures are:',' ',strjoin(availableMeasVec,', '),'.']));
 
-switch costMeas
-    case 'W2ij'
-        bar = W2Barycenter(gmh,varargin{:});
-    case 'L2ij'
-        bar = L2Barycenter(gmh);
-    case 'NL2ij'
-        bar = NL2Barycenter(gmh);
-    case 'CSDij'
-        bar = CSDBarycenter(gmh,varargin{:});
-    case 'TSLij'
-        bar = TSLBarycenter(gmh);
-    case 'BDij'
-        bar = BDBarycenter(gmh,varargin{:});
-    case 'RKLDij'
-        bar = RKLDBarycenter(gmh);
-    case 'H2ij'
-        bar = H2Barycenter(gmh,varargin{:});
-    case 'alpha1Dij'
-        bar = Da1Barycenter(gmh,varargin{:});
-    case 'alpha2Dij'
-        bar = Da2Barycenter(gmh,varargin{:});
-    case 'alphaJDij'
-        bar = alphaJDBarycenter(gmh,varargin{:});
-    case 'SKLDij'
-        bar = SKLDBarycenter(gmh,varargin{:});
-    case 'FKLDij'
-        bar = FKLDBarycenter(gmh);
-    otherwise
-        disp('Assuming FKLDij as D-measure.')
-        bar = FKLDBarycenter(gmh);
+
+barName = strcat(costMeas(1:end-2),'Barycenter');
+availableMergeVec = Experiment.getAvailableMerging(); %Vector of available dissimilarity measures
+if ~any(strcmpi(availableMergeVec,barName))
+    disp('The chosen measure is not associated with any of the existing merging algorithms. Falling back to FKLD.');
+    barName = 'FKLDBarycenter';
 end
+
+
+barInputList = getFunArgNames(barName);
+barInputList(1) = [];
+
+if nargin>2
+    params = varargin{:};
+    varargin = {};
+    
+    for i=1:length(barInputList)
+        if isfield(params,barInputList{i})
+            varargin{i} = params.(barInputList{i});
+            params = rmfield(params,barInputList{i});
+        end
+    end
+
+    if ~isempty(fieldnames(params))
+        disp('The provided parameters for the cost measure may be too many.');
+    end
+
+end
+
+bar = feval(barName,gmh,varargin{:});
+
 
 end
 

@@ -1,7 +1,7 @@
-function [gmr,pruneParamsBlock] = pruneGaussMix(prune,gmr,pruneParams)
+function [gmr,pruneParamsBlock] = pruneGaussMix(prune,gmh,pruneParams)
 
 if nargin < 3
-    disp('Assuming default parameters for the pruning.');
+    disp('Assuming default parameters for pruning.');
     pruneParams = {};
 end
 
@@ -9,44 +9,41 @@ if ~iscell(pruneParams)
     pruneParams = {pruneParams};
 end
 
-
 pruneParamsBlock = {};
 if ~isempty(prune)
     availablePruningAlgorithms = Experiment.getAvailablePrunings();
     prunings = split(prune,'+');
-    
     for i=1:numel(prunings)
         res = strcmpi(prunings{i},availablePruningAlgorithms);
-        assert(any(res), strcat(['Unknown pruning method. The available pruning methods are:',' ',strjoin(availablePruningAlgorithms,', '),'.']));
+        assert(any(res), strcat(['Unknown refinement method. The available refinement methods are:',' ',strjoin(availablePruningAlgorithms,', '),'.']));
         
-        if strcmpi(prunings(i),'adaptivePruning')
-            pruneParamsBlock{i}.('rho') = 0.9544;
-        elseif strcmpi(prunings(i),'standardPruning')
-            pruneParamsBlock{i}.('threshold') = 0.05;
-        elseif strcmpi(prunings(i),'kSmallestPruning')
-            pruneParamsBlock{i}.('k') = 1;
-        else
-            pruneParamsBlock{i} = struct();
-        end
+        pruneInputList = getFunArgNames(prunings{i});
+        
+        pruneInputList(strcmpi(pruneInputList,'gmh')) = [];
+        pruneParamsBlock{i} = cell2struct(cell(length(pruneInputList),1),pruneInputList);
+        
+        
 
         if ~isempty(pruneParams)
             if isstruct(pruneParams{i})
                 userPruneFields = fieldnames(pruneParams{i});
                 for j=1:length(userPruneFields)
-                    if isfield(pruneParamsBlock{i},userPruneFields{j})
+                    if any(strcmpi(pruneInputList,userPruneFields{j}))
                         pruneParamsBlock{i}.(userPruneFields{j}) = pruneParams{i}.(userPruneFields{j});
                     end
                 end
             end
         end
         
-        pruneArgVector = struct2cell(pruneParamsBlock{i});
-        gmr = feval(availablePruningAlgorithms{res},gmr,pruneArgVector{:});
+        pruneParamsBlock = defaultPruneFieldsFill(pruneParamsBlock);
 
+        
+        pruneArgs = struct2cell(pruneParamsBlock{i});
+        gmr = feval(availablePruningAlgorithms{res},gmh,pruneArgs{:});
     end
 
 end
-
     
-end
 
+
+end
