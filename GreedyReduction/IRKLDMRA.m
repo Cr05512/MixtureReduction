@@ -10,20 +10,20 @@ function [gmr,pairs,minCosts] = IRKLDMRA(gmh, Nr)
 assert(~isempty(gmh),'The mixture has to contain at least one element.');
 assert(Nr>0,'The number of reduced components has to be greater than zero.');
 
-
-
-if numel(gmh)<Nr
-    gmr = gmh;
-    return
-end
 gmr = gmh;
 Nh = numel(gmh);
-if(Nh==Nr)
-    return
-elseif(Nr==1)
-    gmr = RKLDBarycenter(gmh);
-    return
-end
+
+% if numel(gmh)<Nr
+%     gmr = gmh;
+%     return
+% end
+
+% if(Nh==Nr)
+%     return
+% elseif(Nr==1)
+%     gmr = RKLDBarycenter(gmh);
+%     return
+% end
 
 
 BMatrix = Inf(Nh,Nh);

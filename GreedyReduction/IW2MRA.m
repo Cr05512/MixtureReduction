@@ -12,18 +12,18 @@ assert(Nr>0,'The number of reduced components has to be greater than zero.');
 
 
 
-if numel(gmh)<Nr
-    gmr = gmh;
-    return
-end
+% if numel(gmh)<Nr
+%     gmr = gmh;
+%     return
+% end
 gmr = gmh;
 Nh = numel(gmh);
-if(Nh==Nr)
-    return
-elseif(Nr==1)
-    gmr = W2Barycenter(gmh);
-    return
-end
+% if(Nh==Nr)
+%     return
+% elseif(Nr==1)
+%     gmr = W2Barycenter(gmh);
+%     return
+% end
 
 
 WMatrix = Inf(Nh,Nh);

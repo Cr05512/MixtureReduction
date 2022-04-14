@@ -45,8 +45,8 @@ for i=1:numExperiments
        
             X = genAxisPoints(gm_vector{i},nPoints);
             subplot(nRows,nCols,dim1Counter);
-            plotGM1D(gm_vector{i},X,'k'); hold on
-            plotGM1D(gmr_vector{i},X,'r'); hold on
+            plotGM1D(gm_vector{i},X,{'Color','k'}); hold on
+            plotGM1D(gmr_vector{i},X,{'Color','r'}); hold on
             xlim([min(X) max(X)])
 
             grid minor

@@ -5,7 +5,7 @@ if nargin < 2
 end
 
 availableTests = Experiment.getAvailableTests(); %Check the corresponding documentation for further details
-assert(ismember(lower(test),lower(availableTests)), strcat(['Unknown test. The available tests are:',' ',strjoin(availableTests,', '),'.']));
+assert(any(strcmpi(test,availableTests)), strcat(['Unknown test. The available tests are:',' ',strjoin(availableTests,', '),'.']));
 
 testParamsBlock = struct();
 varargout = cell(1,nargout(test));

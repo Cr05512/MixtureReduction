@@ -6,7 +6,8 @@ numPoints = 76;
 
 %rng(1001);
 
-gmh = userDefMixture2;
+gmh = GMGen(2,1,3,0.01);%userDefMixture;
+
 costMeas = 'L2ij';
 
 gmr = FKLDBarycenter(gmh);
@@ -34,7 +35,7 @@ end
 %%
 close all
 figure(4)
-bar = FKLDBarycenter(gmh);
+bar = struct('w',1,'mu',-1,'Sigma',1);%FKLDBarycenter(gmh);
 %bar = struct('w',sum([gmh.w]),'mu',-0.3765,'Sigma',0.1);
 mesh(mugrid,sigmagrid,XBAR'); hold on
 axis([min(mugrid) max(mugrid) min(sigmagrid) max(sigmagrid) 0 max(max(XBAR))])
@@ -60,7 +61,7 @@ for i=1:n
 end
 
 
-for k=1:100
+for k=1:500
     mu = bar.mu;
     Sigma = bar.Sigma;
     Sigmainv = eye(d)/Sigma;
@@ -95,7 +96,7 @@ for k=1:100
     barVal = evalBarycenterFun(gmh,bar,costMeas);
     delete(h)
     h = scatter3(bar.mu,bar.Sigma,barVal,50,'ro','MarkerFaceColo','r','LineWidth',6,'SizeData',300);
-    pause(0.2);
+    pause(0.1);
 
     
 end

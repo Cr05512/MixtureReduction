@@ -1,7 +1,7 @@
 function bar = CSDBarycenter(comps,maxiter,tol)
 
 if nargin < 2
-    maxiter = 150;
+    maxiter = 5000;
     tol = 1e-09;
 elseif nargin < 3
     tol = 1e-09;

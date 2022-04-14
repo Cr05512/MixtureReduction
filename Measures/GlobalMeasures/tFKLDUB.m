@@ -45,8 +45,8 @@ B = log(Haa*wa);
 
 hwa = - wa'*log(wa);
 
-NEUB = min(wa'*B,-GMEntropyBound(gmh,'BDij'));
-
+%NEUB = min(wa'*B,-GMEntropyBound(gmh,'BDij'));
+NEUB = -GMEntropyBound(gmh,'BDij');
 tB = +hwa+V + NEUB;
 end
 

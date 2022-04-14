@@ -1,4 +1,4 @@
-function [h,X] = plotGM1D(gm,X,color,linestyle)
+function [h,X] = plotGM1D(gm,X,lineProps)
 % [] = plotGM1D(gm,X):
 % INPUTS:
 % - gm, a Gaussian mixture,
@@ -10,22 +10,18 @@ assert(d==1,'The dimension has to be one.');
 
 if nargin < 2
     X = genAxisPoints(gm,1000);
-    color = rand(1,3);
-    linestyle = '-';
+    lineProps = {'LineWidth',2,'LineStyle','-','Color','k'};
 elseif nargin < 3
-    color = rand(1,3);
-    linestyle = '-';
-elseif nargin < 4
-    linestyle = '-';
+    lineProps = {'LineWidth',2,'LineStyle','-','Color','k'};
 end
 
 assert(~isempty(gm),'The mixture has to contain at least one element.');
 assert(~isempty(X),'The evaluation points have to be at least one.');
 
 
-h = plot(X,evalGM(gm,X),'LineWidth',1.5,'Color',color,'LineStyle',linestyle); hold on
-xlabel('x');
-ylabel('p(x)');
+h = plot(X,evalGM(gm,X),lineProps{:}); hold on
+xlabel('$x$','Interpreter','latex','FontSize',30);
+ylabel('$p(x)$','Interpreter','latex','FontSize',30);
 
 
 end

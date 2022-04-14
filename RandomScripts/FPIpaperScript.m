@@ -2,7 +2,7 @@
 close all
 clear
 
-numPoints = 201;
+numPoints = 76;
 
 %rng(1001);
 

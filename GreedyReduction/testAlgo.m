@@ -1,9 +1,10 @@
-function gmr = testAlgo(gmh,Nr)
+function [gmr,minCosts] = testAlgo(gmh,Nr)
 
 
 gmr = gmh;
 Nh = numel(gmh);
 KBMatrix = Inf(Nh,Nh);
+minCosts = zeros(Nh,1);
 
 for k=1:Nh-Nr
     for i=1:numel(gmr)
@@ -15,14 +16,15 @@ for k=1:Nh-Nr
                 gmr_temp(i) = FKLDBarycenter(gmr([i;j]));
                 gmr_temp(j) = [];
                 
-                KBMatrix(i,j) = tCrossEntropyUB(gmh,gmr_temp);
+                KBMatrix(i,j) = RCTD(gmh,gmr_temp,'FKLDij');
 
                 
             end
         end
     end
     
-    [i,j] = find(KBMatrix == min(KBMatrix(KBMatrix<Inf)),1);
+    minCosts(k+1)=min(KBMatrix(KBMatrix<Inf));
+    [i,j] = find(KBMatrix == minCosts(k+1),1);
     bar = FKLDBarycenter(gmr([i,j]));
     gmr(i) = bar;
     gmr(j) = [];
@@ -30,5 +32,7 @@ for k=1:Nh-Nr
     KBMatrix(:,j) = [];
     
 end
+
+minCosts = minCosts./CTD(gmh,FKLDBarycenter(gmh),'FKLDij');
 end
 

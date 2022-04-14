@@ -18,18 +18,18 @@ elseif nargin < 4
 end
 
 
-if numel(gmh)<Nr
-    gmr = gmh;
-    return
-end
+% if numel(gmh)<Nr
+%     gmr = gmh;
+%     return
+% end
 gmr = gmh;
 Nh = numel(gmh);
-if(Nh==Nr)
-    return
-elseif(Nr==1)
-    gmr = SKLDBarycenter_mex(gmh,maxiter,tol);
-    return
-end
+% if(Nh==Nr)
+%     return
+% elseif(Nr==1)
+%     gmr = SKLDBarycenter_mex(gmh,maxiter,tol);
+%     return
+% end
 
 
 BMatrix = Inf(Nh,Nh);
@@ -52,7 +52,14 @@ for k=1:Nh-Nr
     %We then find the action with the lowest KLD bound and we merge the
     %corresponding mixture components
     [i,j] = find(BMatrix == min(BMatrix(BMatrix<Inf)),1);
-    bar = SKLDBarycenter_mex(gmr([i,j]),maxiter,tol);
+    bar = SKLDBarycenter(gmr([i,j]),maxiter,tol);
+%    diff = norm(CTD(gmr,[gmr(setdiff(1:numel(gmr),[i,j]));bar],'SKLDij')-BMatrix(i,j))
+%     if diff>1e-6
+%         diff
+%         CTD(gmr,[gmr(setdiff(1:numel(gmr),[i,j]));bar],'SKLDij')
+%         BMatrix(i,j)
+%         pause
+%     end
     gmr(i) = bar;
     gmr(j) = [];
     pairs(k,:) = [i,j];

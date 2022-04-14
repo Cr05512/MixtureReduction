@@ -21,7 +21,7 @@ Z = zeros(Nh,Nr); %Responsibilities
 
 for i=1:Nh
     for j=1:Nr
-        E(i,j) = funEij(gmh(i),gmr(j));
+        E(i,j) = -CEij(gmh(i),gmr(j));
     end
 end
 

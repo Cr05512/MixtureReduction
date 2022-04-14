@@ -18,29 +18,29 @@ if nargin < 3
 elseif nargin < 4
     tol = 1e-12;
 end
-
-if numel(gmh)<Nr
-    gmr = gmh;
-    return
-end
+% 
+% if numel(gmh)<Nr
+%     gmr = gmh;
+%     return
+% end
 gmr = gmh;
 Nh = numel(gmh);
-if(Nh==Nr)
-    return
-elseif(Nr==1)
-    gmr = CSDBarycenter(gmh,maxiter,tol);
-    return
-end
+% if(Nh==Nr)
+%     return
+% elseif(Nr==1)
+%     gmr = CSDBarycenter(gmh,maxiter,tol);
+%     return
+% end
 
 
-CSMatrix = Inf(Nh,Nh);
+BMatrix = Inf(Nh,Nh);
 
 %We first compute the KLD bounds for every merging action
 
 for i=1:Nh
     for j=1:Nh
         if(i<j)
-            CSMatrix(i,j) = CSDBij(gmr(i),gmr(j),maxiter,tol);
+            BMatrix(i,j) = CSDBij(gmr(i),gmr(j),maxiter,tol);
         end
     end
 end
@@ -50,19 +50,25 @@ while(numel(gmr)-Nr>0)
 
     %We then find the action with the lowest KLD bound and we merge the
     %corresponding mixture components
-    [i,j] = find(CSMatrix == min(CSMatrix(CSMatrix<Inf)),1);
-    pdf_merged = CSDBarycenter(gmr([i,j]),maxiter,tol);
-    gmr(i) = pdf_merged;
+    [i,j] = find(BMatrix == min(BMatrix(BMatrix<Inf)),1);
+    bar = CSDBarycenter(gmr([i,j]),maxiter,tol);
+%     diff = norm(CTD(gmr,[gmr(setdiff(1:numel(gmr),[i,j]));bar],'CSDij')-BMatrix(i,j))
+%     if diff>1e-6
+%         diff
+%         disp('AAAAAAA')
+%         pause
+%     end
+    gmr(i) = bar;
     gmr(j) = [];
-    CSMatrix(j,:) = [];
-    CSMatrix(:,j) = [];
+    BMatrix(j,:) = [];
+    BMatrix(:,j) = [];
     upd_ind = setdiff(1:numel(gmr),i);
     for j=upd_ind
-        newBound = CSDBij(pdf_merged,gmr(j),maxiter,tol);
+        newBound = CSDBij(bar,gmr(j),maxiter,tol);
         if i<j
-            CSMatrix(i,j) = newBound;
+            BMatrix(i,j) = newBound;
         else
-            CSMatrix(j,i) = newBound;
+            BMatrix(j,i) = newBound;
         end
     end
 

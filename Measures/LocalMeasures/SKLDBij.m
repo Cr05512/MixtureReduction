@@ -9,14 +9,14 @@ function B = SKLDBij(pdfi, pdfj, maxiter, tol)
 % Reduction". IEEE Trans. Aerosp. Electron. Syst., vol. 43(3):989--999, 2007
 
 if nargin < 3
-    maxiter = 200;
-    tol = 1e-12;
+    maxiter = 1000;
+    tol = 1e-9;
 elseif nargin < 4
-    tol = 1e-12;
+    tol = 1e-9;
 end
 
 
-bar = SKLDBarycenter_mex([pdfi;pdfj], maxiter, tol);
+bar = SKLDBarycenter([pdfi;pdfj], maxiter, tol);
     
 B = pdfi.w*SKLDij(pdfi,bar) + pdfj.w*SKLDij(pdfj,bar);
 

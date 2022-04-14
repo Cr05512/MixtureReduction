@@ -1,9 +1,9 @@
 function bar =  BDBarycenter(comps,maxiter,tol)
 if nargin < 2
     maxiter = 500;
-    tol = 1e-09;
+    tol = 1e-12;
 elseif nargin < 3
-    tol = 1e-09;
+    tol = 1e-12;
 end
 
 % if alpha==0

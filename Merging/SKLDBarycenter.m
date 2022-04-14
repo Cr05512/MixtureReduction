@@ -49,7 +49,7 @@ for k=1:maxiter
     bar.Sigma = real(Sigma);
     
     if mod(k,3)==0
-        if SKLDij(bar,barOld)<tol
+        if norm(bar.mu-barOld.mu)<tol && norm(bar.Sigma-barOld.Sigma)<tol
             break;
         end
     end

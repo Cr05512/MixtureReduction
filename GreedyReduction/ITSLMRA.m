@@ -24,12 +24,12 @@ if numel(gmh)<Nr
 end
 gmr = gmh;
 Nh = numel(gmh);
-if(Nh==Nr)
-    return
-elseif(Nr==1)
-    gmr = TSLBarycenter(gmh,maxiter,tol);
-    return
-end
+% if(Nh==Nr)
+%     return
+% elseif(Nr==1)
+%     gmr = TSLBarycenter(gmh,maxiter,tol);
+%     return
+% end
 
 
 BMatrix = Inf(Nh,Nh);
@@ -53,6 +53,11 @@ for k=1:Nh-Nr
     %corresponding mixture components
     [i,j] = find(BMatrix == min(BMatrix(BMatrix<Inf)),1);
     bar = TSLBarycenter(gmr([i,j]),maxiter,tol);
+%     diff = norm(CTD(gmr,[gmr(setdiff(1:numel(gmr),[i,j]));bar],'TSLij')-BMatrix(i,j))
+%     if diff>1e-6
+%         diff
+%         pause
+%     end
     gmr(i) = bar;
     gmr(j) = [];
     pairs(k,:) = [i,j];

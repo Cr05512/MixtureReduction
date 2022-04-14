@@ -28,7 +28,7 @@ end
 
 
 [offset,P] = getMixtureMoments(gmh);
-errorEll = errorEllipses(offset,P,0.999999);
+errorEll = errorEllipses(offset,P,0.99999);
 gamma = max(max(abs(errorEll)));
 %gamma = max(eig(P));
     
@@ -39,7 +39,7 @@ if d==1
     sOrig = evalGM(gmh,X);
     sRed = evalGM(gmr,X);
 
-    f = sOrig.*log(sOrig) - sOrig.*log(sRed);
+    f = sOrig.*log(sOrig./sRed);
     f(isnan(f)) = 0;
 
     NKLD = trapz(X,f);

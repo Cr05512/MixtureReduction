@@ -10,11 +10,11 @@ end
 % if alpha==0
 %     bar = RKLDBarycenter(comps);
 % elseif alpha==1
-%     bar = FKLDBarycenter(comps);
+     bar = FKLDBarycenter(comps);
 % else
-     [~,idx] = max([comps.w]);
-     bar = comps(idx);
-     bar.w = sum([comps.w]);
+%      [~,idx] = max([comps.w]);
+%      bar = comps(idx);
+%      bar.w = sum([comps.w]);
 % end
 
 n = length(comps);
