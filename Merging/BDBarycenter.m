@@ -1,9 +1,9 @@
 function bar =  BDBarycenter(comps,maxiter,tol)
 if nargin < 2
-    maxiter = 500;
-    tol = 1e-12;
+    maxiter = 1000;
+    tol = 1e-15;
 elseif nargin < 3
-    tol = 1e-12;
+    tol = 1e-15;
 end
 
 % if alpha==0
@@ -56,9 +56,9 @@ for k=1:maxiter
     bar.Sigma = Sigma;
     
    if mod(k,5)==0
-        if BDij(bar,barOld)<tol
-            break;
-        end
+       if BDij(bar,barOld)<tol
+           break;
+       end
    end
    numIter = numIter + 1;
 end

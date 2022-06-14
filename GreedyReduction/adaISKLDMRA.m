@@ -1,66 +1,61 @@
-function gmr = IBDMRA(gmh, Nr,maxiter,tol)
-% gmr = IBDMRA(gmh, Nr):
+function [gmr,pairs,minCosts,Nr] = adaISKLDMRA(gmh, perc)
+% gmr = Runnalls(gmh, Nr):
 % INPUTS:
 % - gmh, a Gaussian mixture to be reduced,
 % - Nr, the desired number of components for the reduced mixture (scalar).
 % OUTPUTS:
 % - gmr, the reduced Gaussian mixture.
+% This function implements the algorithm presented in
+% Kullback-Leibler Approach to Gaussian Mixture Reduction, A.R. Runnals
 assert(~isempty(gmh),'The mixture has to contain at least one element.');
-assert(Nr>0,'The number of reduced components has to be greater than zero.');
 
-if nargin < 3
-    maxiter = 500;
-    tol = 1e-12;
-elseif nargin < 4
-    tol = 1e-12;
+if nargin < 2
+    perc = 0.2;
 end
 
-% if numel(gmh)<Nr
-%     gmr = gmh;
-%     return
-% end
 gmr = gmh;
 Nh = numel(gmh);
-% if(Nh==Nr)
-%     return
-% elseif(Nr==1)
-%     gmr = BDBarycenter_mex(gmh);
-%     return
-% end
 
+bar = SKLDBarycenter(gmh);
+maxCost = evalBarycenterFun(gmh,bar,'SKLDij');
 
 BMatrix = Inf(Nh,Nh);
+pairs = zeros(Nh-1,2);
+minCosts = zeros(Nh,1);
 
 %We first compute the KLD bounds for every merging action
 
 for i=1:Nh
     for j=1:Nh
         if(i<j)
-            BMatrix(i,j) = BDBij(gmr(i),gmr(j));
+            BMatrix(i,j) = SKLDBij(gmr(i),gmr(j));
         end
     end
 end
-
-while(numel(gmr)-Nr>0)
+for k=2:Nh
 
 
     %We then find the action with the lowest KLD bound and we merge the
     %corresponding mixture components
     [i,j] = find(BMatrix == min(BMatrix(BMatrix<Inf)),1);
-    bar = BDBarycenter(gmr([i,j]),maxiter,tol);
-    diff = norm(CTD(gmr,[gmr(setdiff(1:numel(gmr),[i,j]));bar],'BDij')-BMatrix(i,j));
-    if diff>1e-5
-        diff
-        disp('AAAAAA')
-        pause
+    minCosts(k) = minCosts(k-1) + BMatrix(i,j)/maxCost;
+    
+    if minCosts(k)>perc
+        Nr = numel(gmr);
+        break;
     end
+    bar = SKLDBarycenter(gmr([i,j]));
     gmr(i) = bar;
     gmr(j) = [];
+    pairs(k-1,:) = [i,j];
+    
+    
+
     BMatrix(j,:) = [];
     BMatrix(:,j) = [];
     upd_ind = setdiff(1:numel(gmr),i);
     for j=upd_ind
-        newBound = BDBij(bar,gmr(j));
+        newBound = SKLDBij(bar,gmr(j));
         if i<j
             BMatrix(i,j) = newBound;
         else
@@ -69,6 +64,7 @@ while(numel(gmr)-Nr>0)
     end
 
 end
+
     
     
     

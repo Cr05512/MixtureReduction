@@ -21,6 +21,8 @@ elseif ismember(lower(test),{'test2','test3','test4'})
     testParamsBlock.('Nh') = 20;
     testParamsBlock.('r') = 10;
     testParamsBlock.('beta') = 0.09;
+elseif ismember(lower(test),'testUmut')
+    testParamsBlock.('h') = 0.25;
 
 end
 

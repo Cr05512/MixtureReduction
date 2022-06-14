@@ -15,9 +15,9 @@ function [] = plotResults(gmr_vector,gm_vector,time_vector,experiments,showPlot,
 
 if nargin < 6
     globalMeas = {struct('globMeas','ISE')};
-    nPoints = 500;
+    nPoints = 1000;
 elseif nargin < 7
-    nPoints = 500;
+    nPoints = 1000;
 end
 
 numExperiments = numel(experiments);
@@ -45,8 +45,8 @@ for i=1:numExperiments
        
             X = genAxisPoints(gm_vector{i},nPoints);
             subplot(nRows,nCols,dim1Counter);
-            plotGM1D(gm_vector{i},X,{'Color','k'}); hold on
-            plotGM1D(gmr_vector{i},X,{'Color','r'}); hold on
+            plotGM1D(gm_vector{i},X,{'Color','k','LineWidth',4}); hold on
+            plotGM1D(gmr_vector{i},X,{'Color','r','LineWidth',4,'LineStyle','-.'}); hold on
             xlim([min(X) max(X)])
 
             grid minor

@@ -1,18 +1,24 @@
-function [gm,newParams] = userDefMixture4()
+function [gm,newParams] = testUmut(h)
 % This function generates a user defined mixture by providing respectively
 % the weights, the means and the covariance matrices.
 
-w = [0.5 0.5]';
-   
-mu = [-20 20];
-   
-   
-Sigma = 1*[0.6 0.6];
+if nargin < 1
+    h = 0.25;
+end
 
-Nh = numel(w);
-d = size(mu,1);
+Nh = 20;
+d = 1;
 
-Sigma = reshape(Sigma,d,d,Nh);
+w = ones(Nh,1)/Nh;
+   
+mu = zeros(1,Nh);
+
+for i=2:Nh
+    mu(i) = mu(i-1)+h;
+end
+   
+   
+Sigma = ones(1,1,Nh);
 
 gm(Nh,1) = struct('w',[],'mu',[],'Sigma',[]);
 newParams = struct('Nh',Nh,'d',d);

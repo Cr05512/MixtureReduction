@@ -12,7 +12,7 @@ if nargin < 2
     X = genAxisPoints(gm,1000);
     lineProps = {'LineWidth',2,'LineStyle','-','Color','k'};
 elseif nargin < 3
-    lineProps = {'LineWidth',2,'LineStyle','-','Color','k'};
+    lineProps = {'LineWidth',2,'LineStyle','-','Color','g','LineStyle','-.'};
 end
 
 assert(~isempty(gm),'The mixture has to contain at least one element.');
@@ -22,6 +22,5 @@ assert(~isempty(X),'The evaluation points have to be at least one.');
 h = plot(X,evalGM(gm,X),lineProps{:}); hold on
 xlabel('$x$','Interpreter','latex','FontSize',30);
 ylabel('$p(x)$','Interpreter','latex','FontSize',30);
-
 
 end

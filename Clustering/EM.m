@@ -13,7 +13,7 @@ function gm = EM(samples,K,maxiter,initGM)
 % mixture. Be sure that K and the number of components in initGM are equal.
 
 if nargin < 3
-    maxiter = 200;
+    maxiter = 500;
     gmdist = fitgmdist(samples',K,'Options',struct('MaxIter',maxiter));
 elseif nargin == 4
     assert(numel(initGM)==K,'The number of components in the init mixture is not equal to K.');

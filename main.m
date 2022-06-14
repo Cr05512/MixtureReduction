@@ -6,29 +6,29 @@ rngSeed = randi(1000000);  %For Orguner: Seed 537646, Nh = 15, d=1, gamma = 20, 
                            %beta = 0.1 Nr = 5 Runnalls vs alpha1Red vs
                            %alpha2Red
 
-Nh = 30;
+Nh = 20;
 
 d = 1;
-gamma = 25;
-beta = 0.2*d;
+gamma = 2*Nh/d;
+beta = 3*d;
 
 
 
-test = 'testCrouse';%'random';
-Nr = 5;
+test = 'random';
 
 %%
+Nr = 5;
 alphaJD = 0;
 alpha1D = 0.9;
 showPlot = 1;
 exp1 = Experiment('',           {struct('rho',0.7),struct('k',2)},...
-                  'IFKLDMRA',        struct('Nr',Nr),...
+                  'IFKLDMRA',        struct('Nr',Nr,'alpha',0.1,'RTL',0.2),...
                   '',           {struct('costMeas','FKLDij')},...
                   test,          struct('Nh',Nh,'gamma',gamma','beta',beta,'d',d,'rngSeed',rngSeed));              
 
               
 exp2 = Experiment('',           {},...
-                  'IW2MRA',       struct('Nr',Nr),... 
+                  'testAlgo',       struct('Nr',Nr),... 
                   '',           {struct('costMeas','FKLDij','maxiter',100)},...
                   test,         struct('Nh',Nh,'gamma',gamma,'beta',beta,'d',d,'rngSeed',rngSeed));
 
@@ -70,9 +70,9 @@ end
 
 
 close all
-globalMeas = {struct('globMeas','tFKLDUB'),...
+globalMeas = {struct('globMeas','ISE'),...
               struct('globMeas','FKLD123','nPoints',500),...
-              struct('globMeas','CTD','costMeas','W2ij')}';
+              struct('globMeas','CTD','costMeas','FKLDij')}';
 plotResults(gmrs,gms,times,experiments,showPlot,globalMeas);
 
 % WCTD = computeOTP(CostMatrix(gms{1},gmrs{1},'FKLDij'),[gms{1}.w]',[gmrs{1}.w]');

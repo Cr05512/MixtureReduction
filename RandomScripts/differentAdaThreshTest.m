@@ -1,0 +1,68 @@
+clear
+close all
+
+seed = randi(1000000); % Nice Seed 703006, Nh = 30, Nr = 5, d = 1, seed 109270
+rng(seed);
+
+Nh = 100;
+% Nr = 10;
+d = 1;
+gm =  GMGen(Nh,d,2*Nh,0.5*d);
+Nh = numel(gm);
+
+
+
+%%
+RTL = 1.1;
+I = 2*Nh;
+tic; gmr = ada3IFKLDMRA(gm,0.15,RTL); toc
+tic; gmr2 = adaIBDMRA(gm,0.05,RTL); toc
+%tic; gmr = adaIFKLDMRA(gm,RTL); toc
+gmr3 =  ada3IFKLDMRA(gm,0.05,RTL);
+[~,~,minCosts] = ada3IFKLDMRA(gm,10,1);
+
+if d==1
+    figure(1)
+    
+    %sgtitle(str);
+    hold on
+    X = genAxisPoints(gm,5000);
+%     plotGM1D(gm,X,{'Color','k','LineWidth',4,'LineStyle','-'});
+    subplot(3,3,[1 2 3])
+    plotGM1D(gm,X,{'Color','k','LineWidth',4,'LineStyle','-'});
+    plotGM1D(gmr,X,{'Color',[0.07,0.62,1.00],'LineWidth',4,'LineStyle','-.'});
+    set(gca,'FontSize',20)
+    grid minor
+    %axis('square')
+    axis([min(X) max(X) 0 max(evalGM(gm,X))*1.4])
+    %legend('Original','Reduced');
+    title('(a)','Interpreter','latex','FontSize',25)
+    legend('Original',strcat('ada-$C_{D_{FKL}}$',' , $n^b=',num2str(length(gmr)),'$'),'Interpreter','latex','FontSize',30);
+    set(gca,'FontSize',20)
+
+    subplot(3,3,[4 5 6])
+    plotGM1D(gm,X,{'Color','k','LineWidth',4,'LineStyle','-'});
+    plotGM1D(gmr2,X,{'Color',[0.07,0.62,1.00],'LineWidth',4,'LineStyle','-.'});
+    set(gca,'FontSize',20)
+    grid minor
+    %axis('square')
+    axis([min(X) max(X) 0 max(evalGM(gm,X))*1.4])
+    %legend('Original','Reduced');
+    title('(b)','Interpreter','latex','FontSize',25)
+    legend('Original',strcat('ada-$C_{D_{FKL}}$',' , $n^b=',num2str(length(gmr2)),'$'),'Interpreter','latex','FontSize',30);
+    set(gca,'FontSize',20)
+
+    subplot(3,3,[7 8 9])
+    plotGM1D(gm,X,{'Color','k','LineWidth',4,'LineStyle','-'});
+    plotGM1D(gmr3,X,{'Color',[0.07,0.62,1.00],'LineWidth',4,'LineStyle','-.'});
+    set(gca,'FontSize',20)
+    grid minor
+    %axis('square')
+    axis([min(X) max(X) 0 max(evalGM(gm,X))*1.4])
+    %legend('Original','Reduced');
+    title('(c)','Interpreter','latex','FontSize',25)
+    legend('Original',strcat('ada-$C_{D_{FKL}}$',' , $n^b=',num2str(length(gmr3)),'$'),'Interpreter','latex','FontSize',30);
+    set(gca,'FontSize',20)
+end
+
+

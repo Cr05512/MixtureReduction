@@ -2,7 +2,7 @@ function [gm,newParams] = userDefMixture2()
 % This function generates a user defined mixture by providing respectively
 % the weights, the means and the covariance matrices.
 
-w = [0.2 0.3 0.4]';
+w = [0.2 0.3 0.5]';
    
 mu = [-1 0 3.5];
    

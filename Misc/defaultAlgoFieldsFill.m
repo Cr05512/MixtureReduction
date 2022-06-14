@@ -25,6 +25,10 @@ for j=1:length(fieldList)
                 algoParamsBlock.(fieldList{j}) = Inf;
             elseif strcmpi(fieldList{j},'algo')
                 algoParamsBlock.(fieldList{j}) = 1;
+            elseif strcmpi(fieldList{j},'I')
+                algoParamsBlock.(fieldList{j}) = 0;
+            elseif strcmpi(fieldList{j},'RTL')
+                algoParamsBlock.(fieldList{j}) = 0.2;
             end
 
 

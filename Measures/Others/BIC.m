@@ -16,6 +16,6 @@ if nargin < 3
 end
 n = size(X,2);
 
-BICVal = -2*n*ELogLikelihoodGM(gm,X) + m*log(n);
+BICVal = -2*logLikelihoodGM(gm,X) + m*log(n);
 end
 

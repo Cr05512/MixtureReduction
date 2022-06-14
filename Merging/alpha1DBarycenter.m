@@ -11,14 +11,11 @@ elseif nargin < 4
     tol = 1e-12;
 end
 
-% if alpha==0
-%     Dabar = RKLDBarycenter(comps);
-% elseif alpha==1
+if alpha==1
+     bar = RKLDBarycenter(comps);
+elseif alpha<1
      bar = FKLDBarycenter(comps);
-% else
-%     [~,idx] = max([comps.w]);
-%     Dabar = comps(idx);
-% end
+end
 
 n = length(comps);
 d = size(comps(1).mu,1);
